@@ -1,3 +1,3 @@
 # PhilanthroPoints
 
-A Web App to help those wanting to do a strictly points based non-profit serve their community with ease. Based on the ideas & creation of Ms. Benita Webber, and her non-profit Birthday Connections.
+A Web App to help those wanting to do a strictly points based non-profit serve their community with ease. Based on the ideas & creation of Ms. Benita Webber, and her non-profit Birthday Connections. This is the secondary source, so updates and issues may be delayed being presented here. The main source can be found at https://git.pseudoservices.com/PseudoMortus/PhilanthroPoints, where I host my own Repo Instance.
