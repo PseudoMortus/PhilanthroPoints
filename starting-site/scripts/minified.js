@@ -2457,7 +2457,8 @@
                     r<e;
                     r++
                 )if(
-                    Xm(i=-1===r?a:arguments[r])){
+                    Xm(i=-1===r?a:arguments[r])
+                ){
 if(o=s(i.length),
 p<c+o)throw TypeError(g);
 for(n=0;
