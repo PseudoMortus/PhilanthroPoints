@@ -329,27 +329,15 @@ __webpack_require__.m=n=[function(
     n(453),
     t.exports=n(452)
 },
-function(
-    t,
-    r,
-    n
-){
-    function Ba(
-        t,
-        r
-    ){
+function(t,r,n){
+    function Ba(t,r){
         var n=J[t]=d(z[D]);
-        return B(
-            n,
-            {
-                type:W,
-                tag:t,
-                description:r
-            }
-        ),
-        a||(
-            n.description=r
-        ),
+        return B(n,{
+            type:W,
+            tag:t,
+            description:r
+        }),
+        a||(n.description=r),
         n
     }
     function Ea(
@@ -359,23 +347,9 @@ function(
         h(r);
         var n=g(t),
         e=m(n).concat(ct(n));
-        return N(
-            e,
-            function(
-                t
-            ){
-                a
-                &&!ut.call(
-                    n,
-                    t
-                )
-                ||at(
-                    r,
-                    t,
-                    n[t]
-                )
-            }
-        ),
+        return N(e,function(t){
+            a&&!ut.call(n,t)||at(r,t,n[t])
+        }),
         r
     }
     function Ha(
