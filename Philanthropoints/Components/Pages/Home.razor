@@ -1,7 +1,175 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>PhilanthroPoints for Birthday Connections</PageTitle>
 
-<h1>Hello, world!</h1>
+<!-- * TODO: make these centered and fit color pallette & style of Birthday Connections -->
 
-Welcome to your new app.
+<div class="">
+    <div class="">
+        <h1>PhilanthroPoints</h1>
+    </div>
+
+    <div class="">
+        <h3>Welcome to the Birthday Marketplace, Powered by PhilanthroPoints</h3>
+    </div>
+
+    <div class="">
+        <input placeholder="Enter ID or Email" @bind="IDEmail" />
+    </div>
+
+    <div class="">
+        <button @onclick="ValidateLogin">Login</button>
+    </div>
+</div>
+
+
+
+@code 
+{
+    private string? IDEmail;
+    private void ValidateLogin()
+    {
+        if (string.IsNullOrEmpty(IDEmail))
+        {
+            // Input is empty, no validation needed
+            return;
+        }
+
+        if (IsValidUsername(IDEmail) || IsValidEmail(IDEmail))
+        {
+            // Input is valid
+        }
+        else
+        {
+            // Input is invalid
+            IDEmail = string.Empty; // Clear the input field
+//            ValidationMessageStore.Clear();
+//            ValidationMessageStore.Add("IDEmail", "Invalid username or email format.");
+        }
+    }
+
+    private bool IsValidUsername(string value)
+    {
+        if (value.Length < 10) return false;
+        var prefix = value.Substring(0, 3);
+        var datePart = value.Substring(3);
+
+        if (!prefix.All(char.IsLetter)) return false;
+        if (!datePart.All(char.IsDigit)) return false;
+
+        if (datePart.Length != 8) return false;
+
+        int month, day, year;
+        if (!int.TryParse(datePart.Substring(0, 2), out month) ||
+            !int.TryParse(datePart.Substring(2, 2), out day) ||
+            !int.TryParse(datePart.Substring(4, 4), out year))
+        {
+            return false;
+        }
+
+        if (month < 1 || month > 12) return false;
+        if (day < 1 || day > 31) return false;
+
+        return true;
+    }
+
+    private bool IsValidEmail(string value)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(value);
+            return addr.Address == value;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
+
+@{/*
+<div>
+    <label for="inputField">Enter ID or Email:</label>
+    <InputText id="inputField" @bind-Value="inputValue" @onchange="ValidateInput" />
+    <ValidationMessage For="@(() => inputValue)" />
+</div>
+
+@code {
+    private string inputValue { get; set; }
+
+    private void ValidateInput()
+    {
+        if (string.IsNullOrEmpty(inputValue))
+        {
+            // Input is empty, no validation needed
+            return;
+        }
+
+        if (IsValidUsername(inputValue) || IsValidEmail(inputValue))
+        {
+            // Input is valid
+        }
+        else
+        {
+            // Input is invalid
+            inputValue = string.Empty; // Clear the input field
+            ValidationMessageStore.Clear();
+            ValidationMessageStore.Add("inputField", "Invalid username or email format.");
+        }
+    }
+
+    private bool IsValidUsername(string value)
+    {
+        if (value.Length < 10) return false;
+        var prefix = value.Substring(0, 3);
+        var datePart = value.Substring(3);
+
+        if (!prefix.All(char.IsLetterOrDigit)) return false;
+        if (!datePart.All(char.IsDigit)) return false;
+
+        if (datePart.Length != 8) return false;
+
+        int month, day, year;
+        if (!int.TryParse(datePart.Substring(0, 2), out month) ||
+            !int.TryParse(datePart.Substring(2, 2), out day) ||
+            !int.TryParse(datePart.Substring(4, 4), out year))
+        {
+            return false;
+        }
+
+        if (month < 1 || month > 12) return false;
+        if (day < 1 || day > 31) return false;
+
+        return true;
+    }
+
+    private bool IsValidEmail(string value)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(value);
+            return addr.Address == value;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
+
+
+### Explanation:
+1. **InputText Component**: This is used to create a text box where users can enter their username or email.
+2. **ValidationMessage**: This component displays validation messages if the input does not meet the criteria.
+3. **ValidateInput Method**: This method checks if the input is either a valid username or email and updates the UI accordingly.
+
+### Username Validation:
+- The username must be at least 10 characters long.
+- The first 3 characters must be alphanumeric.
+- The remaining 7 characters must be numeric, representing a date in MMddyyyy format.
+
+### Email Validation:
+- Uses `System.Net.Mail.MailAddress` to validate the email format.
+
+This code ensures that the input is validated according to the specified rules and provides feedback to the user if the input is invalid.
+*/}
