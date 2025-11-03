@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "cMWLg+ebvCR5AxgzSQiNkZPPxZOKqC06RcbWnqQmXsY=",
+  "Hash": "cJEpOBt7jmIda+ujgPPzDLJIcAGr0vqL8suB3y5hU3c=",
   "Source": "Philanthropoints",
   "BasePath": "_content/Philanthropoints",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "Philanthropoints/wwwroot",
       "Source": "Philanthropoints",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
       "BasePath": "_content/Philanthropoints",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/bundle/Philanthropoints.styles.css",
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/bundle/Philanthropoints.styles.css",
       "SourceId": "Philanthropoints",
       "SourceType": "Computed",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/bundle/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/bundle/",
       "BasePath": "_content/Philanthropoints",
       "RelativePath": "Philanthropoints.styles.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/bundle/Philanthropoints.styles.css"
+      "OriginalItemSpec": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/bundle/Philanthropoints.styles.css"
     },
     {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/projectbundle/Philanthropoints.bundle.scp.css",
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/projectbundle/Philanthropoints.bundle.scp.css",
       "SourceId": "Philanthropoints",
       "SourceType": "Computed",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/projectbundle/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/projectbundle/",
       "BasePath": "_content/Philanthropoints",
       "RelativePath": "Philanthropoints.bundle.scp.css",
       "AssetKind": "All",
@@ -52,13 +52,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/projectbundle/Philanthropoints.bundle.scp.css"
+      "OriginalItemSpec": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/Debug/net8.0/scopedcss/projectbundle/Philanthropoints.bundle.scp.css"
     },
     {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/app.css",
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/app.css",
       "SourceId": "Philanthropoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
       "BasePath": "_content/Philanthropoints",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -74,10 +74,10 @@
       "OriginalItemSpec": "wwwroot/app.css"
     },
     {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/bootstrap/bootstrap.min.css",
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/bootstrap/bootstrap.min.css",
       "SourceId": "Philanthropoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
       "BasePath": "_content/Philanthropoints",
       "RelativePath": "bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -93,10 +93,10 @@
       "OriginalItemSpec": "wwwroot/bootstrap/bootstrap.min.css"
     },
     {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/bootstrap/bootstrap.min.css.map",
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/bootstrap/bootstrap.min.css.map",
       "SourceId": "Philanthropoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
       "BasePath": "_content/Philanthropoints",
       "RelativePath": "bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -112,10 +112,10 @@
       "OriginalItemSpec": "wwwroot/bootstrap/bootstrap.min.css.map"
     },
     {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/favicon.png",
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/favicon.png",
       "SourceId": "Philanthropoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/wwwroot/",
       "BasePath": "_content/Philanthropoints",
       "RelativePath": "favicon.png",
       "AssetKind": "All",
