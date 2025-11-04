@@ -9,47 +9,75 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Philanthropoints
 build_property.RootNamespace = Philanthropoints
-build_property.ProjectDir = /run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/
+build_property.ProjectDir = /home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints
+build_property.MSBuildProjectDirectory = /home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints
 build_property._RazorSourceGeneratorDebug = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/App.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/AdminPages/Inventory.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BZG1pblBhZ2VzL0ludmVudG9yeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/App.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Counter.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Db3VudGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Error.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Home.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ib21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Weather.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Pages/Weather.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9XZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Routes.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/ParentPages/Books.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYXJlbnRQYWdlcy9Cb29rcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/ParentPages/Cards.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYXJlbnRQYWdlcy9DYXJkcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/ParentPages/Gifts.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYXJlbnRQYWdlcy9HaWZ0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/ParentPages/Intro.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYXJlbnRQYWdlcy9JbnRyby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/ParentPages/Treats.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYXJlbnRQYWdlcy9UcmVhdHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/ProviderPages/Submission.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Qcm92aWRlclBhZ2VzL1N1Ym1pc3Npb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Sb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/_Imports.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9fSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Layout/MainLayout.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTWFpbkxheW91dC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-cvht153b19
 
-[/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Components/Layout/NavMenu.razor]
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Components/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTmF2TWVudS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-vbfal9em4l
