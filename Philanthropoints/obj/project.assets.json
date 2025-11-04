@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "/home/jcarter/.nuget/packages/": {}
+    "/home/pseudomortus/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Philanthropoints.csproj",
+      "projectUniqueName": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Philanthropoints.csproj",
       "projectName": "Philanthropoints",
-      "projectPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/Philanthropoints.csproj",
-      "packagesPath": "/home/jcarter/.nuget/packages/",
-      "outputPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/Philanthropoints/obj/",
+      "projectPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/Philanthropoints.csproj",
+      "packagesPath": "/home/pseudomortus/.nuget/packages/",
+      "outputPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/Philanthropoints/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/jcarter/.nuget/NuGet/NuGet.Config"
+        "/home/pseudomortus/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
