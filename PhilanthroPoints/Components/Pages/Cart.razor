@@ -1,0 +1,46 @@
+﻿@page "/Cart"
+@inject PhilanthroPoints.Services.CartState CartSvc
+@inject PhilanthroPoints.Services.CatalogService Catalog
+
+<h2 style="color: var(--brand-blue-600)" class="mb-2">Your Cart</h2>
+
+@if (!CartSvc.Lines.Any())
+{
+    <p class="text-muted">Your cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr><th>Item</th><th>Qty</th><th>Points</th><th></th></tr>
+        </thead>
+        <tbody>
+        @foreach (var kv in CartSvc.Lines)
+        {
+            var item = Catalog.Find(kv.Key)!;
+            <tr>
+                <td>@item.Name</td>
+                <td>@kv.Value</td>
+                <td><span style="color: var(--brand-orange-600); font-weight:600;">@(item.PointsCost * kv.Value)</span></td>
+                <td>
+                    <button class="btn small" @onclick="() => CartSvc.Remove(item)">-</button>
+                    <button class="btn small primary" @onclick="() => CartSvc.Add(item)">+</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <p style="margin-top:.5rem">
+        <strong>Total:</strong>
+        <span style="color: var(--brand-orange-600); font-weight:700;">
+            @CartSvc.TotalPoints(id => Catalog.Find(id)!.PointsCost)
+        </span> points
+    </p>
+
+    <button class="btn primary" @onclick="Checkout">Checkout (stub)</button>
+}
+
+@code {
+    void Checkout() => CartSvc.Clear();
+}

@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+@using PhilanthroPoints.Shared
+@inject PhilanthroPoints.Services.CartState Cart
+@using Microsoft.AspNetCore.Components.Web
+
+
+
+<HeadContent>
+    <!-- Absolute path is safest; this file is in wwwroot/app.css -->
+    <link rel="stylesheet" href="/app.css" />
+    <!-- Optional: bootstrap if you want it -->
+    <!-- <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" /> -->
+</HeadContent>
+
+
+<a class="sr-only" href="#main">Skip to content</a>
+
+<div class="header">
+    <div class="brand container">
+        <div class="title">
+            <img src="/favicon.ico" width="24" height="24" alt="Logo" />
+            <span class="appname">Birthday Connections</span>
+        </div>
+    </div>
+    <NavMenu />
+</div>
+
+<div class="container">
+    <div class="card">
+        <div id="main" class="p">
+            @Body
+        </div>
+    </div>
+</div>
+
+<PointsTicker />
+<a class="btn cartpill" href="/Cart" aria-label="View cart">🛒 View Cart</a>
+
+@code {
+    protected override void OnInitialized() => Cart.Changed += StateHasChanged;
+    public void Dispose() => Cart.Changed -= StateHasChanged;
+}

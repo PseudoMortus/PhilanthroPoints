@@ -1,0 +1,157 @@
+/* ===============================
+   Use These To set Coloring
+   =============================== */
+:root{
+    /* --- Core brand --- */
+    --brand-blue-600: #4A90E2;      /* Header / section labels */
+    --brand-blue-700: #357ABD;      /* Hover or stronger header text */
+
+    --brand-orange-600: #FFB870;    /* Orange creamsicle accent (goals / calls to action) */
+    --brand-orange-700: #E89545;    /* Darker hover version */
+
+    /* --- Neutral foundation --- */
+    --ink: #1E1E1E;                 /* Body text */
+    --muted: #6B7280;               /* Subtext / helper text */
+    --bg: #FAFAFA;                  /* Background */
+    --surface: #FFFFFF;             /* Card / panel surfaces */
+    --border: #E5E7EB;              /* Dividers */
+
+    /* --- Accent mappings for your existing code --- */
+    --brand-600: var(--brand-blue-600);
+    --brand-700: var(--brand-blue-700);
+    --accent-600: var(--brand-orange-600);
+    --accent-700: var(--brand-orange-700);
+
+    --brand-50: color-mix(in oklab, var(--brand-blue-600) 12%, white);
+    --brand-100: color-mix(in oklab, var(--brand-blue-600) 25%, white);
+
+    --radius-xl: 1rem;
+    --radius-lg: .75rem;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 6px 20px rgba(0,0,0,.08);
+}
+
+@media (prefers-color-scheme: dark){
+    :root{
+        --ink:#e5e7eb;
+        --muted:#a1a1aa;
+        --bg:#0b1220;
+        --surface:#111827;
+        --border:#1f2937;
+        --shadow-sm:none;
+        --shadow-md:none;
+    }
+}
+
+/* Base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+    margin:0;
+    font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+}
+
+/* A11y: focus ring */
+:focus-visible{
+    outline:3px solid color-mix(in oklab, var(--brand-600) 45%, white);
+    outline-offset:3px;
+}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:1rem}
+.header{
+    position:sticky;top:0;z-index:1000;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+}
+.brand{
+    display:flex;gap:.6rem;align-items:center;justify-content:space-between;
+    padding:1rem;
+}
+.brand .title{display:flex;gap:.6rem;align-items:center}
+.brand .appname{font-weight:700;letter-spacing:.2px}
+
+/* Nav */
+.navbar{
+    display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;
+    padding:0 1rem 1rem;
+}
+.navbar a{
+    padding:.5rem .75rem;border-radius:.5rem;
+    color:var(--ink); text-decoration:none; border:1px solid transparent;
+}
+.navbar a:hover{background:var(--brand-50);color:var(--brand-700)}
+.navbar a.active{background:var(--brand-600);color:#fff}
+
+/* Cards & sections */
+.card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-xl); box-shadow:var(--shadow-sm);
+}
+.p{padding:1rem}
+
+/* Catalog grid */
+.grid{
+    display:grid; gap:1rem;
+    grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
+}
+.item{display:flex;flex-direction:column;overflow:hidden;border-radius:var(--radius-xl);border:1px solid var(--border);background:var(--surface)}
+.item img{width:100%;height:168px;object-fit:cover;border-bottom:1px solid var(--border)}
+.item .body{padding:.9rem}
+.item .meta{display:flex;justify-content:space-between;align-items:center;margin-top:.25rem}
+
+/* Buttons */
+.btn{
+    display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;
+    padding:.55rem .9rem;border-radius:.6rem;border:1px solid var(--brand-600);
+    color:var(--brand-700);background:transparent;
+}
+.btn:hover{background:var(--brand-50)}
+.btn.primary{background:var(--brand-600);color:#fff;border-color:var(--brand-600)}
+.btn.primary:hover{background:var(--brand-700)}
+.btn.ghost{border-color:transparent}
+.btn.small{font-size:.9rem;padding:.35rem .6rem}
+
+/* Tables */
+.table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.table th,.table td{padding:.75rem;border-bottom:1px solid var(--border);text-align:left}
+.table thead th{background:var(--brand-50);color:var(--brand-700);font-weight:600}
+
+/* Points ticker (floating) */
+.points{
+    position:fixed;right:1rem;bottom:1rem;display:flex;align-items:center;gap:.6rem;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:999px;padding:.65rem 1rem; box-shadow:var(--shadow-md);
+}
+.points .dot{width:10px;height:10px;border-radius:50%;background:var(--accent-600)}
+.points strong{font-weight:800}
+.points span{color:var(--muted)}
+
+/* Cart pill */
+.cartpill{position:fixed;left:1rem;bottom:1rem}
+
+/* Headings, text helpers */
+h1,h2,h3{line-height:1.2;margin:.2rem 0 .5rem}
+h1{font-size:clamp(1.6rem, 1.2rem + 1.2vw, 2.2rem)}
+h2{font-size:clamp(1.3rem, 1.1rem + .8vw, 1.7rem)}
+h3{font-size:1.25rem}
+.text-muted{color:var(--muted)}
+.mb-2{margin-bottom:.5rem}
+
+.input{
+    width:100%;
+    padding:.55rem .7rem;
+    border:1px solid var(--border);
+    border-radius:.6rem;
+    background:var(--surface);
+    color:var(--ink);
+}
+.input:focus{ outline:0; border-color: var(--brand-600); box-shadow:0 0 0 3px color-mix(in oklab, var(--brand-600) 25%, white); }
+
+label{ font-weight:600; color: var(--ink); }
+.validation-message, .validation-errors, .validation-summary-errors{ color:crimson; }
+

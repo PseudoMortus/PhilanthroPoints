@@ -1,0 +1,29 @@
+﻿@page "/Admin/Inventory"
+@inject PhilanthroPoints.Services.CatalogService Catalog
+
+<h2 style="color: var(--brand-blue-600)" class="mb-2">Inventory (Stub)</h2>
+<p class="text-muted">This is a UX shell ready for EF Core + Identity.</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Points</th>
+        <th>Stock</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var i in Catalog.All())
+    {
+        <tr>
+            <td>@i.Name</td>
+            <td>@i.Category</td>
+            <td><span style="color: var(--brand-orange-600); font-weight:600;">@i.PointsCost</span></td>
+            <td>@i.Stock</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a class="btn">+ Add Item (disabled)</a>

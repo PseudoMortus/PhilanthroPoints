@@ -1,0 +1,14 @@
+﻿@inject PhilanthroPoints.Services.CartState Cart
+@inject PhilanthroPoints.Services.CatalogService Catalog
+
+<div class="points" title="Points spent in cart">
+    <div class="dot"></div>
+    <strong style="color: var(--brand-orange-600);">@Total</strong>
+    <span>points</span>
+</div>
+
+@code {
+    private int Total => Cart.TotalPoints(id => Catalog.Find(id)!.PointsCost);
+    protected override void OnInitialized() => Cart.Changed += StateHasChanged;
+    public void Dispose() => Cart.Changed -= StateHasChanged;
+}
