@@ -1,20 +1,69 @@
 ﻿@page "/"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
 
-<h2 style="color: var(--brand-blue-600)" class="mb-2">Welcome!</h2>
-<p class="text-muted">Select a category to start building your birthday bundle. Your points update in real-time.</p>
+<h2 style="color: var(--brand-blue-600)" class="mb-2">Sign in</h2>
+<p class="text-muted">Use your email and password to continue.</p>
 
-<div class="grid" style="margin-top:.5rem">
-    <a class="btn primary" href="/Gifts"><span style="color:#fff">Browse Gifts →</span></a>
-    <a class="btn" href="/Books">Browse Books →</a>
-    <a class="btn" href="/Cards">Browse Cards →</a>
-    <a class="btn" href="/Treats">Browse Sweet Treats →</a>
+<div class="card" style="max-width:560px;">
+  <div class="p">
+    <EditForm Model="_model" OnValidSubmit="SubmitAsync">
+      <DataAnnotationsValidator />
+      <ValidationSummary />
+
+      <div style="margin-bottom:.75rem">
+        <label for="email">Email</label><br />
+        <InputText id="email" class="input" @bind-Value="_model.Email" />
+        <ValidationMessage For="@(() => _model.Email)" />
+      </div>
+
+      <div style="margin-bottom:.75rem">
+        <label for="pwd">Password</label><br />
+        <InputText id="pwd" type="password" class="input" @bind-Value="_model.Password" />
+        <ValidationMessage For="@(() => _model.Password)" />
+      </div>
+
+      <div style="display:flex; align-items:center; gap:.5rem; margin-bottom:1rem">
+        <InputCheckbox id="remember" @bind-Value="_model.RememberMe" />
+        <label for="remember" class="text-muted">Remember me</label>
+      </div>
+
+      <div style="display:flex; gap:.5rem; align-items:center">
+        <button class="btn primary" type="submit">
+          <span style="color:#fff">Sign in</span>
+        </button>
+        <a class="btn ghost" href="/">Cancel</a>
+        <a class="text-muted" href="#" title="Placeholder">Forgot password?</a>
+      </div>
+
+      @if (!string.IsNullOrEmpty(_message))
+      {
+        <p class="text-muted" style="margin-top:1rem">@_message</p>
+      }
+    </EditForm>
+  </div>
 </div>
 
-<div style="margin-top:1rem">
-    <span style="color: var(--brand-orange-600); font-weight:600;">Birthday Connections</span>
-    <p class="text-muted" style="margin:.25rem 0 0">
-        • Dignity, choice, and  celebration for every child!<br />
-        • Pick between gifts, books, cards, and sweet treats!<br />
-        • Ensure your child never  feels left out!
-    </p>
-</div>
+@code {
+  private readonly LoginModel _model = new();
+
+  private async Task SubmitAsync()
+  {
+    // Placeholder only — no real auth yet
+    await Task.Delay(300);
+    _message = "Authentication coming soon — this is a UI stub.";
+  }
+
+  private string? _message;
+
+  public sealed class LoginModel
+  {
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required, MinLength(6)]
+    public string Password { get; set; } = string.Empty;
+
+    public bool RememberMe { get; set; }
+  }
+}

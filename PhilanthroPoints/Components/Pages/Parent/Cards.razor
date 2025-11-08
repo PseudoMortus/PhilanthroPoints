@@ -1,12 +1,12 @@
-﻿@page "/Treats"
+﻿@page "/Parent/Cards"
 @inject PhilanthroPoints.Services.CatalogService Catalog
 @inject PhilanthroPoints.Services.CartState CartSvc
 
-<h2 style="color: var(--brand-blue-600)" class="mb-2">Sweet Treats</h2>
-<p class="text-muted">Cupcakes, cookies, and more.</p>
+<h2 style="color: var(--brand-blue-600)" class="mb-2">Cards</h2>
+<p class="text-muted">Pick a birthday card to complete the bundle.</p>
 
 <div class="grid">
-    @foreach (var i in Catalog.GetByCategory(Category.Treats))
+    @foreach (var i in Catalog.GetByCategory(Category.Cards))
     {
         <article class="item">
             <img src="@i.ImageUrl" alt="@i.Name" />
