@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hbTWEOmdFfK4ADLbF8Tj6DfAtOF/YCoDN+xzjGK7sBU=",
+  "Hash": "rBkmfk7Mo3YFdK9qNcp5Ai5FdFjLO5cKeS1cvICpQiQ=",
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -8,19 +8,19 @@
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [
     {
-      "Name": "PhilanthroPoints/wwwroot",
+      "Name": "PhilanthroPoints\\wwwroot",
       "Source": "PhilanthroPoints",
-      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
       "BasePath": "_content/PhilanthroPoints",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.css",
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\app.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/app.css"
+      "OriginalItemSpec": "wwwroot\\app.css"
     },
     {
-      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css",
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\bootstrap\\bootstrap.min.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -52,13 +52,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/bootstrap/bootstrap.min.css"
+      "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css.map",
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -71,13 +71,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/bootstrap/bootstrap.min.css.map"
+      "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/favicon.png",
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\favicon.png",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "favicon.png",
       "AssetKind": "All",
@@ -90,7 +90,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/favicon.png"
+      "OriginalItemSpec": "wwwroot\\favicon.png"
     }
   ]
 }
