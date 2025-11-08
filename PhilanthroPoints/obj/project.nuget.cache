@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "fHXtIbnlZxmcGElkICpQuR9MWmxFRHP/pnMRdXrb/XcCZZyrXRbSYprSSfjGQZDu6qoQfsW5fPJwP7RcJPoelg==",
   "success": true,
   "projectFilePath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\PhilanthroPoints.csproj",
+=======
+  "dgSpecHash": "xRjSP4EwnM07gVVsMsdZX0LLNGPa8iItnYB7bJJaPL95aKXDxzfFD4ErhBMiTwIkslS7xO+uZVe7VfbrohwR/g==",
+  "success": true,
+  "projectFilePath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+>>>>>>> main
   "expectedPackageFiles": [],
   "logs": []
 }

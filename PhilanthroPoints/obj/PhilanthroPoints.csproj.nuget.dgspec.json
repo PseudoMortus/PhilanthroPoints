@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\PhilanthroPoints.csproj": {}
   },
   "projects": {
@@ -15,6 +16,22 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\MichaelCriswell\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+    "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {}
+  },
+  "projects": {
+    "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+        "projectName": "PhilanthroPoints",
+        "projectPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+        "packagesPath": "/home/pseudomortus/.nuget/packages/",
+        "outputPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/pseudomortus/.nuget/NuGet/NuGet.Config"
+>>>>>>> main
         ],
         "originalTargetFrameworks": [
           "net8.0"

@@ -1,6 +1,7 @@
 {
   "Files": [
     {
+<<<<<<< HEAD
       "Id": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\app.css",
       "PackagePath": "staticwebassets\\app.css"
     },
@@ -15,6 +16,22 @@
     {
       "Id": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+=======
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/favicon.png",
+      "PackagePath": "staticwebassets/favicon.png"
+>>>>>>> main
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.PhilanthroPoints.Microsoft.AspNetCore.StaticWebAssets.props",

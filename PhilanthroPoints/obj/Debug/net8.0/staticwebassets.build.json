@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "Hash": "rBkmfk7Mo3YFdK9qNcp5Ai5FdFjLO5cKeS1cvICpQiQ=",
+=======
+  "Hash": "qlgJO9DEinMWisgOV4JuzQVNIVdVoy7EdgQcWAmY+NY=",
+>>>>>>> main
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -10,17 +14,28 @@
     {
       "Name": "PhilanthroPoints\\wwwroot",
       "Source": "PhilanthroPoints",
+<<<<<<< HEAD
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
+=======
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> main
       "BasePath": "_content/PhilanthroPoints",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\app.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
+=======
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> main
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -36,10 +51,17 @@
       "OriginalItemSpec": "wwwroot\\app.css"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\bootstrap\\bootstrap.min.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
+=======
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> main
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -55,10 +77,17 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
+=======
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css.map",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> main
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -74,10 +103,17 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css.map"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\favicon.png",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
+=======
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/favicon.png",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> main
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "favicon.png",
       "AssetKind": "All",
