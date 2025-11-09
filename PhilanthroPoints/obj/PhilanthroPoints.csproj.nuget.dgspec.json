@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {}
+    "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {}
   },
   "projects": {
-    "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {
+    "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+        "projectUniqueName": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
         "projectName": "PhilanthroPoints",
-        "projectPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
-        "packagesPath": "/home/pseudomortus/.nuget/packages/",
-        "outputPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/obj/",
+        "projectPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+        "packagesPath": "/home/jcarter/.nuget/packages/",
+        "outputPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/pseudomortus/.nuget/NuGet/NuGet.Config"
+          "/home/jcarter/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
