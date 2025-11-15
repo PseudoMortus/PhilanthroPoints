@@ -1,30 +1,109 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">PhilanthroPoints</a>
-    </div>
-</div>
+﻿
+@using Microsoft.AspNetCore.Components.Authorization
+@inject PhilanthroPoints.Services.FlowState Flow
+@inject PhilanthroPoints.Services.CustomAuthStateProvider AuthProvider
+@inject NavigationManager Nav
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<nav class="nav">
+  <ul class="menu-list">
+    <li>
+      <div class="dropdown-header" @onclick="() => ToggleSection(0)">
+        <span>Menu</span>
+        <span class="arrow @(expandedSections[0] ? "expanded" : "")">▼</span>
+      </div>
+      @if (expandedSections[0])
+      {
+        <ul class="submenu">
+          <li><NavLink class="link" href="/" ActiveClass="active">Home</NavLink></li>
+          <li>
+            @if (Flow.CanNavigateTo(PhilanthroPoints.Services.FlowStep.Demographics))
+            { <NavLink class="link" href="/demographics" ActiveClass="active">Demographics</NavLink> }
+            else { <span class="link disabled">Demographics</span> }
+          </li>
+          <li>
+            @if (Flow.CanNavigateTo(PhilanthroPoints.Services.FlowStep.Cards))
+            { <NavLink class="link" href="/cards" ActiveClass="active">Birthday Cards</NavLink> }
+            else { <span class="link disabled">Birthday Cards</span> }
+          </li>
+          <li>
+            @if (Flow.CanNavigateTo(PhilanthroPoints.Services.FlowStep.Treats))
+            { <NavLink class="link" href="/treats" ActiveClass="active">Sweets &amp; Treats</NavLink> }
+            else { <span class="link disabled">Sweets &amp; Treats</span> }
+          </li>
+          <li>
+            @if (Flow.CanNavigateTo(PhilanthroPoints.Services.FlowStep.Gifts))
+            { <NavLink class="link" href="/gifts" ActiveClass="active">Gifts</NavLink> }
+            else { <span class="link disabled">Gifts</span> }
+          </li>
+        </ul>
+      }
+    </li>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+    <li>
+      <div class="dropdown-header" @onclick="() => ToggleSection(1)">
+        <span>Parent</span>
+        <span class="arrow @(expandedSections[1] ? "expanded" : "")">▼</span>
+      </div>
+      @if (expandedSections[1])
+      {
+        <ul class="submenu">
+          <li><NavLink class="link" href="/parent/intro" ActiveClass="active">Intro</NavLink></li>
+          <li><NavLink class="link" href="/parent/books" ActiveClass="active">Books</NavLink></li>
+          <li>
+            @if (Flow.CanNavigateTo(PhilanthroPoints.Services.FlowStep.Cart))
+            { <NavLink class="link" href="/parent/cart" ActiveClass="active">Cart</NavLink> }
+            else { <span class="link disabled">Cart</span> }
+          </li>
+        </ul>
+      }
+    </li>
+
+    <AuthorizeView Roles="Admin">
+      <li>
+        <div class="dropdown-header" @onclick="() => ToggleSection(2)">
+          <span>Admin</span>
+          <span class="arrow @(expandedSections[2] ? "expanded" : "")">▼</span>
         </div>
+        @if (expandedSections[2])
+        {
+          <ul class="submenu">
+            <li><NavLink class="link" href="/admin" ActiveClass="active">Admin</NavLink></li>
+          </ul>
+        }
+      </li>
+    </AuthorizeView>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+    <li>
+      <div class="dropdown-header" @onclick="() => ToggleSection(3)">
+        <span>Account</span>
+        <span class="arrow @(expandedSections[3] ? "expanded" : "")">▼</span>
+      </div>
+      @if (expandedSections[3])
+      {
+        <ul class="submenu">
+          <li><NavLink class="link" href="/login" ActiveClass="active">Login</NavLink></li>
+          <AuthorizeView>
+            <Authorized Context="authState">
+              <li><a class="link" href="#" @onclick="Logout">Logout (@authState.User.Identity?.Name)</a></li>
+            </Authorized>
+          </AuthorizeView>
+        </ul>
+      }
+    </li>
+  </ul>
+</nav>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+@code {
+  private bool[] expandedSections = new bool[4] { true, false, false, false };
 
+  private void ToggleSection(int index)
+  {
+    expandedSections[index] = !expandedSections[index];
+  }
+
+  private async Task Logout()
+  {
+    await AuthProvider.MarkUserAsLoggedOut();
+    Nav.NavigateTo("/");
+  }
+}

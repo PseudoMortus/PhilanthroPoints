@@ -1,21 +1,172 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject PhilanthroPoints.Services.PointsState Points
+@inject PhilanthroPoints.Services.PointsService PointsSvc
+
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+  
+  <main>
+    <header class="topbar">
+      <button class="hamburger" @onclick="ToggleMenu">☰</button>
+      <span class="nav-brand">🎂 Birthday Connections</span>
+    </header>
+    <section class="content" @onclick="CloseIfMobile">
+      @Body
+    </section>
+    @if (!IsCartPage())
+    {
+      @if (isAuthenticated)
+      {
+        <div class="points-floating" title="Available points for @currentUsername">
+          <span>🎯 @currentPoints pts</span>
         </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+      }
+      else
+      {
+        <div class="points-floating" title="Login to see points">
+          <span>🎯 Login</span>
+        </div>
+      }
+    }
+    @if (menuOpen)
+    {
+        <div class="overlay" @onclick="ToggleMenu"></div>
+    }
+  </main>
+  
+  <!-- Walking characters removed -->
 </div>
 
+@code {
+  private bool menuOpen;
+  private int currentPoints = 0;
+  private string currentUsername = "";
+  private bool isAuthenticated = false;
+  [Inject] PhilanthroPoints.Services.CustomAuthStateProvider AuthProvider { get; set; } = default!;
+  private bool _initialized;
+  void ToggleMenu() => menuOpen = !menuOpen;
+  void CloseIfMobile(){ if(menuOpen) menuOpen = false; }
+  async Task HeaderLogout(){ await AuthProvider.MarkUserAsLoggedOut(); menuOpen = false; await LoadUserPoints(); }
+  
+  private bool IsCartPage()
+  {
+    var currentUrl = Navigation.Uri;
+    return currentUrl.Contains("/parent/cart") || currentUrl.Contains("cart");
+  }
+
+  protected override void OnInitialized()
+  {
+    // Subscribe to authentication state changes
+    AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+    
+    // Subscribe to points changes
+    Points.OnPointsChanged += OnPointsChanged;
+  }
+
+  private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+  {
+    await LoadUserPoints();
+    await InvokeAsync(StateHasChanged);
+  }
+
+  private async void OnPointsChanged()
+  {
+    // Update the displayed points when PointsState changes
+    currentPoints = Points.Points;
+    Console.WriteLine($"[MainLayout] Points changed to: {currentPoints}");
+    await InvokeAsync(StateHasChanged);
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if(firstRender && !_initialized)
+    {
+      _initialized = true;
+      try
+      {
+        await Points.InitializeAsync();
+        await Points.InitializeJavaScriptAsync();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"MainLayout initialization failed: {ex.Message}");
+      }
+      await LoadUserPoints();
+      StateHasChanged();
+    }
+  }
+
+  private async Task LoadUserPoints()
+  {
+    try
+    {
+      Console.WriteLine("[MainLayout] LoadUserPoints called");
+      var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+      var user = authState.User;
+      
+      isAuthenticated = user?.Identity?.IsAuthenticated == true;
+      Console.WriteLine($"[MainLayout] IsAuthenticated: {isAuthenticated}");
+      
+      if (isAuthenticated)
+      {
+        currentUsername = user?.Identity?.Name ?? "";
+        Console.WriteLine($"[MainLayout] Username: {currentUsername}");
+        var userIdClaim = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+        {
+          Console.WriteLine($"[MainLayout] User ID: {userId}");
+          var member = PointsSvc.GetMember(userId);
+          if (member != null)
+          {
+            // Use PointsState if already initialized, otherwise load from database
+            if (Points.CurrentUser != null && Points.CurrentUser.Id == userId)
+            {
+              currentPoints = Points.Points;
+              Console.WriteLine($"[MainLayout] Points loaded from PointsState: {currentPoints}");
+            }
+            else
+            {
+              currentPoints = member.Points;
+              Console.WriteLine($"[MainLayout] Points loaded from database: {currentPoints}");
+              // Sync with PointsState
+              Points.SetUser(member);
+            }
+          }
+          else
+          {
+            Console.WriteLine("[MainLayout] Member not found in database");
+          }
+        }
+        else
+        {
+          Console.WriteLine("[MainLayout] No user ID claim found");
+        }
+      }
+      else
+      {
+        currentPoints = 0;
+        currentUsername = "";
+        Console.WriteLine("[MainLayout] User not authenticated");
+      }
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"[MainLayout] Error loading user points: {ex.Message}");
+      Console.WriteLine($"[MainLayout] Stack trace: {ex.StackTrace}");
+      isAuthenticated = false;
+      currentPoints = 0;
+    }
+  }
+
+  public void Dispose()
+  {
+    AuthStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    Points.OnPointsChanged -= OnPointsChanged;
+  }
+}
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
