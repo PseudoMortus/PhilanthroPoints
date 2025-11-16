@@ -1,12 +1,16 @@
 {
   "Files": [
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/scopedcss/projectbundle/PhilanthroPoints.bundle.scp.css",
-      "PackagePath": "staticwebassets/PhilanthroPoints.bundle.scp.css"
-    },
-    {
       "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.css",
       "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.performance.css",
+      "PackagePath": "staticwebassets/app.performance.css"
+    },
+    {
+      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/birthday-buddy.css",
+      "PackagePath": "staticwebassets/birthday-buddy.css"
     },
     {
       "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css",
@@ -17,8 +21,20 @@
       "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
     },
     {
+      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/buddy-walk.js",
+      "PackagePath": "staticwebassets/buddy-walk.js"
+    },
+    {
       "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/favicon.png",
       "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/performance.js",
+      "PackagePath": "staticwebassets/performance.js"
+    },
+    {
+      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/points.js",
+      "PackagePath": "staticwebassets/points.js"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.PhilanthroPoints.Microsoft.AspNetCore.StaticWebAssets.props",

@@ -1,7 +1,7 @@
-using PhilanthroPoints.Components;
 using Microsoft.EntityFrameworkCore;
 using PhilanthroPoints.Data;
 using PhilanthroPoints.Services;
+using PhilanthroPoints.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
