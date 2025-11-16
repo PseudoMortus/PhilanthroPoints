@@ -1,10 +1,13 @@
-﻿@inherits LayoutComponentBase
+﻿
+@inherits LayoutComponentBase
+@implements IDisposable
 @using Microsoft.AspNetCore.Components.Authorization
-@inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
 @inject PhilanthroPoints.Services.PointsState Points
 @inject PhilanthroPoints.Services.PointsService PointsSvc
-
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+@using PhilanthroPoints.Components.Layout
+@using PhilanthroPoints.Components
 
 <div class="page">
   
@@ -36,8 +39,6 @@
         <div class="overlay" @onclick="ToggleMenu"></div>
     }
   </main>
-  
-  <!-- Walking characters removed -->
 </div>
 
 @code {
@@ -55,6 +56,20 @@
   {
     var currentUrl = Navigation.Uri;
     return currentUrl.Contains("/parent/cart") || currentUrl.Contains("cart");
+  }
+  
+  private string? GetBuddyMode()
+  {
+    var currentUrl = Navigation.Uri;
+    // Don't show birthday buddy on admin pages
+    if (currentUrl.Contains("/admin")) return null;
+    
+    if (currentUrl.Contains("/parent/cart") || currentUrl.Contains("cart")) return "checkout";
+    if (currentUrl.Contains("/cards")) return "cards";
+    if (currentUrl.Contains("/treats")) return "treats";
+    if (currentUrl.Contains("/gifts")) return "gifts";
+    if (currentUrl == Navigation.BaseUri || currentUrl.EndsWith("/")) return "login";
+    return "default";
   }
 
   protected override void OnInitialized()
@@ -85,15 +100,7 @@
     if(firstRender && !_initialized)
     {
       _initialized = true;
-      try
-      {
-        await Points.InitializeAsync();
-        await Points.InitializeJavaScriptAsync();
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine($"MainLayout initialization failed: {ex.Message}");
-      }
+      await Points.InitializeAsync();
       await LoadUserPoints();
       StateHasChanged();
     }
@@ -167,8 +174,167 @@
     Points.OnPointsChanged -= OnPointsChanged;
   }
 }
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+
+<style>
+/* Birthday Connections Header & Navigation */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  gap: 12px;
+  background: linear-gradient(135deg, #249EA0 0%, #FAAB36 100%);
+  box-shadow: 0 4px 16px rgba(36, 158, 160, 0.3);
+  border-radius: 0 0 20px 20px;
+  margin-bottom: 1rem;
+}
+
+.content {
+  padding: 1rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.nav-brand {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge {
+  background: linear-gradient(135deg, #FFE66D, #FF8A5B);
+  color: #2C3E50;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  margin-right: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.hamburger {
+  display: none;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #249EA0;
+  border: 2px solid rgba(36, 158, 160, 0.4);
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(36, 158, 160, 0.2);
+  transition: all 0.3s ease;
+}
+
+.hamburger:hover {
+  background: rgba(220, 245, 245, 0.95);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(36, 158, 160, 0.3);
+}
+
+.login-link {
+  margin-left: 12px;
+  color: #249EA0;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login-link:hover {
+  color: #FAAB36;
+  text-decoration: underline;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 62, 80, 0.7);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+/* Birthday Connections Points Counter */
+.points-floating {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  background: linear-gradient(135deg, #249EA0, #F78104);
+  color: white;
+  border-radius: 50px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 
+    0 8px 24px rgba(36, 158, 160, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  z-index: 9999;
+  transition: all 0.3s ease;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.points-floating:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 32px rgba(36, 158, 160, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.points-floating span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Quicksand', sans-serif;
+}
+
+@@media (max-width: 850px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  
+  .hamburger {
+    display: inline-block;
+  }
+  
+  .nav-brand {
+    font-size: 1.2rem;
+  }
+  
+  .topbar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .points-floating {
+    bottom: 120px;
+    right: 16px;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+@@media (max-width: 600px) {
+  .nav-brand {
+    font-size: 1rem;
+  }
+  
+  .points-floating {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+  }
+}
+</style>

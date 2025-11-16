@@ -114,13 +114,12 @@
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.PhilanthroPoints.props
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.PhilanthroPoints.props
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/staticwebassets.pack.json
-/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/scopedcss/Components/Layout/MainLayout.razor.rz.scp.css
-/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/scopedcss/Components/Layout/NavMenu.razor.rz.scp.css
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/scopedcss/bundle/PhilanthroPoints.styles.css
-/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/scopedcss/projectbundle/PhilanthroPoints.bundle.scp.css
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.csproj.CopyComplete
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.dll
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/refint/PhilanthroPoints.dll
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.pdb
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.genruntimeconfig.cache
 /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/ref/PhilanthroPoints.dll
+/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.RazorAssemblyInfo.cache
+/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.RazorAssemblyInfo.cs

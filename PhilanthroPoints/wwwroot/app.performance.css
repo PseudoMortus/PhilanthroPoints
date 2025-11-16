@@ -1,0 +1,74 @@
+/* Performance-optimized CSS - Load after critical styles */
+
+/* System font fallbacks for faster text rendering while custom fonts load */
+:root {
+  --font-primary: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-secondary: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-accent: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Optimize animations for performance */
+* {
+  /* Use hardware acceleration for better performance */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize heavy animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -30px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Performance-optimized card hover effects */
+.card {
+  will-change: transform, box-shadow;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  transform: translate3d(0, -8px, 0) scale3d(1.02, 1.02, 1);
+}
+
+/* Disable heavy animations on low-power devices */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize font loading display */
+.font-loading {
+  font-display: swap;
+  text-rendering: optimizeSpeed;
+}
+
+/* Defer non-critical decorative elements */
+.floating-decoration {
+  will-change: transform;
+  animation-play-state: paused;
+}
+
+.floating-decoration.loaded {
+  animation-play-state: running;
+}
+
+/* Optimize image and emoji rendering */
+.big-emoji,
+.gift-animation {
+  contain: layout style paint;
+  transform: translateZ(0);
+}

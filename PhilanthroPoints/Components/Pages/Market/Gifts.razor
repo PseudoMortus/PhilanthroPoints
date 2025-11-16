@@ -1,0 +1,202 @@
+
+@page "/market/gifts"
+@inject PhilanthroPoints.Services.CatalogService Catalog
+@inject PhilanthroPoints.Services.PointsState Points
+@inject PhilanthroPoints.Services.CartState Cart
+@inject PhilanthroPoints.Services.FlowState Flow
+@inject NavigationManager NavigationManager
+@using PhilanthroPoints.Components
+@implements IDisposable
+
+<div class="page-header">
+  <div class="category-icon">🎁</div>
+  <h1>Gifts</h1>
+  <p>Thoughtful presents to make their birthday unforgettable</p>
+</div>
+
+@if (items is null) { <p>Loading...</p> }
+else
+{
+  <div class="grid">
+    @foreach (var i in items)
+    {
+      <div class="card product-card">
+        <div class="product-icon">🎁</div>
+        <h4>@i.Name</h4>
+        <p class="desc">@i.Description</p>
+        <div class="product-meta">
+          <div class="badges">
+            <span class="badge cost-badge">💰 @i.Cost points</span> 
+            <span class="badge stock-badge">📦 @i.Stock left</span>
+          </div>
+        </div>
+        <button class="btn @(CanBuy(i) ? "" : "disabled")" disabled="@(!CanBuy(i))" @onclick="(()=>Buy(i))">
+          @if (CanBuy(i)) { <span>🛒 Add to Cart</span> } else { <span>❌ Cannot Buy</span> }
+        </button>
+      </div>
+    }
+  </div>
+  <div style="margin-top:2rem">
+    <div class="completion-card card">
+      <div class="category-icon">✨</div>
+      <h3>Perfect Selection!</h3>
+      <p>You've reached the end of the selection flow. Review your cart and complete checkout.</p>
+      <button class="btn" @onclick="GoToCart" disabled="@(!HasGiftInCart())">🛒 View Cart & Checkout</button>
+      @if (!HasGiftInCart() && hasAttemptedCheckout) 
+      {
+        <p class="card error" style="margin-top: 1rem;">Please select at least one gift before proceeding to checkout.</p>
+      }
+    </div>
+  </div>
+}
+
+@code {
+  private List<Item>? items;
+  private bool hasAttemptedCheckout = false;
+  private bool _jsInitialized = false;
+  
+  protected override async Task OnInitializedAsync() 
+  { 
+    await Points.InitializeAsync(); 
+    items = await Catalog.ByCategoryAsync("Gifts"); 
+    Flow.Set(PhilanthroPoints.Services.FlowStep.Gifts);
+    Cart.OnCartChanged += StateHasChanged;
+  }
+  
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender && !_jsInitialized)
+    {
+      _jsInitialized = true;
+      await Points.InitializeJavaScriptAsync();
+      StateHasChanged();
+    }
+  }
+  
+  private bool HasGiftInCart()
+  {
+    return Cart.Items.Any(item => item.Category?.Name == "Gifts");
+  }
+  
+  bool CanBuy(Item i) => Points.Points >= i.Cost && i.Stock > 0;
+  async Task Buy(Item i)
+  {
+    if (Points.Spend(i.Cost))
+    {
+      var success = await Cart.AddAsync(i);
+      if (!success)
+      {
+        // Refund points if cart add failed
+        Points.Add(i.Cost);
+      }
+      StateHasChanged();
+    }
+  }
+
+  void GoToCart() 
+  {
+    hasAttemptedCheckout = true;
+    if (HasGiftInCart())
+    {
+      NavigationManager.NavigateTo("/parent/cart");
+    }
+    StateHasChanged();
+  }
+  
+  public void Dispose()
+  {
+    Cart.OnCartChanged -= StateHasChanged;
+  }
+}
+
+<style>
+.page-header {
+  animation: pageEnter 0.8s ease-out;
+}
+
+.product-card {
+  animation: pageEnter 0.6s ease-out;
+  animation-fill-mode: both;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card:nth-child(1) { animation-delay: 0.1s; }
+.product-card:nth-child(2) { animation-delay: 0.2s; }
+.product-card:nth-child(3) { animation-delay: 0.3s; }
+.product-card:nth-child(4) { animation-delay: 0.4s; }
+.product-card:nth-child(5) { animation-delay: 0.5s; }
+.product-card:nth-child(6) { animation-delay: 0.6s; }
+
+.product-icon {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.product-card:hover .product-icon {
+  animation: bounce 0.6s ease-in-out;
+}
+
+.desc {
+  margin: 0.5rem 0 1rem;
+  color: #555;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.product-meta {
+  margin: 1rem 0;
+}
+
+.badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.cost-badge {
+  background: linear-gradient(135deg, #FAAB36, #F78104);
+}
+
+.stock-badge {
+  background: linear-gradient(135deg, #249EA0, #008083);
+}
+
+.completion-card {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bc-gradient);
+  color: white;
+  border-radius: 25px;
+  animation: pageEnter 1s ease-out;
+}
+
+.completion-card h3 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.completion-card .category-icon {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.btn.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn.disabled:hover {
+  box-shadow: none;
+  transform: none !important;
+}
+
+@@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+</style>

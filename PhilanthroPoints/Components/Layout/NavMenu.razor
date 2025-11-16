@@ -1,7 +1,8 @@
 ﻿
 @using Microsoft.AspNetCore.Components.Authorization
-@inject PhilanthroPoints.Services.FlowState Flow
+@using Microsoft.AspNetCore.Components.Routing
 @inject PhilanthroPoints.Services.CustomAuthStateProvider AuthProvider
+@inject PhilanthroPoints.Services.FlowState Flow
 @inject NavigationManager Nav
 
 <nav class="nav">
@@ -107,3 +108,46 @@
     Nav.NavigateTo("/");
   }
 }
+
+<style>
+.nav{padding:12px}
+.menu-list{list-style:none;margin:0;padding:0}
+.dropdown-header{
+  font-weight:700;
+  padding:.7rem;
+  color:#333;
+  font-size:.9rem;
+  cursor:pointer;
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:background .15s;
+  user-select:none;
+}
+.dropdown-header:hover{background:#f0f0f0}
+.arrow{
+  font-size:.7rem;
+  transition:transform .2s ease;
+  display:inline-block;
+}
+.arrow.expanded{transform:rotate(180deg)}
+.submenu{
+  list-style:none;
+  margin:.25rem 0 .5rem 0;
+  padding:0 0 0 .5rem;
+  border-left:2px solid #e0e0e0;
+}
+.link{
+  display:block;
+  padding:.55rem .7rem;
+  border-radius:8px;
+  text-decoration:none;
+  color:#222;
+  font-size:.95rem;
+  transition:background .15s,color .15s;
+}
+.link:hover{background:#eceefe}
+.link.active{background:#5a6cf1;color:#fff}
+.link.disabled{opacity:.5;cursor:not-allowed}
+</style>

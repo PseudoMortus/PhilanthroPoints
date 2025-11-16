@@ -1,0 +1,74 @@
+@page "/admin"
+@using Microsoft.AspNetCore.Components.Forms
+@inject PhilanthroPoints.Services.AdminUserService AdminAuth
+@inject PhilanthroPoints.Services.CustomAuthStateProvider AuthState
+@inject NavigationManager Nav
+
+<div style="text-align:center; padding: 40px 20px;">
+    <h1>Admin Login</h1>
+    <div style="background-color: #f0f0f0; padding: 20px; border-radius:8px; max-width:420px; margin: 2rem auto;">
+        @if (error != null) { <p style="color:red">@error</p> }
+    <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+            <div style="margin-bottom:1rem">
+                <label>Username</label>
+                <input class="input" @bind-value="loginModel.Username" placeholder="Admin username" />
+            </div>
+            <div style="margin-bottom:1rem">
+                <label>Password</label>
+                <input class="input" type="password" @bind-value="loginModel.Password" placeholder="Admin password" />
+            </div>
+            <button class="btn" type="submit">Login</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private string? error;
+
+    private async Task HandleLogin()
+    {
+        // Validate admin credentials using AdminUserService
+        var isValidAdmin = await AdminAuth.ValidateAdminLoginAsync(loginModel.Username, loginModel.Password);
+        if (!isValidAdmin)
+        {
+            error = "Invalid admin username or password.";
+            return;
+        }
+        
+        // Get the admin user details
+        var adminUser = await AdminAuth.GetAdminUserByUsernameAsync(loginModel.Username);
+        if (adminUser == null || !adminUser.IsActive)
+        {
+            error = "Admin account is not active.";
+            return;
+        }
+
+        // Create a member-like object for the auth state (for compatibility)
+        var memberForAuth = new Models.Member
+        {
+            Id = adminUser.Id,
+            Username = adminUser.Username,
+            FirstName = adminUser.FirstName,
+            LastName = adminUser.LastName,
+            Email = adminUser.Email
+        };
+
+        // Mark user as authenticated with Admin role
+        await AuthState.MarkAdminAsAuthenticated(memberForAuth);
+        // Success - redirect to inventory
+        Nav.NavigateTo("/admin/inventory");
+    }
+
+    class LoginModel 
+    { 
+        public string Username { get; set; } = ""; 
+        public string Password { get; set; } = ""; 
+    }
+}
+
+<style>
+.input{display:block;width:100%;padding:.5rem;margin:.35rem 0;border:1px solid #ddd;border-radius:6px}
+.btn{background:#5a6cf1;color:#fff;border:none;border-radius:8px;padding:.6rem 1rem;cursor:pointer;font-size:1rem}
+.btn:hover{background:#4c5bd4}
+</style>
