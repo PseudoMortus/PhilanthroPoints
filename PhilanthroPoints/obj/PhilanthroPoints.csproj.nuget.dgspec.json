@@ -2,6 +2,7 @@
   "format": 1,
   "restore": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\PhilanthroPoints.csproj": {}
   },
   "projects": {
@@ -18,20 +19,27 @@
           "C:\\Users\\MichaelCriswell\\AppData\\Roaming\\NuGet\\NuGet.Config"
 =======
     "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {}
+=======
+    "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {}
+>>>>>>> John's-Commits
   },
   "projects": {
-    "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {
+    "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+        "projectUniqueName": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
         "projectName": "PhilanthroPoints",
-        "projectPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
-        "packagesPath": "/home/pseudomortus/.nuget/packages/",
-        "outputPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/obj/",
+        "projectPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/PhilanthroPoints.csproj",
+        "packagesPath": "/home/jcarter/.nuget/packages/",
+        "outputPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
+<<<<<<< HEAD
           "/home/pseudomortus/.nuget/NuGet/NuGet.Config"
 >>>>>>> main
+=======
+          "/home/jcarter/.nuget/NuGet/NuGet.Config"
+>>>>>>> John's-Commits
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -54,6 +62,18 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.7, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -73,7 +93,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.121/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
+>>>>>>> John's-Commits
         }
       }
     }

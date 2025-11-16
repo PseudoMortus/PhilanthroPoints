@@ -1,10 +1,14 @@
 {
   "Version": 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
   "Hash": "rBkmfk7Mo3YFdK9qNcp5Ai5FdFjLO5cKeS1cvICpQiQ=",
 =======
   "Hash": "qlgJO9DEinMWisgOV4JuzQVNIVdVoy7EdgQcWAmY+NY=",
 >>>>>>> main
+=======
+  "Hash": "sAUEwkgRbN83+TD+KG979gsOh2d2m7QJJS20v/+SwZ8=",
+>>>>>>> John's-Commits
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -15,16 +19,21 @@
       "Name": "PhilanthroPoints\\wwwroot",
       "Source": "PhilanthroPoints",
 <<<<<<< HEAD
+<<<<<<< HEAD
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\",
 =======
       "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
 >>>>>>> main
+=======
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> John's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\app.css",
       "SourceId": "PhilanthroPoints",
@@ -36,6 +45,12 @@
       "SourceType": "Discovered",
       "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
 >>>>>>> main
+=======
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> John's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -52,6 +67,7 @@
     },
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\bootstrap\\bootstrap.min.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
@@ -62,6 +78,50 @@
       "SourceType": "Discovered",
       "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
 >>>>>>> main
+=======
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/app.performance.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "app.performance.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/app.performance.css"
+    },
+    {
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/birthday-buddy.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "birthday-buddy.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/birthday-buddy.css"
+    },
+    {
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> John's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -78,6 +138,7 @@
     },
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
@@ -88,6 +149,12 @@
       "SourceType": "Discovered",
       "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
 >>>>>>> main
+=======
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/bootstrap/bootstrap.min.css.map",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> John's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -104,6 +171,7 @@
     },
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints\\wwwroot\\favicon.png",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
@@ -114,6 +182,31 @@
       "SourceType": "Discovered",
       "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
 >>>>>>> main
+=======
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/buddy-walk.js",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "buddy-walk.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/buddy-walk.js"
+    },
+    {
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/favicon.png",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+>>>>>>> John's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "favicon.png",
       "AssetKind": "All",
@@ -126,7 +219,49 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
+<<<<<<< HEAD
       "OriginalItemSpec": "wwwroot\\favicon.png"
+=======
+      "OriginalItemSpec": "wwwroot/favicon.png"
+    },
+    {
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/performance.js",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "performance.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/performance.js"
+    },
+    {
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/points.js",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "points.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/points.js"
+>>>>>>> John's-Commits
     }
   ]
 }

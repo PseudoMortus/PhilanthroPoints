@@ -1,69 +1,270 @@
 ﻿@page "/"
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Components.Forms
+@inject PhilanthroPoints.Services.PointsState Points
+@inject NavigationManager Nav
+@inject PhilanthroPoints.Services.LoginService Auth
+@inject PhilanthroPoints.Services.CustomAuthStateProvider AuthStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@inject PhilanthroPoints.Services.FlowState Flow
+@using PhilanthroPoints.Components
 
-<h2 style="color: var(--brand-blue-600)" class="mb-2">Sign in</h2>
-<p class="text-muted">Use your email and password to continue.</p>
+<title>Birthday Connections - Celebrate Every Special Day! 🎂</title>
+    
+<!-- Optimized Font Loading with fallbacks and preload -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
-<div class="card" style="max-width:560px;">
-  <div class="p">
-    <EditForm Model="_model" OnValidSubmit="SubmitAsync">
-      <DataAnnotationsValidator />
-      <ValidationSummary />
+<!-- Preload critical CSS -->
+<link rel="preload" href="/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/app.css"></noscript>
+    
+<!-- Performance optimizations CSS (load after main styles) -->
+<link rel="preload" href="/app.performance.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/app.performance.css"></noscript>
 
-      <div style="margin-bottom:.75rem">
-        <label for="email">Email</label><br />
-        <InputText id="email" class="input" @bind-Value="_model.Email" />
-        <ValidationMessage For="@(() => _model.Email)" />
-      </div>
-
-      <div style="margin-bottom:.75rem">
-        <label for="pwd">Password</label><br />
-        <InputText id="pwd" type="password" class="input" @bind-Value="_model.Password" />
-        <ValidationMessage For="@(() => _model.Password)" />
-      </div>
-
-      <div style="display:flex; align-items:center; gap:.5rem; margin-bottom:1rem">
-        <InputCheckbox id="remember" @bind-Value="_model.RememberMe" />
-        <label for="remember" class="text-muted">Remember me</label>
-      </div>
-
-      <div style="display:flex; gap:.5rem; align-items:center">
-        <button class="btn primary" type="submit">
-          <span style="color:#fff">Sign in</span>
-        </button>
-        <a class="btn ghost" href="/">Cancel</a>
-        <a class="text-muted" href="#" title="Placeholder">Forgot password?</a>
-      </div>
-
-      @if (!string.IsNullOrEmpty(_message))
-      {
-        <p class="text-muted" style="margin-top:1rem">@_message</p>
-      }
-    </EditForm>
-  </div>
+    <div class="birthday-home page-enter">
+    <!-- Floating decorations - will be enabled after page load for performance -->
+    <div class="floating-decoration heavy-animation">🎈</div>
+    <div class="floating-decoration heavy-animation">🎁</div>
+    <div class="floating-decoration heavy-animation">🧁</div>
+    <div class="floating-decoration heavy-animation">🎊</div>
+    <div class="floating-decoration heavy-animation">⭐</div>
+    <div class="floating-decoration heavy-animation">🌟</div>
+    
+    <div class="welcome-header decorative-border">
+      <div class="gift-animation">🎂</div>
+      <h1>Welcome to Birthday Connections!</h1>
+      <div class="gift-animation">🎉</div>
+      <p class="tagline">Make Every Birthday Special with Thoughtful Gifts & Treats</p>
+      <div class="sparkle" style="top: 20%; left: 15%;"></div>
+      <div class="sparkle" style="top: 30%; right: 20%;"></div>
+      <div class="sparkle" style="bottom: 25%; left: 25%;"></div>
+    </div>
+    
+    <AuthorizeView>
+      <Authorized Context="authState">
+        <p class="card">Use your points to choose gifts, sweets, and a card. Continue the flow below.</p>
+        <div class="grid">
+          <div class="card">
+            <div class="category-icon">👤</div>
+            <h3>Demographics</h3>
+            <p class="card-description">Tell us about the birthday person</p>
+            <button class="btn" @onclick="DemographicsClick">Open</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">💌</div>
+            <h3>Birthday Cards</h3>
+            <p class="card-description">Choose the perfect greeting card</p>
+            <button class="btn" @onclick="CardsClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">🧁</div>
+            <h3>Sweets &amp; Treats</h3>
+            <p class="card-description">Delicious cakes and sweet surprises</p>
+            <button class="btn" @onclick="TreatsClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">📚</div>
+            <h3>Books</h3>
+            <p class="card-description">Educational and entertaining reads</p>
+            <button class="btn" @onclick="BooksClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">🎁</div>
+            <h3>Gifts</h3>
+            <p class="card-description">Thoughtful presents they'll love</p>
+            <button class="btn" @onclick="GiftsClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">🛒</div>
+            <h3>Cart</h3>
+            <p class="card-description">Review your birthday selection</p>
+            <button class="btn" @onclick="CartClick">View</button>
+          </div>
+          <AuthorizeView Roles="Admin">
+            <div class="card">
+              <div class="category-icon">⚙️</div>
+              <h3>Admin</h3>
+              <p class="card-description">Manage inventory and settings</p>
+              <button class="btn" @onclick="AdminClick">Admin</button>
+            </div>
+          </AuthorizeView>
+        </div>
+  </Authorized>
+      <NotAuthorized Context="na">
+        <button class="btn" style="font-size: 1.2rem; padding: 1rem 2rem;" @onclick="ShowLogin">Click Here to Start</button>
+        <div style="margin-top:1rem;">
+          <button class="btn" @onclick="AdminClick">Admin</button>
+        </div>
+        @if (showLoginForm)
+        {
+            <div style="background-color: lightblue; padding: 20px; border-radius:8px; max-width:420px; margin: 2rem auto;">
+                <h2>Login</h2>
+                @if (error != null) { <p style="color:red">@error</p> }
+                <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+                    <input class="input" @bind-value="loginModel.Username" placeholder="Username" />
+                    <input class="input" type="password" @bind-value="loginModel.Password" placeholder="Password" />
+                    <button class="btn" type="submit">Login</button>
+                </EditForm>
+            </div>
+        }
+      </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 @code {
-  private readonly LoginModel _model = new();
+  private bool _initialized;
+  private bool showLoginForm = false;
+  private LoginModel loginModel = new();
+  private string? error;
 
-  private async Task SubmitAsync()
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    // Placeholder only — no real auth yet
-    await Task.Delay(300);
-    _message = "Authentication coming soon — this is a UI stub.";
+    if (firstRender && !_initialized)
+    {
+      _initialized = true;
+      try
+      {
+        await Points.InitializeAsync();
+        await Points.InitializeJavaScriptAsync();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Home page initialization failed: {ex.Message}");
+      }
+      StateHasChanged();
+    }
   }
 
-  private string? _message;
-
-  public sealed class LoginModel
+  private void ShowLogin()
   {
-    [Required, EmailAddress]
-    public string Email { get; set; } = string.Empty;
+      showLoginForm = true;
+  }
 
-    [Required, MinLength(6)]
-    public string Password { get; set; } = string.Empty;
+  private async Task HandleLogin()
+  {
+      var user = Auth.Authenticate(loginModel.Username, loginModel.Password);
+      if (user == null)
+      {
+          error = "Invalid username or password.";
+      }
+      else
+      {
+          await AuthStateProvider.MarkUserAsAuthenticated(user);
+          Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics);
+          Nav.NavigateTo("/demographics");
+      }
+  }
 
-    public bool RememberMe { get; set; }
+    private void DemographicsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics); Nav.NavigateTo("/demographics"); }
+    private void CardsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cards); Nav.NavigateTo("/cards"); }
+    private void TreatsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Treats); Nav.NavigateTo("/treats"); }
+    private void BooksClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Books); Nav.NavigateTo("/parent/books"); }
+    private void GiftsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Gifts); Nav.NavigateTo("/gifts"); }
+    private void CartClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cart); Nav.NavigateTo("/parent/cart"); }
+    private void AdminClick() => Nav.NavigateTo("/admin");
+
+  class LoginModel { public string Username { get; set; } = ""; public string Password { get; set; } = ""; }
+}
+
+<style>
+.birthday-home {
+  text-align: center;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcome-header {
+  background: linear-gradient(135deg, #249EA0 0%, #FAAB36 100%);
+  color: white;
+  padding: 3rem 2rem;
+  border-radius: 30px;
+  margin-bottom: 2rem;
+  box-shadow: 0 12px 32px rgba(36, 158, 160, 0.3);
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.welcome-header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  -webkit-text-fill-color: white;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  font-family: 'Quicksand', sans-serif;
+}
+
+.tagline {
+  font-size: 1.3rem;
+  opacity: 0.95;
+  font-weight: 500;
+  font-family: 'Nunito', sans-serif;
+}
+
+@@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
+
+.card-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 1rem 0;
+  line-height: 1.4;
+}
+
+.birthday-home .card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.birthday-home .card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(36, 158, 160, 0.3),
+    0 0 0 1px rgba(36, 158, 160, 0.1);
+}
+
+.birthday-home .card:hover .category-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+@@media (max-width: 768px) {
+  .welcome-header h1 {
+    font-size: 2rem;
+  }
+  
+  .tagline {
+    font-size: 1.1rem;
+  }
+  
+  .welcome-header {
+    padding: 2rem 1rem;
+  }
+  
+  .category-icon {
+    font-size: 2.5rem;
+  }
+  
+  .floating-decoration {
+    font-size: 1.5rem;
+  }
+}
+
+.btn-secondary {
+  background: #6b7280 !important;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #4b5563 !important;
+  transform: translateY(-2px);
+}
+</style>
