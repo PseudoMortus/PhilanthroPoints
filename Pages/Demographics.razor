@@ -1,0 +1,441 @@
+
+@page "/demographics"
+@inject PhilanthroPoints.Services.PointsState Points
+@inject PhilanthroPoints.Services.FlowState Flow
+@inject PhilanthroPoints.Services.CheckoutSessionState CheckoutSession
+@inject NavigationManager Nav
+@inject PhilanthroPoints.Data.ApplicationDbContext DbContext
+@using PhilanthroPoints.Models
+@using System.ComponentModel.DataAnnotations
+
+<style>
+  .demographics-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #007acc;
+  }
+  
+  .section h3 {
+    color: #007acc;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .dietary-checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #007acc;
+    box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+  }
+  
+  textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+  }
+  
+  .btn-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary {
+    background: #007acc;
+    color: white;
+  }
+  
+  .btn-primary:hover:not(:disabled) {
+    background: #005a99;
+  }
+  
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .info-notice {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border: 1px solid #bbdefb;
+    font-size: 14px;
+  }
+</style>
+
+<div class="demographics-container">
+  <h2>Family Demographics & Information</h2>
+  <p class="text-muted">Help us better understand your family to provide the most appropriate gifts and services.</p>
+  
+  <div class="info-notice">
+    <strong>📧 Note:</strong> Your contact information (name, phone, and email) will be saved when you complete your order and used to send you order confirmation notifications.
+  </div>
+
+  <EditForm Model="family" OnValidSubmit="SaveFamily">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Basic Family Information -->
+    <div class="section">
+      <h3>👨‍👩‍👧‍👦 Basic Information</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="headOfHousehold">Head of Household *</label>
+          <InputText id="headOfHousehold" class="form-control" @bind-Value="family.HeadOfHousehold" />
+        </div>
+        <div class="form-group">
+          <label for="contactPhone">Contact Phone *</label>
+          <InputText id="contactPhone" class="form-control" @bind-Value="family.ContactPhone" />
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="contactEmail">Contact Email *</label>
+        <InputText id="contactEmail" class="form-control" @bind-Value="family.ContactEmail" />
+      </div>
+    </div>
+    <!-- Child Information -->
+    <div class="section">
+      <h3>🎂 Child's Information</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="birthday">Child's Birthday</label>
+          <InputDate id="birthday" class="form-control" @bind-Value="family.Birthday" />
+        </div>
+        <div class="form-group">
+          <label for="age">Child's Age</label>
+          <InputNumber id="age" class="form-control" @bind-Value="family.Age" min="0" max="18" />
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="ethnicity">Ethnicity</label>
+        <InputSelect id="ethnicity" class="form-control" @bind-Value="family.Ethnicity">
+          <option value="">-- Select Ethnicity --</option>
+          <option value="African American">African American</option>
+          <option value="Asian">Asian</option>
+          <option value="Hispanic/Latino">Hispanic/Latino</option>
+          <option value="Native American">Native American</option>
+          <option value="Pacific Islander">Pacific Islander</option>
+          <option value="White">White</option>
+          <option value="Mixed">Mixed</option>
+          <option value="Other">Other</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </InputSelect>
+      </div>
+    </div>
+
+    <!-- Gift Impact & Expectations -->
+    <div class="section">
+      <h3>🎁 Gift Impact & Expectations</h3>
+      
+      <div class="form-group">
+        <label for="expectedImpact">What impact do you expect this gift will have on your child?</label>
+        <InputTextArea id="expectedImpact" class="form-control" @bind-Value="family.ExpectedImpact" 
+                       placeholder="Describe how you think this gift will affect your child..." />
+      </div>
+      
+      <div class="form-group">
+        <label for="anticipatedResponse">What response do you anticipate your child will have?</label>
+        <InputTextArea id="anticipatedResponse" class="form-control" @bind-Value="family.AnticipatedChildResponse" 
+                       placeholder="How do you think your child will react..." />
+      </div>
+      
+      <div class="form-group">
+        <label for="preferredGifts">What types of gifts does your child prefer?</label>
+        <InputTextArea id="preferredGifts" class="form-control" @bind-Value="family.PreferredGifts" 
+                       placeholder="Books, toys, games, art supplies, etc..." />
+      </div>
+    </div>
+
+    <!-- Dietary Needs -->
+    <div class="section">
+      <h3>🍎 Dietary Needs & Restrictions</h3>
+      <p class="text-muted">Please check all that apply:</p>
+      
+      <div class="dietary-checks">
+        <div class="checkbox-group">
+          <InputCheckbox id="glutenFree" @bind-Value="family.GlutenFree" />
+          <label for="glutenFree">Gluten Free</label>
+        </div>
+        <div class="checkbox-group">
+          <InputCheckbox id="eggFree" @bind-Value="family.EggFree" />
+          <label for="eggFree">Egg Free</label>
+        </div>
+        <div class="checkbox-group">
+          <InputCheckbox id="lactoseFree" @bind-Value="family.LactoseFree" />
+          <label for="lactoseFree">Lactose Free</label>
+        </div>
+        <div class="checkbox-group">
+          <InputCheckbox id="nutFree" @bind-Value="family.NutFree" />
+          <label for="nutFree">Nut Free</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="otherDietary">Other Dietary Restrictions</label>
+        <InputTextArea id="otherDietary" class="form-control" @bind-Value="family.OtherDietaryRestrictions" 
+                       placeholder="Please describe any other dietary needs..." />
+      </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="section">
+      <h3>📝 Additional Information</h3>
+      
+      <div class="form-group">
+        <div class="checkbox-group">
+          <InputCheckbox id="surveyWilling" @bind-Value="family.WillingToTakeSurvey" />
+          <label for="surveyWilling">I am willing to participate in follow-up surveys</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="specialNotes">Special Notes or Requests</label>
+        <InputTextArea id="specialNotes" class="form-control" @bind-Value="family.SpecialNotes" 
+                       placeholder="Any additional information you'd like us to know..." />
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" type="submit" disabled="@isSaving">
+        @if (isSaving)
+        {
+          <span>Saving...</span>
+        }
+        else
+        {
+          <span>Save Information</span>
+        }
+      </button>
+      <button class="btn btn-secondary" type="button" @onclick="Continue" disabled="@(!IsValid() || isSaving)">
+        Continue to Shopping
+      </button>
+    </div>
+  </EditForm>
+
+  @if (showSuccessMessage)
+  {
+    <div class="success-message">
+      <strong>Success!</strong> Your family information has been saved. You've earned 25 points!
+    </div>
+  }
+
+  @if (showErrorMessage)
+  {
+    <div class="error-message">
+      <strong>Error:</strong> @errorMessage
+    </div>
+  }
+
+  @if (!IsValid() && hasAttemptedContinue)
+  {
+    <div class="error-message">
+      Please provide the head of household name, contact phone, and email before continuing.
+    </div>
+  }
+</div>
+
+@code {
+  private Family family = new();
+  private bool isSaving = false;
+  private bool showSuccessMessage = false;
+  private bool showErrorMessage = false;
+  private string errorMessage = string.Empty;
+  private bool hasAttemptedContinue = false;
+  private bool pointsAwarded = false;
+
+  protected override void OnInitialized()
+  {
+    Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics);
+  }
+
+  
+  private async Task SaveFamily()
+  {
+    if (isSaving) return;
+    
+    isSaving = true;
+    showErrorMessage = false;
+    showSuccessMessage = false;
+    
+    try
+    {
+      // Check if this family already exists (update) or is new (insert)
+      var existingFamily = DbContext.Families.FirstOrDefault(f => f.HeadOfHousehold == family.HeadOfHousehold);
+      
+      if (existingFamily != null)
+      {
+        // Update existing family
+        existingFamily.FamilyName = family.HeadOfHousehold;  // Keep in sync
+        existingFamily.Birthday = family.Birthday;
+        existingFamily.Age = family.Age;
+        existingFamily.ExpectedImpact = family.ExpectedImpact;
+        existingFamily.AnticipatedChildResponse = family.AnticipatedChildResponse;
+        existingFamily.WillingToTakeSurvey = family.WillingToTakeSurvey;
+        existingFamily.GlutenFree = family.GlutenFree;
+        existingFamily.EggFree = family.EggFree;
+        existingFamily.LactoseFree = family.LactoseFree;
+        existingFamily.NutFree = family.NutFree;
+        existingFamily.OtherDietaryRestrictions = family.OtherDietaryRestrictions;
+        existingFamily.Ethnicity = family.Ethnicity;
+        existingFamily.HeadOfHousehold = family.HeadOfHousehold;
+        existingFamily.PreferredGifts = family.PreferredGifts;
+        existingFamily.SpecialNotes = family.SpecialNotes;
+        existingFamily.ContactPhone = family.ContactPhone;
+        existingFamily.ContactEmail = family.ContactEmail;
+        
+        DbContext.Families.Update(existingFamily);
+      }
+      else
+      {
+        // Add new family
+        // Set FamilyName to HeadOfHousehold since we removed the separate field
+        family.FamilyName = family.HeadOfHousehold;
+        DbContext.Families.Add(family);
+      }
+      
+      await DbContext.SaveChangesAsync();
+      
+      // Award points for completing demographics (only once)
+      if (!pointsAwarded)
+      {
+        Points.Add(25);
+        pointsAwarded = true;
+      }
+      
+      showSuccessMessage = true;
+      
+      // Auto-hide success message after 3 seconds
+      StateHasChanged();
+      await Task.Delay(3000);
+      showSuccessMessage = false;
+      StateHasChanged();
+    }
+    catch (Exception ex)
+    {
+      errorMessage = $"Failed to save family information: {ex.Message}";
+      showErrorMessage = true;
+    }
+    finally
+    {
+      isSaving = false;
+      StateHasChanged();
+    }
+  }
+
+  private void Continue()
+  {
+    hasAttemptedContinue = true;
+    if (IsValid())
+    {
+      // Store contact information for checkout
+      CheckoutSession.SetContactInfo(
+        family.HeadOfHousehold, 
+        family.ContactPhone, 
+        family.ContactEmail
+      );
+      
+      Nav.NavigateTo("/cards");
+    }
+    StateHasChanged();
+  }
+
+  private bool IsValid()
+  {
+    return !string.IsNullOrWhiteSpace(family.HeadOfHousehold) &&
+           !string.IsNullOrWhiteSpace(family.ContactPhone) &&
+           !string.IsNullOrWhiteSpace(family.ContactEmail);
+  }
+}
