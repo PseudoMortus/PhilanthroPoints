@@ -25,6 +25,10 @@
 - **Access:** Browse and purchase items
 
 ### **Admin Login:**
+- **Username:** `mike`
+- **Password:** `Mike123!`
+- **Access:** Full admin dashboard, inventory management, user management (Owner)
+
 - **Username:** `superadmin`
 - **Password:** `SuperAdmin123!`
 - **Access:** Full admin dashboard, inventory management, user management
