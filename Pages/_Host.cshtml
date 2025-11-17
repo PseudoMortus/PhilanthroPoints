@@ -1,0 +1,38 @@
+@page "/"
+@namespace PhilanthroPoints.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Connections - Celebrate Every Special Day! 🎂</title>
+    
+    <!-- Optimized Font Loading with fallbacks and preload -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/app.css"></noscript>
+    
+    <!-- Performance optimizations CSS (load after main styles) -->
+    <link rel="preload" href="/app.performance.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/app.performance.css"></noscript>
+  </head>
+  <body>
+    <app>
+      <component type="typeof(App)" render-mode="Server" />
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+    
+    <!-- Birthday Buddy Scripts -->
+    <script src="/buddy-walk.js"></script>
+    
+    <!-- Points tracking JavaScript -->
+    <script src="/points.js"></script>
+</body>
+</html>
