@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "G+zY17W2v4gu41L3bm9PMuOkSBbyijxuCADe+IExTYM=",
+  "Hash": "NUGz584NaNJBx7+m8YG22Rxr7ZVwCAOEb5xeAmR1vvY=",
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -8,19 +8,19 @@
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [
     {
-      "Name": "PhilanthroPoints\\wwwroot",
+      "Name": "PhilanthroPoints/wwwroot",
       "Source": "PhilanthroPoints",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\app.css",
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/app.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\app.css"
+      "OriginalItemSpec": "wwwroot/app.css"
     },
     {
-      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\app.performance.css",
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/app.performance.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.performance.css",
       "AssetKind": "All",
@@ -52,13 +52,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\app.performance.css"
+      "OriginalItemSpec": "wwwroot/app.performance.css"
     },
     {
-      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\birthday-buddy.css",
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "birthday-buddy.css",
       "AssetKind": "All",
@@ -71,13 +71,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\birthday-buddy.css"
+      "OriginalItemSpec": "wwwroot/birthday-buddy.css"
     },
     {
-      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\buddy-walk.js",
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/buddy-walk.js",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "buddy-walk.js",
       "AssetKind": "All",
@@ -90,13 +90,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\buddy-walk.js"
+      "OriginalItemSpec": "wwwroot/buddy-walk.js"
     },
     {
-      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\performance.js",
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/performance.js",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "performance.js",
       "AssetKind": "All",
@@ -109,13 +109,13 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\performance.js"
+      "OriginalItemSpec": "wwwroot/performance.js"
     },
     {
-      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\points.js",
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/points.js",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "points.js",
       "AssetKind": "All",
@@ -128,7 +128,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\points.js"
+      "OriginalItemSpec": "wwwroot/points.js"
     }
   ]
 }
