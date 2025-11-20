@@ -9,12 +9,17 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PhilanthroPoints
 build_property.RootNamespace = PhilanthroPoints
+<<<<<<< HEAD
 build_property.ProjectDir = /home/pseudomortus/Documents/repos/PhilanthroPoints/
+=======
+build_property.ProjectDir = C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints\
+>>>>>>> Mike's-Commits
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+<<<<<<< HEAD
 build_property.MSBuildProjectDirectory = /home/pseudomortus/Documents/repos/PhilanthroPoints
 build_property._RazorSourceGeneratorDebug = 
 
@@ -92,4 +97,91 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s
+=======
+build_property.MSBuildProjectDirectory = C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Components/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Components/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Admin/AddMember.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRkTWVtYmVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Admin/AdminLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRtaW5Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Admin/Inventory.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cSW52ZW50b3J5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Admin/Notifications.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTm90aWZpY2F0aW9ucy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Admin/Orders.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cT3JkZXJzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Cards.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FyZHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Demographics.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGVtb2dyYXBoaWNzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Gifts.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR2lmdHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Parent/Books.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFyZW50XEJvb2tzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Parent/Cart.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFyZW50XENhcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Parent/Intro.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFyZW50XEludHJvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/Treats.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJlYXRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/UserManagement.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlck1hbmFnZW1lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Um91dGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+>>>>>>> Mike's-Commits
 build_metadata.AdditionalFiles.CssScope = 

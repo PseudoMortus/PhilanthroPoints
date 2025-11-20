@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints.csproj": {}
   },
   "projects": {
@@ -15,6 +16,22 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/pseudomortus/.nuget/NuGet/NuGet.Config"
+=======
+    "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
+        "projectName": "PhilanthroPoints",
+        "projectPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
+        "packagesPath": "C:\\Users\\MichaelCriswell\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\MichaelCriswell\\AppData\\Roaming\\NuGet\\NuGet.Config"
+>>>>>>> Mike's-Commits
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -75,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.121/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

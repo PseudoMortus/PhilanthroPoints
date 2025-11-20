@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "Hash": "H2OnwlG4mJp18QRgxNSRORdNVtzYnYlMEPElBPwbY+U=",
+=======
+  "Hash": "G+zY17W2v4gu41L3bm9PMuOkSBbyijxuCADe+IExTYM=",
+>>>>>>> Mike's-Commits
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -10,17 +14,28 @@
     {
       "Name": "PhilanthroPoints\\wwwroot",
       "Source": "PhilanthroPoints",
+<<<<<<< HEAD
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\app.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\app.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -36,10 +51,17 @@
       "OriginalItemSpec": "wwwroot\\app.css"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\app.performance.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\app.performance.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "app.performance.css",
       "AssetKind": "All",
@@ -55,10 +77,17 @@
       "OriginalItemSpec": "wwwroot\\app.performance.css"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\birthday-buddy.css",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\birthday-buddy.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "birthday-buddy.css",
       "AssetKind": "All",
@@ -74,10 +103,17 @@
       "OriginalItemSpec": "wwwroot\\birthday-buddy.css"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\buddy-walk.js",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\buddy-walk.js",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "buddy-walk.js",
       "AssetKind": "All",
@@ -93,10 +129,17 @@
       "OriginalItemSpec": "wwwroot\\buddy-walk.js"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\performance.js",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\performance.js",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "performance.js",
       "AssetKind": "All",
@@ -112,10 +155,17 @@
       "OriginalItemSpec": "wwwroot\\performance.js"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\points.js",
       "SourceId": "PhilanthroPoints",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\",
+=======
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\points.js",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+>>>>>>> Mike's-Commits
       "BasePath": "_content/PhilanthroPoints",
       "RelativePath": "points.js",
       "AssetKind": "All",

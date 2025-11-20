@@ -14,7 +14,7 @@
   <main>
     <header class="topbar">
       <button class="hamburger" @onclick="ToggleMenu">☰</button>
-      <span class="nav-brand">🎂 Birthday Connections</span>
+      <span class="nav-brand">Birthday connections</span>
     </header>
     <section class="content" @onclick="CloseIfMobile">
       @Body
@@ -24,13 +24,13 @@
       @if (isAuthenticated)
       {
         <div class="points-floating" title="Available points for @currentUsername">
-          <span>🎯 @currentPoints pts</span>
+          <span>@currentPoints pts</span>
         </div>
       }
       else
       {
         <div class="points-floating" title="Login to see points">
-          <span>🎯 Login</span>
+          <span>Login</span>
         </div>
       }
     }
@@ -172,7 +172,7 @@
 }
 
 <style>
-/* Birthday Connections Header & Navigation */
+/* Birthday connections Header & Navigation */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -258,7 +258,7 @@
   display: none;
 }
 
-/* Birthday Connections Points Counter */
+/* Birthday connections Points Counter */
 .points-floating {
   position: fixed;
   right: 20px;

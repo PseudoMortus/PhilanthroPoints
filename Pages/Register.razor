@@ -6,7 +6,11 @@
 <div class="register-container">
     <div class="register-card">
         <div class="register-header">
+<<<<<<< HEAD
             <h2>🎉 Join PhilanthroPoints!</h2>
+=======
+            <h2>Join PhilanthroPoints!</h2>
+>>>>>>> Mike's-Commits
             <p>Create your account to start planning amazing birthday celebrations</p>
         </div>
 
@@ -114,11 +118,19 @@
                 <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
                     @if (isSubmitting)
                     {
+<<<<<<< HEAD
                         <span>🔄 Creating Account...</span>
                     }
                     else
                     {
                         <span>🎉 Create Account</span>
+=======
+                        <span>Creating Account...</span>
+                    }
+                    else
+                    {
+                        <span>Create Account</span>
+>>>>>>> Mike's-Commits
                     }
                 </button>
                 <button type="button" class="btn btn-secondary" @onclick="GoHome">Cancel</button>
@@ -190,7 +202,11 @@
             var success = await UserSvc.CreateUserAsync(newUser);
             if (success)
             {
+<<<<<<< HEAD
                 statusMessage = "🎉 Account created successfully! Welcome to PhilanthroPoints!";
+=======
+                statusMessage = "Account created successfully! Welcome to PhilanthroPoints!";
+>>>>>>> Mike's-Commits
                 statusClass = "success";
                 
                 // Redirect to home page after a delay

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Performance optimization script for Birthday Connections
+=======
+// Performance optimization script for Birthday connections
+>>>>>>> Mike's-Commits
 // Lazy load and optimize page interactions
 
 (function() {
@@ -100,10 +104,17 @@
             setTimeout(function() {
                 if (performance.getEntriesByType) {
                     const loadTime = performance.getEntriesByType('navigation')[0]?.loadEventEnd || 0;
+<<<<<<< HEAD
                     console.log(`🎂 Birthday Connections loaded in ${Math.round(loadTime)}ms`);
                     
                     if (loadTime > 3000) {
                         console.warn('⚡ Slow loading detected. Consider optimizing resources.');
+=======
+                    console.log(`Birthday connections loaded in ${Math.round(loadTime)}ms`);
+                    
+                    if (loadTime > 3000) {
+                        console.warn('Slow loading detected. Consider optimizing resources.');
+>>>>>>> Mike's-Commits
                     }
                 }
             }, 100);

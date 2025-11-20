@@ -20,7 +20,11 @@ window.initBuddyWalk = function() {
   
   window.__globalBuddyActive = true;
   buddy.dataset.initialized = 'true';
+<<<<<<< HEAD
   console.log('🎬 Static birthday buddy positioned');
+=======
+  console.log('Static birthday buddy positioned');
+>>>>>>> Mike's-Commits
   
   // Position buddy in corner - no animations
   buddy.style.position = 'fixed';
@@ -30,7 +34,11 @@ window.initBuddyWalk = function() {
   buddy.style.transform = 'scale(0.8)';
   buddy.style.zIndex = '9999';
   
+<<<<<<< HEAD
   console.log('✅ Birthday buddy positioned statically in corner');
+=======
+  console.log('Birthday buddy positioned statically in corner');
+>>>>>>> Mike's-Commits
 };
 
 // Reset function

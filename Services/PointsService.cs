@@ -8,6 +8,28 @@ namespace PhilanthroPoints.Services
         private readonly ApplicationDbContext _db;
         private readonly PointsState? _pointsState;
 
+<<<<<<< HEAD
+=======
+        public bool RemoveMember(int memberId)
+        {
+            var member = _db.Members.FirstOrDefault(m => m.Id == memberId);
+            if (member == null) return false;
+            _db.Members.Remove(member);
+            _db.SaveChanges();
+            return true;
+        }
+        public bool AddMember(Member member)
+        {
+            // Check for duplicate username or email
+            if (_db.Members.Any(m => m.Username == member.Username || m.Email == member.Email))
+                return false;
+
+            _db.Members.Add(member);
+            _db.SaveChanges();
+            return true;
+        }
+
+>>>>>>> Mike's-Commits
         public PointsService(ApplicationDbContext db, PointsState? pointsState = null)
         {
             _db = db;
