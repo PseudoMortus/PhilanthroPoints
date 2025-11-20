@@ -13,11 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PhilanthroPoints")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77aef05680fcd1aa0ce2520704b29e8474ef0a67")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4cc6ac7cea48a596525e464b5e25610e25011cac")]
->>>>>>> Mike's-Commits
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+575b54b160c5a4d278082b756c24d73bb547e65b")]
 [assembly: System.Reflection.AssemblyProductAttribute("PhilanthroPoints")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PhilanthroPoints")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
