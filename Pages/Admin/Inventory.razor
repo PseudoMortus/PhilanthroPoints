@@ -1,6 +1,24 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+
+@if (activeTab == "inventory")
+{
+  <div class="toolbar">
+    <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search items..." />
+    <select value="@categoryFilter" @onchange="OnCategoryChanged">
+      <option value="">All Categories</option>
+      @foreach (var c in categories)
+      {
+        <option value="@c.Name">@c.Name</option>
+      }
+    </select>
+  </div>
+}
 
 @page "/admin/inventory"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using PhilanthroPoints.Models
 @attribute [Authorize(Roles="Admin")]
 @inject PhilanthroPoints.Services.CatalogService Catalog
@@ -10,107 +28,56 @@
 @inject PhilanthroPoints.Services.AdminUserService AdminSvc
 @inject PhilanthroPoints.Data.ApplicationDbContext DbContext
 
+@inject AuthenticationStateProvider AuthStateProvider
+
 <h2>Admin 🔧 Inventory Management</h2>
 <nav class="admin-menu">
-  <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")'>📦 Inventory</a>
-  <a class="menu-link @(activeTab == "families" ? "active" : "")" href="#" @onclick='() => SetTab("families")'>👨‍👩‍👧‍👦 Families</a>
-  <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
-  <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤 Users</a>
-  <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑 Admin Users</a>
-  <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊 Cart Monitor</a>
-  <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁 Gifts</a>
-  <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭 Treats</a>
-  <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏 Cards</a>
-  <a class="menu-link" href="/admin/notifications">📧 Notifications</a>
+  @if (IsSuperAdmin)
+  {
+    <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")'>📦 Inventory</a>
+    <a class="menu-link @(activeTab == "families" ? "active" : "")" href="#" @onclick='() => SetTab("families")'>👨‍👩‍👧‍👦 Families</a>
+    <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
+    <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤 Users</a>
+    <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑 Admin Users</a>
+    <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊 Cart Monitor</a>
+    <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁 Gifts</a>
+    <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭 Treats</a>
+    <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏 Cards</a>
+    <a class="menu-link" href="/admin/notifications">📧 Notifications</a>
+  }
+  else
+  {
+    <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
+  }
   <span class="spacer"></span>
   <a class="menu-link" href="/">🏠 Back to Site</a>
   @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
 </nav>
+@code {
+  private string? currentUsername;
+  private bool IsSuperAdmin => adminUsers.FirstOrDefault(a => a.Username == currentUsername)?.Role == "Super Admin";
+
+  protected override async Task OnInitializedAsync()
+  {
+    var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+    currentUsername = authState.User.Identity?.Name;
+    // Call the rest of the original OnInitializedAsync logic
+    await RefreshData();
+  }
+}
+
+
 
 @if (activeTab == "inventory")
 {
-<div class="toolbar">
-  <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search items..." />
-  <select value="@categoryFilter" @onchange="OnCategoryChanged">
-    <option value="">All Categories</option>
-    @foreach (var c in categories)
-    {
-      <option value="@c.Name">@c.Name</option>
-    }
-  </select>
-  <button type="button" class="btn btn-primary" @onclick="() => ShowAddItemForm()">➕ Add Item</button>
-  <button type="button" class="btn btn-refresh" @onclick="ForceRefresh" disabled="@isRefreshing" title="Refresh all data from database">
-    @if (isRefreshing) { <span>🔄 Refreshing...</span> } else { <span>🔄 Refresh</span> }
-  </button>
-</div>
-}
-
-@if (showAddForm)
-{
-<div class="add-item-form card">
-  <h3>➕ Add New Item</h3>
-  <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
-    <DataAnnotationsValidator />
-    <div class="form-grid">
-      <div class="form-field">
-        <label>Name *</label>
-        <InputText @bind-Value="newItem.Name" class="input" placeholder="Enter item name..." />
-        <ValidationMessage For="@(() => newItem.Name)" />
-      </div>
-      <div class="form-field">
-        <label>Description</label>
-        <InputTextArea @bind-Value="newItem.Description" class="input textarea" rows="3" placeholder="Enter item description..." />
-      </div>
-      <div class="form-field">
-        <label>Image URL</label>
-        <InputText @bind-Value="newItem.ImageUrl" class="input" placeholder="Enter image URL..." />
-      </div>
-      <div class="form-field">
-        <label>Category *</label>
-        <InputSelect @bind-Value="newItem.CategoryId" class="input">
-          <option value="0">-- Select Category --</option>
-          @foreach (var c in categories)
-          {
-            <option value="@c.Id">@c.Name</option>
-          }
-        </InputSelect>
-        <ValidationMessage For="@(() => newItem.CategoryId)" />
-      </div>
-      <div class="form-field">
-        <label>Cost (Points) *</label>
-        <InputNumber @bind-Value="newItem.Cost" class="input" min="1" placeholder="0" />
-        <ValidationMessage For="@(() => newItem.Cost)" />
-      </div>
-      <div class="form-field">
-        <label>Stock *</label>
-        <InputNumber @bind-Value="newItem.Stock" class="input" min="0" placeholder="0" />
-        <ValidationMessage For="@(() => newItem.Stock)" />
-      </div>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-success" disabled="@isSubmitting">
-        @if (isSubmitting) { <span>➕ Adding...</span> } else { <span>✅ Submit Item</span> }
-      </button>
-      <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
-    </div>
-  </EditForm>
-</div>
-}
-
-@if (activeTab == "inventory")
-{
-<div class="card">
-  <div class="inventory-header">
-    <h3>📊 Inventory Items (@filtered.Count)</h3>
-    @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-    {
-      <span class="filter-info">
-        @if (!string.IsNullOrEmpty(search)) { <span>🔍 "@search"</span> }
-        @if (!string.IsNullOrEmpty(categoryFilter)) { <span>📊 @categoryFilter</span> }
-        <button class="btn-link" @onclick="ClearFilters">Clear filters</button>
-      </span>
-    }
-  </div>
+  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+  {
+    <span class="filter-info">
+      @if (!string.IsNullOrEmpty(search)) { <span>🔍 "@search"</span> }
+      @if (!string.IsNullOrEmpty(categoryFilter)) { <span>📊 @categoryFilter</span> }
+      <button class="btn-link" @onclick="ClearFilters">Clear filters</button>
+    </span>
+  }
   <div class="table-container">
     <table class="inv">
       <thead>
@@ -196,7 +163,6 @@
       </tbody>
     </table>
   </div>
-</div>
 }
 
 @if (activeTab == "families")
@@ -459,6 +425,9 @@
 {
 <div class="card">
   <h3>🎯 Manage Member Points</h3>
+  <div class="toolbar">
+    <a class="btn btn-primary" href="/admin/add-member">➕ Add New Member</a>
+  </div>
   <div class="table-container">
     <table class="inv">
       <thead><tr><th>ID</th><th>Username</th><th>Name</th><th>Email</th><th>Points</th><th>Actions</th></tr></thead>
@@ -470,13 +439,29 @@
             <td><strong>@m.Username</strong></td>
             <td>@m.FirstName @m.LastName</td>
             <td>@m.Email</td>
-            <td><strong class="points">@m.Points</strong></td>
             <td>
-              <div class="action-btns">
-                <input type="number" @bind="pointsInputs[m.Id]" placeholder="Amount" class="points-input" />
-                <button class="btn-sm btn-success" @onclick="() => AddPointsToMember(m.Id)" title="Add Points">➕ Add</button>
-                <button class="btn-sm btn-danger" @onclick="() => RemovePointsFromMember(m.Id)" title="Remove Points">➖ Remove</button>
-              </div>
+              @if (editingMemberId == m.Id)
+              {
+                <input type="number" @bind="editMemberPoints" class="edit-input-sm" min="0" />
+              }
+              else
+              {
+                <strong class="points">@m.Points</strong>
+              }
+            </td>
+            <td>
+              @if (editingMemberId == m.Id)
+              {
+                <button class="btn-sm btn-success" @onclick="() => SaveMemberPoints(m.Id)">✔️ Save</button>
+                <button class="btn-sm btn-secondary" @onclick="CancelEditMember">❌ Cancel</button>
+                <button class="btn-sm btn-primary" @onclick="() => AddPointsToMember(m.Id)">➕ Add</button>
+                <button class="btn-sm btn-warning" @onclick="() => RemovePointsFromMember(m.Id)">➖ Remove</button>
+              }
+              else
+              {
+                <button class="btn-sm btn-edit" @onclick="() => StartEditMember(m)">✏️ Edit</button>
+                <button class="btn-sm btn-danger" @onclick="() => RemoveMember(m.Id)">🗑️ Remove</button>
+              }
             </td>
           </tr>
         }
@@ -615,7 +600,6 @@
           <th>Username</th>
           <th>Name</th>
           <th>Email</th>
-          <th>Points</th>
           <th>Created</th>
           <th>Status</th>
           <th>Actions</th>
@@ -629,7 +613,6 @@
             <td><strong>@user.Username</strong></td>
             <td>@user.FirstName @user.LastName</td>
             <td>@user.Email</td>
-            <td><strong class="points">@user.Points</strong></td>
             <td>@user.CreatedDate.ToString("MM/dd/yyyy")</td>
             <td>
               @if (user.IsActive)
@@ -693,7 +676,10 @@
           </div>
           <div class="form-field">
             <label>Role</label>
-            <InputText @bind-Value="newAdmin.Role" class="input" />
+            <select @bind="newAdmin.Role" class="input">
+              <option value="Admin">Admin</option>
+              <option value="Super Admin">Super Admin</option>
+            </select>
           </div>
           <div class="form-field">
             <label>Department</label>
@@ -941,7 +927,61 @@
 }
 
 @code {
-  private string activeTab = "inventory";
+  // Member editing logic for inline editing in Members table
+  private int editingMemberId = 0;
+  private int editMemberPoints = 0;
+
+  void StartEditMember(Member m)
+  {
+    editingMemberId = m.Id;
+    editMemberPoints = m.Points;
+  }
+
+  void CancelEditMember()
+  {
+    editingMemberId = 0;
+    editMemberPoints = 0;
+  }
+
+  void SaveMemberPoints(int memberId)
+  {
+    var member = members.FirstOrDefault(x => x.Id == memberId);
+    if (member != null)
+    {
+      var diff = editMemberPoints - member.Points;
+      if (diff > 0)
+      {
+        PointsSvc.AddPoints(memberId, diff);
+      }
+      else if (diff < 0)
+      {
+        PointsSvc.RemovePoints(memberId, -diff);
+      }
+      members = PointsSvc.GetAllMembers();
+      status = $"✅ Points updated for {member.Username}.";
+    }
+    editingMemberId = 0;
+    editMemberPoints = 0;
+    StateHasChanged();
+  }
+
+    async Task RemoveMember(int memberId)
+    {
+      var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to remove this member? This cannot be undone.");
+      if (!confirmed) return;
+      var result = PointsSvc.RemoveMember(memberId);
+      if (result)
+      {
+        status = "✅ Member removed successfully.";
+        members = PointsSvc.GetAllMembers();
+        StateHasChanged();
+      }
+      else
+      {
+        status = "❌ Failed to remove member.";
+      }
+    }
+  private string activeTab = null;
   private List<Item> items = new();
   private List<Item> filtered = new();
   private List<Category> categories = new();
@@ -991,10 +1031,6 @@
   private Item originalItem = new(); // For undo functionality
   private Item newItem = new();
 
-  protected override async Task OnInitializedAsync()
-  {
-    await RefreshData();
-  }
 
   async Task RefreshData()
   {
@@ -1012,7 +1048,6 @@
     {
       pointsInputs[m.Id] = 10;
     }
-    
     await ApplyFilters();
     StateHasChanged();
   }

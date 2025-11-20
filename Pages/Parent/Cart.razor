@@ -582,7 +582,7 @@ else
     const colors = ['#249EA0', '#FAAB36', '#F78104', '#FD5901', '#FFD700', '#FF69B4', '#00CED1'];
     
     // Create confetti pieces
-    for (let i = 0; i < 1500; i++) {
+    for (let i = 0; i < 9000; i++) {
       confetti.push({
         x: Math.random() * canvas.width,
         y: -10,
@@ -607,7 +607,7 @@ else
         piece.rotation += piece.rotationSpeed;
         
         // Apply gravity
-        piece.vy += 0.1;
+        piece.vy += 0.0009;
         
         // Remove if off screen
         if (piece.y > canvas.height + 10 || piece.x < -10 || piece.x > canvas.width + 10) {

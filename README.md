@@ -1,5 +1,5 @@
 
-# PhilanthroPoints — Birthday Connections (Blazor Server, SQLite)
+# PhilanthroPoints — Birthday connections (Blazor Server, SQLite)
 
 ## How to Build, Launch & Run
 
@@ -10,12 +10,12 @@
 
 2. **Launch the application:**
    ```powershell
-   dotnet run --project PhilanthroPoints.csproj
+   dotnet run
    ```
 
 3. **Access the app:**
    - HTTPS: https://localhost:5001
-   - HTTP: http://localhost:5000
+   - HTTP: http://localhost:localhost:5000
 
 ## Login Credentials
 
@@ -45,6 +45,9 @@
 - **Admin Dashboard:** Inventory management, user administration, and cart monitoring
 - **Real-time Cart:** Smart cart system with automatic cleanup of abandoned items
 - **Points System:** Users earn and spend points on birthday items
+- **Email Notifications:** Real-time order confirmation emails sent from mikecriswell86@yahoo.com
+- **SMS Notifications:** Optional SMS confirmations via Twilio (requires setup)
+- **Notification Management:** Admin interface for testing and configuring email/SMS services
 
 ## Admin Access
 
@@ -52,3 +55,4 @@
 - **User Administration:** Manage user accounts and points
 - **Cart Monitoring:** View active carts and abandoned items
 - **Reports:** Access user and transaction data
+- **Notification Management:** Configure and test email/SMS notification services

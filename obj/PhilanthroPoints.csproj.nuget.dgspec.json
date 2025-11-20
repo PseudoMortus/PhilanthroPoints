@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/run/media/jcarter/Storage/repos/mikec/PhilanthroPoints.csproj": {}
+    "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj": {}
   },
   "projects": {
-    "/run/media/jcarter/Storage/repos/mikec/PhilanthroPoints.csproj": {
+    "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/run/media/jcarter/Storage/repos/mikec/PhilanthroPoints.csproj",
+        "projectUniqueName": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
         "projectName": "PhilanthroPoints",
-        "projectPath": "/run/media/jcarter/Storage/repos/mikec/PhilanthroPoints.csproj",
-        "packagesPath": "/home/jcarter/.nuget/packages/",
-        "outputPath": "/run/media/jcarter/Storage/repos/mikec/obj/",
+        "projectPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
+        "packagesPath": "C:\\Users\\MichaelCriswell\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/jcarter/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\MichaelCriswell\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -75,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.121/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

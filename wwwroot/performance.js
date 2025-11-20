@@ -1,4 +1,4 @@
-// Performance optimization script for Birthday Connections
+// Performance optimization script for Birthday connections
 // Lazy load and optimize page interactions
 
 (function() {
@@ -100,10 +100,10 @@
             setTimeout(function() {
                 if (performance.getEntriesByType) {
                     const loadTime = performance.getEntriesByType('navigation')[0]?.loadEventEnd || 0;
-                    console.log(`🎂 Birthday Connections loaded in ${Math.round(loadTime)}ms`);
+                    console.log(`Birthday connections loaded in ${Math.round(loadTime)}ms`);
                     
                     if (loadTime > 3000) {
-                        console.warn('⚡ Slow loading detected. Consider optimizing resources.');
+                        console.warn('Slow loading detected. Consider optimizing resources.');
                     }
                 }
             }, 100);
