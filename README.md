@@ -1,0 +1,58 @@
+
+# PhilanthroPoints — Birthday connections (Blazor Server, SQLite)
+
+## How to Build, Launch & Run
+
+1. **Build the project:**
+   ```powershell
+   dotnet build PhilanthroPoints.csproj
+   ```
+
+2. **Launch the application:**
+   ```powershell
+   dotnet run
+   ```
+
+3. **Access the app:**
+   - HTTPS: https://localhost:5001
+   - HTTP: http://localhost:localhost:5000
+
+## Login Credentials
+
+### **Guest Login:**
+- **Username:** `guest`
+- **Password:** `Pass123!`
+- **Access:** Browse and purchase items
+
+### **Admin Login:**
+- **Username:** `mike`
+- **Password:** `Mike123!`
+- **Access:** Full admin dashboard, inventory management, user management (Owner)
+
+- **Username:** `superadmin`
+- **Password:** `SuperAdmin123!`
+- **Access:** Full admin dashboard, inventory management, user management
+
+- **Username:** `moderator` 
+- **Password:** `Moderator123!`
+- **Access:** Limited admin access, user management only
+
+## Features
+
+- **Birthday Gift Shopping:** Browse cards, treats, books, and gifts with a points-based system
+- **Product Categories:** Organized into Cards, Treats, Books, and Gifts for easy navigation
+- **User Management:** Separate user registration and admin user systems
+- **Admin Dashboard:** Inventory management, user administration, and cart monitoring
+- **Real-time Cart:** Smart cart system with automatic cleanup of abandoned items
+- **Points System:** Users earn and spend points on birthday items
+- **Email Notifications:** Real-time order confirmation emails sent from mikecriswell86@yahoo.com
+- **SMS Notifications:** Optional SMS confirmations via Twilio (requires setup)
+- **Notification Management:** Admin interface for testing and configuring email/SMS services
+
+## Admin Access
+
+- **Inventory Management:** Add, edit, and manage gift items
+- **User Administration:** Manage user accounts and points
+- **Cart Monitoring:** View active carts and abandoned items
+- **Reports:** Access user and transaction data
+- **Notification Management:** Configure and test email/SMS notification services
