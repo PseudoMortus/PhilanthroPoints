@@ -1,32 +1,33 @@
 @page "/admin/notifications"
+
+@using PhilanthroPoints.Data
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MailKit
+@using MailKit.Net.Smtp
+
 @inject PhilanthroPoints.Services.INotificationService NotificationService
 @inject PhilanthroPoints.Services.CustomAuthStateProvider AuthStateProvider
 @inject IConfiguration Configuration
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
+@inject IEmailSender EmailSender
 
 <AuthorizeView Context="authState">
   <Authorized>
     <div class="admin-container">
       <h2>📧 Notification Management</h2>
-      
+
+<!-- This is to show the credentials for the email SMTP server -->
+
       <div class="notification-config">
         <div class="config-section">
           <h3>📬 Email Configuration</h3>
           <div class="config-info">
-            <p><strong>Provider:</strong> @(Configuration["Email:Provider"] ?? "Not configured")</p>
-            @if (Configuration["Email:Provider"]?.ToLower() == "sendgrid")
-            {
-              <p><strong>SendGrid From:</strong> @(Configuration["Email:SendGrid:FromEmail"] ?? "Not set")</p>
-              <p><strong>API Key:</strong> @(string.IsNullOrEmpty(Configuration["Email:SendGrid:ApiKey"]) ? "❌ Not configured" : "✅ Configured")</p>
-            }
-            @if (Configuration["Email:Provider"]?.ToLower() == "smtp")
-            {
-              <p><strong>SMTP Host:</strong> @(Configuration["Email:Smtp:Host"] ?? "Not set")</p>
-              <p><strong>SMTP Port:</strong> @(Configuration["Email:Smtp:Port"] ?? "Not set")</p>
-              <p><strong>From Email:</strong> @(Configuration["Email:Smtp:FromEmail"] ?? "Not set")</p>
-            }
+              <p><strong>SMTP Host:</strong> @(Configuration["Email:Host"] ?? "Not set")</p>
+              <p><strong>SMTP Port:</strong> @(Configuration["Email:Port"] ?? "Not set")</p>
+              <p><strong>From Email:</strong> @(Configuration["Email:From"] ?? "Not set")</p>
           </div>
+
+<!-- This is to create the box to type the email our credentials are to send an email to -->
           
           <div class="test-section">
             <label for="testEmail">Test Email Address:</label>
@@ -43,6 +44,8 @@
             </button>
           </div>
         </div>
+
+<!-- This is for SMS via Twilio -->
 
         <div class="config-section">
           <h3>📱 SMS Configuration</h3>
@@ -73,12 +76,16 @@
         </div>
       </div>
 
+<!-- This is for a status message I've missed somewhere on the way -->
+
       @if (!string.IsNullOrEmpty(statusMessage))
       {
         <div class="status-message @statusClass">
           @statusMessage
         </div>
       }
+
+<!-- This is the setup instructions, needs pruning later once new setup is complete -->
 
       <div class="setup-instructions">
         <h3>🛠️ Setup Instructions</h3>

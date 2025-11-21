@@ -405,3 +405,8 @@ C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/ref/
 /home/pseudomortus/Documents/repos/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.pdb
 /home/pseudomortus/Documents/repos/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.genruntimeconfig.cache
 /home/pseudomortus/Documents/repos/PhilanthroPoints/obj/Debug/net8.0/ref/PhilanthroPoints.dll
+/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/BouncyCastle.Cryptography.dll
+/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/MailKit.dll
+/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/MimeKit.dll
+/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/System.Security.Cryptography.Pkcs.dll
+/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll

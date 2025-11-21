@@ -7,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddTransient<IEmailSender, EmailSenderMailKit>();
+builder.Services.Configure<EmailConfiguration>(options =>
+{
+    builder.Configuration.GetSection("Email").Bind(options);
+});
+
 
 // Configure antiforgery for Blazor
 builder.Services.AddAntiforgery(options =>
