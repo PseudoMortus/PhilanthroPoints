@@ -9,75 +9,75 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PhilanthroPoints
 build_property.RootNamespace = PhilanthroPoints
-build_property.ProjectDir = /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/
+build_property.ProjectDir = /run/media/jcarter/Storage/repos/PhilanthroPoints/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints
+build_property.MSBuildProjectDirectory = /run/media/jcarter/Storage/repos/PhilanthroPoints
 build_property._RazorSourceGeneratorDebug = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/App.razor]
-build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9BcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/App.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL0FwcC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Layout/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTWFpbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL0xheW91dC9NYWluTGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Layout/NavMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTmF2TWVudS5yYXpvcg==
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL0xheW91dC9OYXZNZW51LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Admin/Inventory.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9BZG1pbi9JbnZlbnRvcnkucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL0FkbWluL0ludmVudG9yeS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ib21lLnJhem9y
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL0hvbWUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Parent/Books.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9QYXJlbnQvQm9va3MucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL1BhcmVudC9Cb29rcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Parent/Cards.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9QYXJlbnQvQ2FyZHMucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL1BhcmVudC9DYXJkcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Parent/Cart.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9QYXJlbnQvQ2FydC5yYXpvcg==
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL1BhcmVudC9DYXJ0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Parent/Gifts.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9QYXJlbnQvR2lmdHMucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL1BhcmVudC9HaWZ0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Parent/Intro.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9QYXJlbnQvSW50cm8ucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL1BhcmVudC9JbnRyby5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/Pages/Parent/Treats.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9QYXJlbnQvVHJlYXRzLnJhem9y
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL1BhZ2VzL1BhcmVudC9UcmVhdHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Components/_Imports.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9fSW1wb3J0cy5yYXpvcg==
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Db21wb25lbnRzL19JbXBvcnRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Routes.razor]
-build_metadata.AdditionalFiles.TargetPath = Um91dGVzLnJhem9y
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9Sb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/Shared/PointsTicker.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1BvaW50c1RpY2tlci5yYXpvcg==
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9TaGFyZWQvUG9pbnRzVGlja2VyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints/_Imports.razor]
-build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.TargetPath = UGhpbGFudGhyb1BvaW50cy9fSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
