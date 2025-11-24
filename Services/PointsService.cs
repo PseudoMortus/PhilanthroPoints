@@ -27,6 +27,20 @@ namespace PhilanthroPoints.Services
             return true;
         }
 
+        public bool UpdateMember(Member member)
+        {
+            var dbMember = _db.Members.FirstOrDefault(m => m.Id == member.Id);
+            if (dbMember == null) return false;
+            dbMember.Username = member.Username;
+            dbMember.FirstName = member.FirstName;
+            dbMember.LastName = member.LastName;
+            dbMember.Email = member.Email;
+            dbMember.Points = member.Points;
+            dbMember.Age = member.Age;
+            _db.SaveChanges();
+            return true;
+        }
+
         public PointsService(ApplicationDbContext db, PointsState? pointsState = null)
         {
             _db = db;

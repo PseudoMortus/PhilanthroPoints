@@ -16,6 +16,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+    public DbSet<AccessCode> AccessCodes => Set<AccessCode>();
+    public DbSet<AgencyApplicationNumber> AgencyApplicationNumbers => Set<AgencyApplicationNumber>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -35,7 +35,6 @@
   @if (IsSuperAdmin)
   {
     <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")'>📦 Inventory</a>
-    <a class="menu-link @(activeTab == "families" ? "active" : "")" href="#" @onclick='() => SetTab("families")'>👨‍👩‍👧‍👦 Families</a>
     <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
     <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤 Users</a>
     <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑 Admin Users</a>
@@ -54,6 +53,73 @@
   @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
 </nav>
 @code {
+  // Family login code generator popup state
+  private bool showCodePopup = false;
+  private string agencyAbbrev = "";
+  private string birthdayMonth = "";
+  private string birthdayDay = "";
+  private string applicationNumber = "";
+  private string childage = "";
+  private string generatedFamilyCode = string.Empty;
+
+  // Temporary in-memory list for generated codes with agency and app number
+  public class FamilyLoginCodeInfo {
+    public string Code { get; set; } = "";
+    public string Agency { get; set; } = "";
+    public string ApplicationNumber { get; set; } = "";
+  }
+  public static List<FamilyLoginCodeInfo> TempFamilyCodes { get; set; } = new();
+
+  private void ShowCodePopup() { showCodePopup = true; generatedFamilyCode = string.Empty; }
+  private void HideCodePopup() { showCodePopup = false; agencyAbbrev = ""; birthdayMonth = ""; birthdayDay = ""; applicationNumber = ""; generatedFamilyCode = string.Empty; }
+
+  private async Task GenerateFamilyLoginCode()
+  {
+    // Validate input (applicationNumber will be auto-filled)
+    if (string.IsNullOrWhiteSpace(agencyAbbrev) || agencyAbbrev.Length < 3 || string.IsNullOrWhiteSpace(birthdayMonth) || string.IsNullOrWhiteSpace(birthdayDay) || string.IsNullOrWhiteSpace(childage))
+    {
+      status = "❌ Please enter valid agency (3 letters), month, day, and age. Code must be 3 letters and 8 digits.";
+      StateHasChanged();
+      return;
+    }
+
+    // Get or create AgencyApplicationNumber for this agency/month/year
+    var now = DateTime.UtcNow;
+    var agencyKey = agencyAbbrev.ToUpper().Substring(0, 3);
+    var appNum = await DbContext.AgencyApplicationNumbers.FirstOrDefaultAsync(a => a.AgencyAbbrev == agencyKey && a.Year == now.Year && a.Month == now.Month);
+    if (appNum == null)
+    {
+      appNum = new PhilanthroPoints.Models.AgencyApplicationNumber {
+        AgencyAbbrev = agencyKey,
+        Year = now.Year,
+        Month = now.Month,
+        LastNumber = 1
+      };
+      DbContext.AgencyApplicationNumbers.Add(appNum);
+    }
+    else
+    {
+      appNum.LastNumber++;
+    }
+    await DbContext.SaveChangesAsync();
+    applicationNumber = appNum.LastNumber.ToString().PadLeft(2, '0');
+
+    // Format: [ABC][MM][DD][AA][NN] (ABC = first 3 of agency, MM = month, DD = day, AA = age, NN = app number)
+    var code = agencyKey
+      + birthdayMonth.PadLeft(2, '0').Substring(0, 2)
+      + birthdayDay.PadLeft(2, '0').Substring(0, 2)
+      + childage.PadLeft(2, '0').Substring(0, 2)
+      + applicationNumber;
+    generatedFamilyCode = code;
+    TempFamilyCodes.Add(new FamilyLoginCodeInfo {
+      Code = code,
+      Agency = agencyAbbrev,
+      ApplicationNumber = applicationNumber
+    }); // Save code, agency, and app number temporarily
+    status = $"✅ Family login code generated: {generatedFamilyCode}";
+    StateHasChanged();
+  }
+
   private string? currentUsername;
   private bool IsSuperAdmin => adminUsers.FirstOrDefault(a => a.Username == currentUsername)?.Role == "Super Admin";
 
@@ -165,309 +231,87 @@
   </div>
 }
 
-@if (activeTab == "families")
+
+@if (activeTab == "members")
 {
 <div class="card">
-  <h3>👨‍👩‍👧‍👦 Family Demographics</h3>
-  
-  @if (families.Any())
+  <h3>🎯 Manage Member Points</h3>
+  <button class="btn btn-primary" @onclick="ShowCodePopup" style="margin-bottom:1rem;">Generate Family Login Code</button>
+  @if (showCodePopup)
   {
-    <div class="table-container">
+    <div class="modal-bg"></div>
+    <div class="modal-card" style="background:#fff; border-radius:16px; max-width:500px; margin:2rem auto; padding:2.5rem; box-shadow:0 2px 16px rgba(44,166,164,0.08);">
+      <h2 style="color:#178a7c; text-align:center; margin-bottom:1.5rem;">Generate Family Login Code</h2>
+      <div style="margin-bottom:1.2rem;">
+        <label for="agencySelect" style="font-size:1.2rem; font-weight:500; color:#178a7c; margin-bottom:0.5rem;">Agency *</label>
+        <select id="agencySelect" class="input" @bind="agencyAbbrev" style="width:100%; padding:1rem; font-size:1.1rem; border-radius:8px; border:1px solid #222; margin-bottom:1rem;">
+          <option value="">Select an Agency</option>
+          <option>Big Brothers Big Sisters</option>
+          <option>Children's Center for Visually Impaired</option>
+          <option>Cornerstones of Care</option>
+          <option>Demonstration</option>
+          <option>HALO</option>
+          <option>Hillcrest Transitional Housing</option>
+          <option>i.c.stars</option>
+          <option>Jackson County Courts</option>
+          <option>KC Cares</option>
+          <option>KC Heroes</option>
+          <option>Metro Lutheran Ministries</option>
+          <option>PACES</option>
+          <option>Rose Brooks</option>
+          <option>Turner Parents as Teachers</option>
+        </select>
+      </div>
+      <div style="margin-bottom:1.2rem; display:flex; align-items:center; gap:1.2rem;">
+        <div>
+          <label style="font-size:1.1rem; color:#178a7c;">Child's Birthday</label><br />
+          <input type="text" maxlength="2" placeholder="MM" @bind="birthdayMonth" style="width:40px; margin-right:8px;" /> /
+          <input type="text" maxlength="2" placeholder="DD" @bind="birthdayDay" style="width:40px;" />
+        </div>
+        <div>
+          <label style="font-size:1.1rem; color:#178a7c;">Age</label><br />
+          <input type="text" maxlength="2" placeholder="Age" @bind="childage" style="width:40px;" />
+        </div>
+      </div>
+      <div style="margin-bottom:1.2rem;">
+        <label style="font-size:1.1rem; color:#178a7c;">Application Number</label>
+        <input type="text" maxlength="2" placeholder="01" @bind="applicationNumber" style="width:40px; margin-left:8px;" />
+      </div>
+      <div style="display:flex; gap:1.5rem; justify-content:center; margin-top:2rem;">
+        <button class="btn" style="background:#2ecc40; color:#fff; font-size:1.2rem; padding:0.8rem 2.2rem; border-radius:16px; box-shadow:0 2px 8px rgba(44,166,164,0.12);" @onclick="GenerateFamilyLoginCode">Generate</button>
+        <button class="btn" style="background:#6c757d; color:#fff; font-size:1.2rem; padding:0.8rem 2.2rem; border-radius:16px; box-shadow:0 2px 8px rgba(44,166,164,0.12);" @onclick="HideCodePopup">Cancel</button>
+      </div>
+      @if (!string.IsNullOrEmpty(generatedFamilyCode))
+      {
+        <div style="margin-top:1.5rem; color:#178a7c; font-weight:bold; text-align:center; font-size:1.2rem;">Generated Code: @generatedFamilyCode</div>
+      }
+    </div>
+  }
+  @if (IsSuperAdmin && TempFamilyCodes.Any())
+  {
+    <div class="table-container" style="margin-top:2rem;">
+      <h4>Generated Family Login Codes</h4>
       <table class="inv">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Family Name</th>
-            <th>Child Info</th>
-            <th>Contact</th>
-            <th>Dietary Needs</th>
-            <th>Survey</th>
-            <th>Actions</th>
+            <th>Family Login Code</th>
+            <th>Agency</th>
+            <th>Application Number</th>
           </tr>
         </thead>
         <tbody>
-          @foreach (var family in families)
+          @foreach (var info in TempFamilyCodes)
           {
-            <tr class="@(editingFamilyId == family.Id ? "editing" : "")">
-              <td class="id">@family.Id</td>
-              @if (editingFamilyId == family.Id)
-              {
-                <td>
-                  <input @bind="editFamily.FamilyName" class="edit-input" placeholder="Family Name..." />
-                  <input @bind="editFamily.HeadOfHousehold" class="edit-input" placeholder="Head of Household..." />
-                </td>
-                <td>
-                  <input type="number" @bind="editFamily.Age" class="edit-input-sm" placeholder="Age" />
-                  <input type="date" @bind="editFamily.Birthday" class="edit-input" />
-                </td>
-                <td>
-                  <input @bind="editFamily.ContactPhone" class="edit-input" placeholder="Phone..." />
-                  <input @bind="editFamily.ContactEmail" class="edit-input" placeholder="Email..." />
-                </td>
-                <td>
-                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <label><input type="checkbox" @bind="editFamily.GlutenFree" /> Gluten Free</label>
-                    <label><input type="checkbox" @bind="editFamily.EggFree" /> Egg Free</label>
-                    <label><input type="checkbox" @bind="editFamily.LactoseFree" /> Lactose Free</label>
-                    <label><input type="checkbox" @bind="editFamily.NutFree" /> Nut Free</label>
-                  </div>
-                </td>
-                <td>
-                  <input type="checkbox" @bind="editFamily.WillingToTakeSurvey" />
-                </td>
-                <td class="actions">
-                  <button type="button" class="btn-sm btn-success" @onclick="SaveFamilyEdit" title="Save Changes">✔️ Save</button>
-                  <button type="button" class="btn-sm btn-warning" @onclick="UndoFamilyEdit" title="Undo Changes">↺ Undo</button>
-                  <button type="button" class="btn-sm btn-secondary" @onclick="CancelFamilyEdit" title="Cancel Edit">❌ Cancel</button>
-                </td>
-              }
-              else
-              {
-              <td class="id">@family.Id</td>
-              <td>
-                <strong>@family.FamilyName</strong>
-                @if (!string.IsNullOrEmpty(family.HeadOfHousehold))
-                {
-                  <br /><small>Head: @family.HeadOfHousehold</small>
-                }
-              </td>
-              <td>
-                @if (family.Age.HasValue)
-                {
-                  <span>Age: @family.Age</span>
-                }
-                @if (family.Birthday.HasValue)
-                {
-                  <br /><small>Birthday: @family.Birthday.Value.ToString("MM/dd/yyyy")</small>
-                }
-                @if (!string.IsNullOrEmpty(family.Ethnicity))
-                {
-                  <br /><small>Ethnicity: @family.Ethnicity</small>
-                }
-              </td>
-              <td>
-                @if (!string.IsNullOrEmpty(family.ContactPhone))
-                {
-                  <div>📞 @family.ContactPhone</div>
-                }
-                @if (!string.IsNullOrEmpty(family.ContactEmail))
-                {
-                  <div>📧 @family.ContactEmail</div>
-                }
-                @if (!string.IsNullOrEmpty(family.Address))
-                {
-                  <small>@family.Address<br />@family.City, @family.State @family.Zip</small>
-                }
-              </td>
-              <td>
-                @{
-                  var dietaryNeeds = new List<string>();
-                  if (family.GlutenFree) dietaryNeeds.Add("Gluten Free");
-                  if (family.EggFree) dietaryNeeds.Add("Egg Free");
-                  if (family.LactoseFree) dietaryNeeds.Add("Lactose Free");
-                  if (family.NutFree) dietaryNeeds.Add("Nut Free");
-                }
-                @if (dietaryNeeds.Any())
-                {
-                  foreach (var need in dietaryNeeds)
-                  {
-                    <span class="dietary-tag">@need</span>
-                  }
-                }
-                else
-                {
-                  <span class="text-muted">None specified</span>
-                }
-                @if (!string.IsNullOrEmpty(family.OtherDietaryRestrictions))
-                {
-                  <br /><small>Other: @family.OtherDietaryRestrictions</small>
-                }
-              </td>
-              <td class="text-center">
-                @if (family.WillingToTakeSurvey)
-                {
-                  <span class="survey-yes">✓ Yes</span>
-                }
-                else
-                {
-                  <span class="survey-no">✗ No</span>
-                }
-              </td>
-              <td>
-                <div class="action-btns">
-                  <button class="btn-sm btn-info" @onclick="() => ShowFamilyDetails(family.Id)" title="View Details">
-                    👁️ View
-                  </button>
-                  <button class="btn-sm btn-primary" @onclick="() => StartEditFamily(family)" title="Edit Family">
-                    ✏️ Edit
-                  </button>
-                </div>
-              </td>
-              }
+            <tr>
+              <td>@info.Code</td>
+              <td>@info.Agency</td>
+              <td>@info.ApplicationNumber</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
   }
-  else
-  {
-    <div class="empty-state">
-      <h4>No Family Information Available</h4>
-      <p>Families will appear here once they complete the demographics form.</p>
-    </div>
-  }
-</div>
-
-@if (selectedFamily != null)
-{
-  <div class="card family-details">
-    <h3>👨‍👩‍👧‍👦 Family Details: @selectedFamily.FamilyName</h3>
-    
-    <div class="family-detail-grid">
-      <div class="detail-section">
-        <h4>👶 Child Information</h4>
-        <div class="detail-item">
-          <strong>Age:</strong> @(selectedFamily.Age?.ToString() ?? "Not specified")
-        </div>
-        <div class="detail-item">
-          <strong>Birthday:</strong> @(selectedFamily.Birthday?.ToString("MMMM dd, yyyy") ?? "Not specified")
-        </div>
-        <div class="detail-item">
-          <strong>Ethnicity:</strong> @(string.IsNullOrEmpty(selectedFamily.Ethnicity) ? "Not specified" : selectedFamily.Ethnicity)
-        </div>
-      </div>
-      
-      <div class="detail-section">
-        <h4>📞 Contact Information</h4>
-        <div class="detail-item">
-          <strong>Head of Household:</strong> @(string.IsNullOrEmpty(selectedFamily.HeadOfHousehold) ? "Not specified" : selectedFamily.HeadOfHousehold)
-        </div>
-        <div class="detail-item">
-          <strong>Phone:</strong> @(string.IsNullOrEmpty(selectedFamily.ContactPhone) ? "Not specified" : selectedFamily.ContactPhone)
-        </div>
-        <div class="detail-item">
-          <strong>Email:</strong> @(string.IsNullOrEmpty(selectedFamily.ContactEmail) ? "Not specified" : selectedFamily.ContactEmail)
-        </div>
-        <div class="detail-item">
-          <strong>Address:</strong> 
-          @if (!string.IsNullOrEmpty(selectedFamily.Address))
-          {
-            <span>@selectedFamily.Address<br />@selectedFamily.City, @selectedFamily.State @selectedFamily.Zip</span>
-          }
-          else
-          {
-            <span>Not specified</span>
-          }
-        </div>
-      </div>
-      
-      <div class="detail-section">
-        <h4>🎁 Gift Preferences & Impact</h4>
-        <div class="detail-item">
-          <strong>Preferred Gifts:</strong>
-          <div class="detail-content">@(string.IsNullOrEmpty(selectedFamily.PreferredGifts) ? "Not specified" : selectedFamily.PreferredGifts)</div>
-        </div>
-        <div class="detail-item">
-          <strong>Expected Impact:</strong>
-          <div class="detail-content">@(string.IsNullOrEmpty(selectedFamily.ExpectedImpact) ? "Not specified" : selectedFamily.ExpectedImpact)</div>
-        </div>
-        <div class="detail-item">
-          <strong>Anticipated Child Response:</strong>
-          <div class="detail-content">@(string.IsNullOrEmpty(selectedFamily.AnticipatedChildResponse) ? "Not specified" : selectedFamily.AnticipatedChildResponse)</div>
-        </div>
-      </div>
-      
-      <div class="detail-section">
-        <h4>🍽️ Dietary Requirements</h4>
-        <div class="dietary-tags">
-          @if (selectedFamily.GlutenFree) { <span class="dietary-tag active">Gluten Free</span> }
-          @if (selectedFamily.EggFree) { <span class="dietary-tag active">Egg Free</span> }
-          @if (selectedFamily.LactoseFree) { <span class="dietary-tag active">Lactose Free</span> }
-          @if (selectedFamily.NutFree) { <span class="dietary-tag active">Nut Free</span> }
-          @if (!selectedFamily.GlutenFree && !selectedFamily.EggFree && !selectedFamily.LactoseFree && !selectedFamily.NutFree)
-          {
-            <span class="text-muted">No restrictions specified</span>
-          }
-        </div>
-        @if (!string.IsNullOrEmpty(selectedFamily.OtherDietaryRestrictions))
-        {
-          <div class="detail-item">
-            <strong>Other Restrictions:</strong>
-            <div class="detail-content">@selectedFamily.OtherDietaryRestrictions</div>
-          </div>
-        }
-      </div>
-      
-      <div class="detail-section">
-        <h4>📝 Additional Information</h4>
-        <div class="detail-item">
-          <strong>Survey Participation:</strong> @(selectedFamily.WillingToTakeSurvey ? "? Willing to participate" : "? Not interested")
-        </div>
-        @if (!string.IsNullOrEmpty(selectedFamily.SpecialNotes))
-        {
-          <div class="detail-item">
-            <strong>Special Notes:</strong>
-            <div class="detail-content">@selectedFamily.SpecialNotes</div>
-          </div>
-        }
-      </div>
-    </div>
-    
-    <div class="detail-actions">
-      <button class="btn btn-secondary" @onclick="() => selectedFamily = null">Close Details</button>
-    </div>
-  </div>
-}
-}
-
-@if (activeTab == "members")
-{
-<div class="card">
-  <h3>🎯 Manage Member Points</h3>
-  <div class="toolbar">
-    <a class="btn btn-primary" href="/admin/add-member">➕ Add New Member</a>
-  </div>
-  <div class="table-container">
-    <table class="inv">
-      <thead><tr><th>ID</th><th>Username</th><th>Name</th><th>Email</th><th>Points</th><th>Actions</th></tr></thead>
-      <tbody>
-        @foreach (var m in members)
-        {
-          <tr>
-            <td class="id">@m.Id</td>
-            <td><strong>@m.Username</strong></td>
-            <td>@m.FirstName @m.LastName</td>
-            <td>@m.Email</td>
-            <td>
-              @if (editingMemberId == m.Id)
-              {
-                <input type="number" @bind="editMemberPoints" class="edit-input-sm" min="0" />
-              }
-              else
-              {
-                <strong class="points">@m.Points</strong>
-              }
-            </td>
-            <td>
-              @if (editingMemberId == m.Id)
-              {
-                <button class="btn-sm btn-success" @onclick="() => SaveMemberPoints(m.Id)">✔️ Save</button>
-                <button class="btn-sm btn-secondary" @onclick="CancelEditMember">❌ Cancel</button>
-                <button class="btn-sm btn-primary" @onclick="() => AddPointsToMember(m.Id)">➕ Add</button>
-                <button class="btn-sm btn-warning" @onclick="() => RemovePointsFromMember(m.Id)">➖ Remove</button>
-              }
-              else
-              {
-                <button class="btn-sm btn-edit" @onclick="() => StartEditMember(m)">✏️ Edit</button>
-                <button class="btn-sm btn-danger" @onclick="() => RemoveMember(m.Id)">🗑️ Remove</button>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
 </div>
 }
 
@@ -930,6 +774,7 @@
   // Member editing logic for inline editing in Members table
   private int editingMemberId = 0;
   private int editMemberPoints = 0;
+  private int editMemberAge = 0;
 
   void StartEditMember(Member m)
   {
@@ -965,6 +810,27 @@
     StateHasChanged();
   }
 
+  void StartEditMemberAge(Member m)
+  {
+    editingMemberId = m.Id;
+    editMemberAge = m.Age;
+  }
+
+  void SaveMemberAge(int memberId)
+  {
+    var member = members.FirstOrDefault(x => x.Id == memberId);
+    if (member != null)
+    {
+      member.Age = editMemberAge;
+      PointsSvc.UpdateMember(member); // Assumes PointsSvc has UpdateMember
+      members = PointsSvc.GetAllMembers();
+      status = $"✅ Age updated for {member.Username}.";
+    }
+    editingMemberId = 0;
+    editMemberAge = 0;
+    StateHasChanged();
+  }
+
     async Task RemoveMember(int memberId)
     {
       var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to remove this member? This cannot be undone.");
@@ -981,14 +847,13 @@
         status = "❌ Failed to remove member.";
       }
     }
-  private string activeTab = null;
+  private string? activeTab = null;
   private List<Item> items = new();
   private List<Item> filtered = new();
   private List<Category> categories = new();
   private List<Member> members = new();
   private List<User> users = new();
   private List<AdminUser> adminUsers = new();
-  private List<Family> families = new();
   private Dictionary<int, int> pointsInputs = new();
   private string? search;
   private string? categoryFilter;
@@ -1011,10 +876,6 @@
   private string tempPassword = "";
   
   // Family management
-  private Family? selectedFamily = null;
-  private int editingFamilyId = 0;
-  private Family editFamily = new();
-  private Family originalFamily = new();
   
   // Admin user editing
   private int editingAdminId = 0;
@@ -1040,8 +901,6 @@
     users = await UserSvc.GetAllUsersAsync();
     adminUsers = await AdminSvc.GetAllAdminUsersAsync();
     
-    // Load families from database
-    families = DbContext.Families.ToList();
     
     // Initialize points inputs
     foreach (var m in members)
@@ -1341,18 +1200,17 @@
   {
     var item = items.FirstOrDefault(i => i.Id == id);
     if (item == null) return;
-
-    // Simple confirmation
     var success = await Catalog.DeleteItemAsync(id);
     if (success)
     {
-      status = $"? Item '{item.Name}' deleted successfully!";
-      await RefreshData();
+        status = $"? Item '{item.Name}' deleted successfully!";
+        await RefreshData();
     }
     else
     {
-      status = "? Failed to delete item.";
+        status = "? Failed to delete item.";
     }
+    StateHasChanged();
   }
 
   void AddPointsToMember(int memberId)
@@ -1459,7 +1317,7 @@
 
   void CancelAddAdmin()
   {
-    showAddAdminForm = false;
+    showAddUserForm = false;
     newAdmin = new();
     tempPassword = "";
   }
@@ -1688,100 +1546,7 @@
   }
   
   // Family management methods
-  void ShowFamilyDetails(int familyId)
-  {
-    selectedFamily = families.FirstOrDefault(f => f.Id == familyId);
-    StateHasChanged();
-  }
-  
-  void EditFamily(int familyId)
-  {
-    // For now, just show details
-    // Later can implement editing functionality
-    ShowFamilyDetails(familyId);
-  }
 
-  void StartEditFamily(Family family)
-  {
-    editingFamilyId = family.Id;
-    editFamily = new Family
-    {
-      Id = family.Id,
-      FamilyName = family.FamilyName,
-      HeadOfHousehold = family.HeadOfHousehold,
-      Age = family.Age,
-      Birthday = family.Birthday,
-      ContactPhone = family.ContactPhone,
-      ContactEmail = family.ContactEmail,
-      GlutenFree = family.GlutenFree,
-      EggFree = family.EggFree,
-      LactoseFree = family.LactoseFree,
-      NutFree = family.NutFree,
-      WillingToTakeSurvey = family.WillingToTakeSurvey
-    };
-    originalFamily = family;
-    StateHasChanged();
-  }
-
-  async Task SaveFamilyEdit()
-  {
-    try
-    {
-      var familyToUpdate = DbContext.Families.Find(editFamily.Id);
-      if (familyToUpdate != null)
-      {
-        familyToUpdate.FamilyName = editFamily.FamilyName;
-        familyToUpdate.HeadOfHousehold = editFamily.HeadOfHousehold;
-        familyToUpdate.Age = editFamily.Age;
-        familyToUpdate.Birthday = editFamily.Birthday;
-        familyToUpdate.ContactPhone = editFamily.ContactPhone;
-        familyToUpdate.ContactEmail = editFamily.ContactEmail;
-        familyToUpdate.GlutenFree = editFamily.GlutenFree;
-        familyToUpdate.EggFree = editFamily.EggFree;
-        familyToUpdate.LactoseFree = editFamily.LactoseFree;
-        familyToUpdate.NutFree = editFamily.NutFree;
-        familyToUpdate.WillingToTakeSurvey = editFamily.WillingToTakeSurvey;
-        
-        await DbContext.SaveChangesAsync();
-        families = DbContext.Families.ToList();
-        status = "✅ Family updated successfully!";
-      }
-      editingFamilyId = 0;
-      StateHasChanged();
-    }
-    catch (Exception ex)
-    {
-      status = $"❌ Error updating family: {ex.Message}";
-    }
-  }
-
-  void UndoFamilyEdit()
-  {
-    editFamily = new Family
-    {
-      Id = originalFamily.Id,
-      FamilyName = originalFamily.FamilyName,
-      HeadOfHousehold = originalFamily.HeadOfHousehold,
-      Age = originalFamily.Age,
-      Birthday = originalFamily.Birthday,
-      ContactPhone = originalFamily.ContactPhone,
-      ContactEmail = originalFamily.ContactEmail,
-      GlutenFree = originalFamily.GlutenFree,
-      EggFree = originalFamily.EggFree,
-      LactoseFree = originalFamily.LactoseFree,
-      NutFree = originalFamily.NutFree,
-      WillingToTakeSurvey = originalFamily.WillingToTakeSurvey
-    };
-    StateHasChanged();
-  }
-
-  void CancelFamilyEdit()
-  {
-    editingFamilyId = 0;
-    editFamily = new();
-    originalFamily = new();
-    StateHasChanged();
-  }
 }
 
 <style>
