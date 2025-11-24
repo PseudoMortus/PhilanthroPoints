@@ -4296,19 +4296,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\MichaelCriswell\\.nuget\\packages\\": {}
+    "/home/jcarter/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
+      "projectUniqueName": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints.csproj",
       "projectName": "PhilanthroPoints",
-      "projectPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
-      "packagesPath": "C:\\Users\\MichaelCriswell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\obj\\",
+      "projectPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/PhilanthroPoints.csproj",
+      "packagesPath": "/home/jcarter/.nuget/packages/",
+      "outputPath": "/run/media/jcarter/Storage/repos/PhilanthroPoints/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\MichaelCriswell\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/jcarter/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -4369,7 +4369,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.121/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
