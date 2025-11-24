@@ -1,0 +1,400 @@
+@page "/admin/notifications"
+
+<!--Base Requirements -->
+
+  @using PhilanthroPoints.Data
+
+<!-- Requirements for Authorization -->
+
+  @using Microsoft.AspNetCore.Authorization
+  @using Microsoft.AspNetCore.Components.Authorization
+  @inject PhilanthroPoints.Services.CustomAuthStateProvider AuthStateProvider
+
+<!-- Requirements for MailKit -->
+
+  @using MailKit
+  @using MailKit.Net.Smtp
+  @inject IEmailSender EmailSender
+  @inject IConfiguration Configuration
+
+<!-- Requirements for Twilio -->
+
+  @inject PhilanthroPoints.Services.INotificationService NotificationService
+
+<!-- End of Requirements, Start of Body -->
+
+  <AuthorizeView Context="authState">
+    <Authorized>
+      <div id="Configuration and Testing" class="admin-container">
+        <h2>📧 Notification Management</h2>
+        <div id="Email Configuration and Testing" class="notification-config">
+          <div id="SMTP Configuration" class="config-section">
+          <h3>📬 Email Configuration</h3>
+            <div class="config-info">
+              <p><strong>SMTP Host:</strong> @(Configuration["Email:Host"] ?? "Not set")</p>
+              <p><strong>SMTP Port:</strong> @(Configuration["Email:Port"] ?? "Not set")</p>
+              <p><strong>From Email:</strong> @(Configuration["Email:From"] ?? "Not set")</p>
+              <p><strong>SSL Enabled:</strong> @(Configuration["Email:EnableSSL"] ?? "Not set")</p>
+            </div>
+            <div id="Testing Email" class="test-section">
+              <label for="testEmail">Test Email Address:</label>
+              <div class="test-field">
+                <input @bind="testEmail" id="testEmail" type="email" class="form-control" placeholder="Enter email to test" />
+              </div>
+              <button @onclick="TestEmail" class="btn btn-primary" disabled="@isTestingEmail">
+                @if (isTestingEmail)
+                {
+                  <span>Testing...</span>
+                }
+                else
+                {
+                  <span>📬 Test Email</span>
+                }
+              </button>
+            </div>
+          </div>
+          <div class="config-section">
+            <h3>📱 SMS Configuration</h3>
+            <div class="config-info">
+              <p><strong>Provider:</strong> @(Configuration["Sms:Provider"] ?? "Not configured")</p>
+              @if (Configuration["Sms:Provider"]?.ToLower() == "twilio")
+              {
+                <p><strong>From Number:</strong> @(Configuration["Sms:Twilio:FromNumber"] ?? "Not set")</p>
+                <p><strong>Account SID:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AccountSid"]) ? "❌ Not configured" : "✅ Configured")</p>
+                <p><strong>Auth Token:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AuthToken"]) ? "❌ Not configured" : "✅ Configured")</p>
+              }
+            </div>
+            <div class="test-section">
+              <label for="testSms">Test Phone Number:</label>
+              <div class="test-field">
+                <input @bind="testPhoneNumber" id="testSms" class="form-control" placeholder="Enter phone number to test (e.g., +1234567890)" />
+              </div>
+              <button class="btn btn-primary" @onclick="TestSms" disabled="@isTestingSms">
+                @if (isTestingSms)
+                {
+                  <span>Testing...</span>
+                }
+                else
+                {
+                  <span>📱 Test SMS</span>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+        @if (!string.IsNullOrEmpty(statusMessage))
+        {
+          <div class="status-message @statusClass">
+            @statusMessage
+          </div>
+        }
+        <div class="setup-instructions">
+          <h3>🛠️ Setup Instructions</h3>
+          <div class="instruction-section">
+            <h4>✉️ Email Setup (SMTP)</h4>
+            <ol>
+              <li>Acquire your Email Provider's SMTP Credentials (often found in your Email Provider's settings or support section)</li>
+              <li>Generate a password if required (often referred to as an "App Password")</li>
+              <li>Update your <code>appsettings.json</code> with your SMTP details:</li>
+            </ol>
+            <pre><code>
+"Example SMTP Setup": {
+  "Provider": "smtp",
+  "Smtp": {
+    "Host": "smtp.gmail.com",
+    "Port": "587",
+    "Username": "your-email@gmail.com",
+    "Password": "your-app-password",
+    "FromEmail": "your-email@gmail.com",
+    "FromName": "PhilanthroPoints"
+  }
+}
+            </code></pre>
+          </div>
+          <div class="instruction-section">
+            <h4>📱 SMS Setup (Twilio)</h4>
+            <ol>
+              <li>Create a free account at <a href="https://twilio.com" target="_blank">Twilio.com</a></li>
+              <li>Get your Account SID and Auth Token from the dashboard</li>
+              <li>Purchase a phone number or use the trial number</li>
+              <li>Update your <code>appsettings.json</code>:</li>
+            </ol>
+            <pre><code>
+"Example SMS Setup": {
+  "Provider": "Twilio",
+  "Twilio": {
+    "AccountSid": "YOUR_TWILIO_ACCOUNT_SID",
+    "AuthToken": "YOUR_TWILIO_AUTH_TOKEN",
+    "FromNumber": "+1234567890"
+  }
+            </code></pre>
+          </div>
+        </div>
+      </div>
+    </authorized>
+  </AuthorizeView>
+
+<!-- End of Body, Start of Code -->
+
+@code{
+
+  private string testEmail = "";
+  private string testPhoneNumber = "";
+  private bool isTestingEmail = false;
+  private bool isTestingSms = false;
+  private string statusMessage = "";
+  private string statusClass = "";
+
+  private async Task TestEmail()
+  {
+    if (string.IsNullOrWhiteSpace(testEmail))
+    {
+      SetStatus("Please enter a test email address.", "error");
+      return;
+    }
+
+    isTestingEmail = true;
+    statusMessage = "";
+    StateHasChanged();
+
+    try
+    {
+      await EmailSender.SendEmailAsync(
+        testEmail,
+        "🎉 Test Email from PhilanthroPoints",
+        "<h2>Test Successful! ✅</h2><p>Your email configuration is working correctly. You should receive real-time order confirmations.</p><p>Best regards,<br/>PhilanthroPoints Team</p>"
+      );
+      
+      SetStatus($"✅ Test email sent successfully to {testEmail}!", "success");
+    }
+    catch (Exception ex)
+    {
+      SetStatus($"❌ Email test failed: {ex.Message}", "error");
+    }
+    finally
+    {
+      isTestingEmail = false;
+      StateHasChanged();
+    }
+  }
+
+  private async Task TestSms()
+  {
+    if (string.IsNullOrWhiteSpace(testPhoneNumber))
+    {
+      SetStatus("Please enter a test phone number.", "error");
+      return;
+    }
+
+    isTestingSms = true;
+    statusMessage = "";
+    StateHasChanged();
+
+    try
+    {
+      await NotificationService.SendOrderConfirmationSmsAsync(
+        testPhoneNumber,
+        "Test User",
+        new List<PhilanthroPoints.Models.Item> 
+        { 
+          new PhilanthroPoints.Models.Item { Name = "Test Item", Cost = 10 }
+        }
+      );
+      
+      SetStatus($"✅ Test SMS sent successfully to {testPhoneNumber}!", "success");
+    }
+    catch (Exception ex)
+    {
+      SetStatus($"❌ SMS test failed: {ex.Message}", "error");
+    }
+    finally
+    {
+      isTestingSms = false;
+      StateHasChanged();
+    }
+  }
+
+  private void SetStatus(string message, string type)
+  {
+    statusMessage = message;
+    statusClass = type;
+    
+    // Auto-hide after 5 seconds
+    Task.Run(async () =>
+    {
+      await Task.Delay(5000);
+      statusMessage = "";
+      await InvokeAsync(StateHasChanged);
+    });
+  }
+}
+
+<!-- End of Code, Start of Style -->
+
+  <style>
+    .admin-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .notification-config {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .config-section {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #249EA0;
+    }
+
+    .config-section h3 {
+      color: #249EA0;
+      margin-top: 0;
+    }
+
+    .config-info {
+      margin-bottom: 20px;
+    }
+
+    .config-info p {
+      margin: 8px 0;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .test-section {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      border: 2px solid #ddd;
+    }
+
+    .test-field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .test-section label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .form-control {
+      width: 95%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+// style="background-color: lightblue; padding: 20px; border-radius:8px; max-width:420px; margin: 2rem auto;"
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #249EA0;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #1e7a7c;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .setup-instructions {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    .setup-instructions h3 {
+      color: #249EA0;
+      margin-top: 0;
+    }
+
+    .instruction-section {
+      margin-bottom: 30px;
+    }
+
+    .setup-option {
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border-left: 4px solid #FAAB36;
+    }
+
+    .setup-option h5 {
+      color: #249EA0;
+      margin-top: 0;
+    }
+
+    pre {
+      background: #f1f3f4;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      border: 1px solid #ddd;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    a {
+      color: #249EA0;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @@media (max-width: 768px) {
+      .notification-config {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
