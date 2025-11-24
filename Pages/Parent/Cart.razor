@@ -1,0 +1,639 @@
+@page "/parent/cart"
+@inject PhilanthroPoints.Services.CartState CartService
+@inject PhilanthroPoints.Services.PointsState Points
+@inject PhilanthroPoints.Services.CheckoutSessionState CheckoutSession
+@inject PhilanthroPoints.Services.INotificationService NotificationService
+@inject PhilanthroPoints.Data.ApplicationDbContext DbContext
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+@using PhilanthroPoints.Components
+@using PhilanthroPoints.Models
+@using Microsoft.JSInterop
+@implements IDisposable
+
+<h2>Your Cart</h2>
+@if(!CartService.Items.Any())
+{
+  <p class="card">Your cart is empty.</p>
+}
+else
+{
+  <div class="card">
+    <ul class="cart-items">
+      @foreach(var i in CartService.Items)
+      { 
+        <li class="cart-item">
+          <span>@i.Name (@i.Cost pts)</span>
+          <button class="btn-remove" @onclick="() => RemoveItem(i)" title="Remove from cart">✕</button>
+        </li>
+      }
+    </ul>
+    <p><b>Total:</b> @CartService.TotalCost() pts</p>
+    <div class="cart-actions">
+      <button class="btn secondary" @onclick="ClearCart">Clear Cart</button>
+      <button class="btn checkout-btn" @onclick="Checkout" disabled="@isCheckingOut">
+        @if (isCheckingOut)
+        {
+          <span class="spinner"></span><text> Processing...</text>
+        }
+        else
+        {
+          <span>Checkout</span>
+        }
+      </button>
+    </div>
+  </div>
+}
+
+@if (showSuccessMessage)
+{
+  <div class="success-message">
+    <div class="success-content">
+      <div class="success-icon">✓</div>
+      <h3>Order Complete!</h3>
+      <p>Thank you for your purchase! Your birthday celebration items will come soon!</p>
+      <p><small>📧 Email confirmation sent<br/>📱 SMS notification sent</small></p>
+    </div>
+  </div>
+}
+
+@if (showErrorMessage && !string.IsNullOrEmpty(errorMessage))
+{
+  <div class="error-message">
+    <div class="error-content">
+      <div class="error-icon">⚠</div>
+      <h3>Checkout Failed</h3>
+      <p>@errorMessage</p>
+      <button class="btn" @onclick="DismissError">OK</button>
+    </div>
+  </div>
+}
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+@code {
+  private bool isCheckingOut = false;
+  private bool showSuccessMessage = false;
+  private bool showErrorMessage = false;
+  private string errorMessage = string.Empty;
+
+  protected override void OnInitialized()
+  {
+    CartService.OnCartChanged += OnCartStateChanged;
+  }
+
+  public void Dispose()
+  {
+    CartService.OnCartChanged -= OnCartStateChanged;
+  }
+
+  private void OnCartStateChanged()
+  {
+    InvokeAsync(StateHasChanged);
+  }
+
+  async Task RemoveItem(Item item)
+  {
+    var success = await CartService.RemoveAsync(item);
+    if (success)
+    {
+      Points.Add(item.Cost); // Refund points
+    }
+    StateHasChanged();
+  }
+
+  async Task ClearCart()
+  {
+    // Refund all points
+    foreach(var item in CartService.Items.ToList())
+    {
+      Points.Add(item.Cost);
+    }
+    await CartService.ClearAsync(restoreStock: true);
+    StateHasChanged();
+  }
+
+  async Task Checkout()
+  {
+    if (CartService.Items.Count == 0) return;
+    
+    // Check if we have contact information
+    if (!CheckoutSession.HasContactInfo)
+    {
+      // Try to load contact info from database as fallback
+      var currentUser = Points.CurrentUser;
+      if (currentUser != null)
+      {
+        // Removed family-related logic
+      }
+    }
+    
+    // Final check - if still no contact info, redirect to demographics
+    if (!CheckoutSession.HasContactInfo)
+    {
+      errorMessage = "Please complete the demographics information first to provide contact details.";
+      showErrorMessage = true;
+      
+      // Auto-redirect to demographics page after 3 seconds
+      await Task.Delay(3000);
+      Nav.NavigateTo("/demographics");
+      return;
+    }
+    
+    isCheckingOut = true;
+    showErrorMessage = false;
+    showSuccessMessage = false;
+    StateHasChanged();
+    
+    try
+    {
+      var totalCost = CartService.TotalCost();
+      var userPoints = Points.Points;
+      
+      Console.WriteLine($"[Cart.razor] Starting checkout - TotalCost: {totalCost}, UserPoints: {userPoints}");
+      
+      // Check points locally first
+      if (userPoints < totalCost)
+      {
+        errorMessage = $"Insufficient points! You need {totalCost} points but only have {userPoints}.";
+        showErrorMessage = true;
+        Console.WriteLine($"[Cart.razor] Checkout failed - insufficient points");
+        return;
+      }
+      
+      // Simulate processing
+      await Task.Delay(1000);
+      
+      // Process checkout with validation
+      var checkoutResult = await CartService.ProcessCheckoutAsync(userPoints);
+      
+      if (checkoutResult.Success)
+      {
+        Console.WriteLine($"[Cart.razor] Checkout successful - deducting {totalCost} points");
+        
+        // Save order to database
+        var order = await SaveOrderAsync(CartService.Items, totalCost);
+        
+        // Deduct points
+        Points.Spend(totalCost);
+        
+        // Send notifications
+        await SendNotificationsAsync(order);
+        
+        // Manually trigger cart refresh since we don't use OnCartChanged for checkout
+        StateHasChanged();
+        
+        showSuccessMessage = true;
+        StateHasChanged();
+        
+        // Trigger confetti
+        try
+        {
+          await JS.InvokeVoidAsync("triggerConfetti");
+        }
+        catch (Exception jsEx)
+        {
+          Console.WriteLine($"[Cart.razor] Confetti error: {jsEx.Message}");
+        }
+        
+        // Auto-hide success message after 3 seconds
+        await Task.Delay(3000);
+        showSuccessMessage = false;
+        StateHasChanged();
+      }
+      else
+      {
+        Console.WriteLine($"[Cart.razor] Checkout failed: {checkoutResult.Message}");
+        errorMessage = checkoutResult.Message;
+        showErrorMessage = true;
+      }
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"[Cart.razor] Checkout exception: {ex.Message}");
+      errorMessage = $"Checkout failed: {ex.Message}";
+      showErrorMessage = true;
+    }
+    finally
+    {
+      // After successful checkout, clear temporary family codes
+      PhilanthroPoints.Pages.Admin.Inventory.TempFamilyCodes.Clear();
+      
+      isCheckingOut = false;
+      StateHasChanged();
+      Console.WriteLine($"[Cart.razor] Checkout completed - cart items: {CartService.Items.Count}");
+    }
+  }
+
+  void DismissError()
+  {
+    showErrorMessage = false;
+    errorMessage = string.Empty;
+    StateHasChanged();
+  }
+
+  private async Task<Order> SaveOrderAsync(List<Item> items, int totalCost)
+  {
+    try
+    {
+      var order = new Order
+      {
+        HeadOfHousehold = CheckoutSession.HeadOfHousehold,
+        ContactPhone = CheckoutSession.ContactPhone,
+        ContactEmail = CheckoutSession.ContactEmail,
+        OrderDate = DateTime.Now,
+        TotalCost = totalCost,
+        TotalItems = items.Count,
+        ItemsSummary = string.Join(", ", items.Select(i => $"{i.Name} ({i.Cost} pts)"))
+      };
+
+      DbContext.Orders.Add(order);
+      await DbContext.SaveChangesAsync();
+
+      // Add order items
+      foreach (var item in items)
+      {
+        var orderItem = new OrderItem
+        {
+          OrderId = order.Id,
+          ItemId = item.Id,
+          ItemName = item.Name,
+          ItemCost = item.Cost,
+          Quantity = 1
+        };
+        DbContext.OrderItems.Add(orderItem);
+      }
+
+      await DbContext.SaveChangesAsync();
+      Console.WriteLine($"[Cart.razor] Order {order.Id} saved successfully");
+      
+      return order;
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"[Cart.razor] Error saving order: {ex.Message}");
+      throw;
+    }
+  }
+
+  private async Task SendNotificationsAsync(Order order)
+  {
+    try
+    {
+      // Get the items for the notification
+      var orderItems = CartService.Items.ToList();
+      
+      Console.WriteLine($"[Cart.razor] Attempting to send notifications for order {order.Id}");
+      Console.WriteLine($"[Cart.razor] Email: {order.ContactEmail}, Phone: {order.ContactPhone}");
+      
+      try
+      {
+        // Send email notification
+        await NotificationService.SendOrderConfirmationEmailAsync(
+          order.ContactEmail,
+          order.HeadOfHousehold,
+          orderItems
+        );
+        order.EmailSent = true;
+        Console.WriteLine($"[Cart.razor] Email notification sent successfully");
+      }
+      catch (Exception emailEx)
+      {
+        Console.WriteLine($"[Cart.razor] Email notification failed: {emailEx.Message}");
+      }
+      
+      try
+      {
+        // Send SMS notification
+        await NotificationService.SendOrderConfirmationSmsAsync(
+          order.ContactPhone,
+          order.HeadOfHousehold,
+          orderItems
+        );
+        order.SmsSent = true;
+        Console.WriteLine($"[Cart.razor] SMS notification sent successfully");
+      }
+      catch (Exception smsEx)
+      {
+        Console.WriteLine($"[Cart.razor] SMS notification failed: {smsEx.Message}");
+      }
+      
+      // Update order to mark notifications as sent (even if they failed)
+      DbContext.Orders.Update(order);
+      await DbContext.SaveChangesAsync();
+      
+      Console.WriteLine($"[Cart.razor] Notification attempt completed for order {order.Id}");
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"[Cart.razor] Unexpected error with notifications: {ex.Message}");
+      // Don't throw here - order is already saved, notifications are nice-to-have
+    }
+  }
+}
+
+<style>
+.cart-items { list-style: none; padding: 0; margin: 0 0 1rem 0; }
+.cart-item { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 0.5rem 0; 
+  border-bottom: 1px solid #eee; 
+}
+.cart-item:last-child { border-bottom: none; }
+.btn-remove { 
+  background: #ef4444; 
+  color: white; 
+  border: none; 
+  padding: 0.25rem 0.5rem; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+.btn-remove:hover { background: #dc2626; }
+
+.cart-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.checkout-btn {
+  background: var(--bc-gradient) !important;
+  position: relative;
+  min-width: 140px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(36, 158, 160, 0.4);
+  transition: all 0.3s ease;
+}
+
+.checkout-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(36, 158, 160, 0.5);
+}
+
+.checkout-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-left: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.success-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bc-gradient);
+  color: white;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  z-index: 1000;
+  animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  min-width: 300px;
+}
+
+.error-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  z-index: 1000;
+  animation: errorShake 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  min-width: 300px;
+}
+
+.error-content h3,
+.error-content p {
+  color: white;
+}
+
+.error-content h3 {
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.error-content p {
+  margin: 0.5rem 0 1rem 0;
+  opacity: 0.9;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #fff3cd;
+}
+
+.success-content h3 {
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.success-content p {
+  margin: 0.5rem 0 1rem 0;
+  opacity: 0.9;
+}
+
+.success-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.celebration-emojis {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.celebration-emojis span {
+  font-size: 1.5rem;
+  animation: celebrationFloat 2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.2s);
+}
+
+.celebration-emojis span:nth-child(1) { --i: 0; }
+.celebration-emojis span:nth-child(2) { --i: 1; }
+.celebration-emojis span:nth-child(3) { --i: 2; }
+.celebration-emojis span:nth-child(4) { --i: 3; }
+.celebration-emojis span:nth-child(5) { --i: 4; }
+
+.confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@@keyframes successPop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@@keyframes errorShake {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3) translateX(0);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1) translateX(-10px);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1) translateX(10px);
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1) translateX(-5px);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) translateX(0);
+    opacity: 1;
+  }
+}
+
+@@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@@keyframes celebrationFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(5deg); }
+  75% { transform: translateY(-3px) rotate(-3deg); }
+}
+
+@@media (max-width: 768px) {
+  .cart-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .cart-actions .btn {
+    width: 100%;
+  }
+  
+  .success-message {
+    margin: 1rem;
+    min-width: auto;
+    max-width: calc(100% - 2rem);
+  }
+}
+</style>
+
+<script>
+  window.triggerConfetti = function() {
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const confetti = [];
+    const colors = ['#249EA0', '#FAAB36', '#F78104', '#FD5901', '#FFD700', '#FF69B4', '#00CED1'];
+    
+    // Create confetti pieces
+    for (let i = 0; i < 9000; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: -10,
+        vx: (Math.random() - 0.5) * 6,
+        vy: Math.random() * 3 + 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 8 + 4,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 10
+      });
+    }
+    
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = confetti.length - 1; i >= 0; i--) {
+        const piece = confetti[i];
+        
+        // Update position
+        piece.x += piece.vx;
+        piece.y += piece.vy;
+        piece.rotation += piece.rotationSpeed;
+        
+        // Apply gravity
+        piece.vy += 0.0009;
+        
+        // Remove if off screen
+        if (piece.y > canvas.height + 10 || piece.x < -10 || piece.x > canvas.width + 10) {
+          confetti.splice(i, 1);
+          continue;
+        }
+        
+        // Draw confetti piece
+        ctx.save();
+        ctx.translate(piece.x, piece.y);
+        ctx.rotate(piece.rotation * Math.PI / 1500);
+        ctx.fillStyle = piece.color;
+        ctx.fillRect(-piece.size/2, -piece.size/2, piece.size, piece.size);
+        ctx.restore();
+      }
+      
+      if (confetti.length > 0) {
+        requestAnimationFrame(animateConfetti);
+      } else {
+        // Clear canvas when done
+       
+      }
+    }
+    
+    animateConfetti();
+  };
+  
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    const canvas = document.getElementById('confetti-canvas');
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+  });
+</script>

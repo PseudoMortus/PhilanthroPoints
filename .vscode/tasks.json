@@ -1,0 +1,51 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build PhilanthroPoints",
+			"type": "shell",
+			"command": "dotnet build",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build PhilanthroPoints Project",
+			"type": "shell",
+			"command": "dotnet build PhilanthroPoints.csproj",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Run PhilanthroPoints",
+			"type": "shell",
+			"command": "dotnet run --project PhilanthroPoints.csproj",
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "Watch PhilanthroPoints",
+			"type": "shell",
+			"command": "dotnet watch run",
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "Watch PhilanthroPoints",
+			"type": "shell",
+			"command": "dotnet watch run",
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "Watch PhilanthroPoints",
+			"type": "shell",
+			"command": "dotnet watch run",
+			"isBackground": true,
+			"group": "build"
+		}
+	]
+}

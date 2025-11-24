@@ -1,0 +1,291 @@
+@page "/"
+@inject PhilanthroPoints.Services.PointsState Points
+@inject NavigationManager Nav
+@inject PhilanthroPoints.Services.LoginService Auth
+@inject PhilanthroPoints.Services.CustomAuthStateProvider AuthStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@inject PhilanthroPoints.Services.FlowState Flow
+@using PhilanthroPoints.Components
+
+<div class="birthday-home page-enter">
+    <!-- Floating decorations - will be enabled after page load for performance -->
+
+    
+    <div class="welcome-header decorative-border">
+            <p class="welcome-text">Welcome to Birthday connections!</p>
+      <p class="tagline">Make Every Birthday Special with Thoughtful Gifts & Treats</p>
+      <div class="sparkle" style="top: 20%; left: 15%;"></div>
+      <div class="sparkle" style="top: 30%; right: 20%;"></div>
+      <div class="sparkle" style="bottom: 25%; left: 25%;"></div>
+    </div>
+    
+    <AuthorizeView>
+      <Authorized Context="authState">
+        <p class="card">Use your points to choose gifts, sweets, and a card. Continue the flow below.</p>
+        <div class="grid">
+          <div class="card">
+            <div class="category-icon">👤</div>
+            <h3>Demographics</h3>
+            <p class="card-description">Tell us about the birthday person</p>
+            <button class="btn" @onclick="DemographicsClick">Open</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">💌</div>
+            <h3>Birthday Cards</h3>
+            <p class="card-description">Choose the perfect greeting card</p>
+            <button class="btn" @onclick="CardsClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon"></div>
+            <h3>Sweets &amp; Treats</h3>
+            <p class="card-description">Delicious cakes and sweet surprises</p>
+            <button class="btn" @onclick="TreatsClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">📚</div>
+            <h3>Books</h3>
+            <p class="card-description">Educational and entertaining reads</p>
+            <button class="btn" @onclick="BooksClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon"></div>
+            <h3>Gifts</h3>
+            <p class="card-description">Thoughtful presents they'll love</p>
+            <button class="btn" @onclick="GiftsClick">Browse</button>
+          </div>
+          <div class="card">
+            <div class="category-icon">🛒</div>
+            <h3>Cart</h3>
+            <p class="card-description">Review your birthday selection</p>
+            <button class="btn" @onclick="CartClick">View</button>
+          </div>
+          <AuthorizeView Roles="Admin">
+            <div class="card">
+              <div class="category-icon">⚙️</div>
+              <h3>Admin</h3>
+              <p class="card-description">Manage inventory and settings</p>
+              <button class="btn" @onclick="AdminClick">Admin</button>
+            </div>
+          </AuthorizeView>
+        </div>
+  </Authorized>
+      <NotAuthorized Context="na">
+        <button class="btn" style="font-size: 1.2rem; padding: 1rem 2rem;" @onclick="ShowLogin">Click Here to Start</button>
+        <div style="margin-top:1rem;">
+          <button class="btn" @onclick="AdminClick">Admin</button>
+        </div>
+        @if (showLoginForm)
+        {
+            <h2 style="text-align:center; color:#2CA6A4; font-size:2.5rem; margin-bottom:2rem;">Guest Login</h2>
+            <div class="login-card" style="background:#B3E0EA; border-radius:16px; max-width:600px; margin:2rem auto; padding:2.5rem; box-shadow:0 2px 16px rgba(44,166,164,0.08);">
+        <label for="agencySelect" style="font-size:1.2rem; font-weight:500; color:#2CA6A4; margin-bottom:0.5rem;">Agency *</label>
+        <select id="agencySelect" class="input" @bind="selectedAgency" style="width:100%; padding:1rem; font-size:1.1rem; border-radius:8px; border:1px solid #2CA6A4; margin-bottom:1.5rem;">
+            <option value="">Select an Agency</option>
+            <option>Big Brothers Big Sisters</option>
+            <option>Children's Center for Visually Impaired</option>
+            <option>Cornerstones of Care</option>
+            <option>Demonstration</option>
+            <option>HALO</option>
+            <option>Hillcrest Transitional Housing</option>
+            <option>i.c.stars</option>
+            <option>Jackson County Courts</option>
+            <option>KC Cares</option>
+            <option>KC Heroes</option>
+            <option>Metro Lutheran Ministries</option>
+            <option>PACES</option>
+            <option>Rose Brooks</option>
+            <option>Turner Parents as Teachers</option>
+        </select>
+        <input class="input" @bind="guestCode" maxlength="11" placeholder="Enter code (e.g. ICS12345678)" style="width:100%; padding:1rem; font-size:1.2rem; border-radius:12px; border:1px solid #B3E0EA; background:#E6F6F9; margin-bottom:2rem;" />
+        <button class="btn" @onclick="GuestLogin" style="width:60%; margin:0 auto; display:block; padding:1rem 0; font-size:1.3rem; font-weight:500; color:#fff; background:linear-gradient(90deg,#2CA6A4 0%,#F6C343 100%); border:none; border-radius:24px; box-shadow:0 2px 8px rgba(44,166,164,0.12);">Login as Guest</button>
+        @if (!string.IsNullOrEmpty(guestLoginStatus))
+        {
+            <div style="margin-top:2rem; color:@(guestLoginStatus.StartsWith("✅") ? "#2CA6A4" : "#F6C343"); font-weight:bold; text-align:center; font-size:1.2rem;">@guestLoginStatus</div>
+        }
+    </div>
+        }
+      </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+  private bool _initialized;
+  private bool showLoginForm = false;
+  private string guestCode = string.Empty;
+  private string guestLoginStatus = string.Empty;
+  private string selectedAgency = string.Empty;
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender && !_initialized)
+    {
+      _initialized = true;
+      try
+      {
+        await Points.InitializeAsync();
+        await Points.InitializeJavaScriptAsync();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Home page initialization failed: {ex.Message}");
+      }
+      StateHasChanged();
+    }
+  }
+
+  private void ShowLogin()
+  {
+      showLoginForm = true;
+  }
+
+  private void DemographicsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics); Nav.NavigateTo("/demographics"); }
+  private void CardsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cards); Nav.NavigateTo("/cards"); }
+  private void TreatsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Treats); Nav.NavigateTo("/treats"); }
+  private void BooksClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Books); Nav.NavigateTo("/parent/books"); }
+  private void GiftsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Gifts); Nav.NavigateTo("/gifts"); }
+  private void CartClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cart); Nav.NavigateTo("/parent/cart"); }
+  private void AdminClick() => Nav.NavigateTo("/admin");
+
+  private async Task GuestLogin()
+  {
+    if (string.IsNullOrWhiteSpace(selectedAgency))
+    {
+      guestLoginStatus = "❌ Please select an agency.";
+      StateHasChanged();
+      return;
+    }
+    // Validate code format: [ABC][MM][DD][AA][NN]
+    var expectedPrefix = selectedAgency.Substring(0, 3).ToUpper();
+    var code = guestCode.ToUpper();
+    bool validFormat = code.Length == 11 && code.StartsWith(expectedPrefix);
+    // Optionally, further validate MM, DD, AA, NN are digits
+    if (validFormat)
+    {
+      var mm = code.Substring(3,2);
+      var dd = code.Substring(5,2);
+      var aa = code.Substring(7,2);
+      var nn = code.Substring(9,2);
+      validFormat = int.TryParse(mm, out _) && int.TryParse(dd, out _) && int.TryParse(aa, out _) && int.TryParse(nn, out _);
+    }
+    var codeMatch = validFormat && PhilanthroPoints.Pages.Admin.Inventory.TempFamilyCodes.Any(c => c.Code == code);
+    if (codeMatch)
+    {
+      var guest = new PhilanthroPoints.Models.Member {
+        Username = code,
+        FirstName = "Guest",
+        LastName = "",
+        Email = "guest@philanthropoints.local"
+      };
+      await AuthStateProvider.MarkUserAsAuthenticated(guest);
+      guestLoginStatus = "✅ Guest login successful!";
+      StateHasChanged();
+      Nav.NavigateTo("/demographics");
+    }
+    else
+    {
+      guestLoginStatus = "❌ Invalid code or agency. Please check and try again.";
+      StateHasChanged();
+    }
+  }
+}
+
+<style>
+.birthday-home {
+  text-align: center;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcome-header {
+  background: linear-gradient(135deg, #249EA0 0%, #FAAB36 100%);
+  color: white;
+  padding: 3rem 2rem;
+  border-radius: 30px;
+  margin-bottom: 2rem;
+  box-shadow: 0 12px 32px rgba(36, 158, 160, 0.3);
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.welcome-header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  -webkit-text-fill-color: white;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  font-family: 'Quicksand', sans-serif;
+}
+
+.tagline {
+  font-size: 1.3rem;
+  opacity: 0.95;
+  font-weight: 500;
+  font-family: 'Nunito', sans-serif;
+}
+
+@@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 1rem 0;
+  line-height: 1.4;
+}
+
+.birthday-home .card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.birthday-home .card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(36, 158, 160, 0.3),
+    0 0 0 1px rgba(36, 158, 160, 0.1);
+}
+
+.birthday-home .card:hover .category-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+@@media (max-width: 768px) {
+  .welcome-header h1 {
+    font-size: 2rem;
+  }
+  
+  .tagline {
+    font-size: 1.1rem;
+  }
+  
+  .welcome-header {
+    padding: 2rem 1rem;
+  }
+  
+  .category-icon {
+    font-size: 2.5rem;
+  }
+  
+  .floating-decoration {
+    font-size: 1.5rem;
+  }
+}
+
+.btn-secondary {
+  background: #6b7280 !important;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #4b5563 !important;
+  transform: translateY(-2px);
+}
+</style>
