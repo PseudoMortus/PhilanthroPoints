@@ -552,3 +552,4 @@ C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/ref/
 /run/media/jcarter/Storage/repos/PhilanthroPoints/obj/Debug/net8.0/ref/PhilanthroPoints.dll
 =======
 >>>>>>> Mike's-Commits
+/run/media/jcarter/Storage/repos/PhilanthroPoints/bin/Debug/net8.0/appsettings.json
