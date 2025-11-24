@@ -38,6 +38,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vQWRtaW5Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/run/media/jcarter/Storage/repos/PhilanthroPoints/Pages/Admin/GenerateLoginCode.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vR2VuZXJhdGVMb2dpbkNvZGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/Pages/Admin/Inventory.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vSW52ZW50b3J5LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -64,6 +68,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/run/media/jcarter/Storage/repos/PhilanthroPoints/Pages/LoginWithCode.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW5XaXRoQ29kZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/run/media/jcarter/Storage/repos/PhilanthroPoints/Pages/Parent/Books.razor]
