@@ -76,15 +76,33 @@
         </div>
         @if (showLoginForm)
         {
-            <div style="background-color: lightblue; padding: 20px; border-radius:8px; max-width:420px; margin: 2rem auto;">
-                <h2>Login</h2>
-                @if (error != null) { <p style="color:red">@error</p> }
-                <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-                    <input class="input" @bind-value="loginModel.Username" placeholder="Username" />
-                    <input class="input" type="password" @bind-value="loginModel.Password" placeholder="Password" />
-                    <button class="btn" type="submit">Login</button>
-                </EditForm>
-            </div>
+            <h2 style="text-align:center; color:#2CA6A4; font-size:2.5rem; margin-bottom:2rem;">Guest Login</h2>
+            <div class="login-card" style="background:#B3E0EA; border-radius:16px; max-width:600px; margin:2rem auto; padding:2.5rem; box-shadow:0 2px 16px rgba(44,166,164,0.08);">
+        <label for="agencySelect" style="font-size:1.2rem; font-weight:500; color:#2CA6A4; margin-bottom:0.5rem;">Agency *</label>
+        <select id="agencySelect" class="input" @bind="selectedAgency" style="width:100%; padding:1rem; font-size:1.1rem; border-radius:8px; border:1px solid #2CA6A4; margin-bottom:1.5rem;">
+            <option value="">Select an Agency</option>
+            <option>Big Brothers Big Sisters</option>
+            <option>Children's Center for Visually Impaired</option>
+            <option>Cornerstones of Care</option>
+            <option>Demonstration</option>
+            <option>HALO</option>
+            <option>Hillcrest Transitional Housing</option>
+            <option>i.c.stars</option>
+            <option>Jackson County Courts</option>
+            <option>KC Cares</option>
+            <option>KC Heroes</option>
+            <option>Metro Lutheran Ministries</option>
+            <option>PACES</option>
+            <option>Rose Brooks</option>
+            <option>Turner Parents as Teachers</option>
+        </select>
+        <input class="input" @bind="guestCode" maxlength="11" placeholder="Enter code (e.g. ICS12345678)" style="width:100%; padding:1rem; font-size:1.2rem; border-radius:12px; border:1px solid #B3E0EA; background:#E6F6F9; margin-bottom:2rem;" />
+        <button class="btn" @onclick="GuestLogin" style="width:60%; margin:0 auto; display:block; padding:1rem 0; font-size:1.3rem; font-weight:500; color:#fff; background:linear-gradient(90deg,#2CA6A4 0%,#F6C343 100%); border:none; border-radius:24px; box-shadow:0 2px 8px rgba(44,166,164,0.12);">Login as Guest</button>
+        @if (!string.IsNullOrEmpty(guestLoginStatus))
+        {
+            <div style="margin-top:2rem; color:@(guestLoginStatus.StartsWith("✅") ? "#2CA6A4" : "#F6C343"); font-weight:bold; text-align:center; font-size:1.2rem;">@guestLoginStatus</div>
+        }
+    </div>
         }
       </NotAuthorized>
     </AuthorizeView>
@@ -93,8 +111,9 @@
 @code {
   private bool _initialized;
   private bool showLoginForm = false;
-  private LoginModel loginModel = new();
-  private string? error;
+  private string guestCode = string.Empty;
+  private string guestLoginStatus = string.Empty;
+  private string selectedAgency = string.Empty;
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
@@ -119,30 +138,55 @@
       showLoginForm = true;
   }
 
-  private async Task HandleLogin()
+  private void DemographicsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics); Nav.NavigateTo("/demographics"); }
+  private void CardsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cards); Nav.NavigateTo("/cards"); }
+  private void TreatsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Treats); Nav.NavigateTo("/treats"); }
+  private void BooksClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Books); Nav.NavigateTo("/parent/books"); }
+  private void GiftsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Gifts); Nav.NavigateTo("/gifts"); }
+  private void CartClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cart); Nav.NavigateTo("/parent/cart"); }
+  private void AdminClick() => Nav.NavigateTo("/admin");
+
+  private async Task GuestLogin()
   {
-      var user = Auth.Authenticate(loginModel.Username, loginModel.Password);
-      if (user == null)
-      {
-          error = "Invalid username or password.";
-      }
-      else
-      {
-          await AuthStateProvider.MarkUserAsAuthenticated(user);
-          Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics);
-          Nav.NavigateTo("/demographics");
-      }
+    if (string.IsNullOrWhiteSpace(selectedAgency))
+    {
+      guestLoginStatus = "❌ Please select an agency.";
+      StateHasChanged();
+      return;
+    }
+    // Validate code format: [ABC][MM][DD][AA][NN]
+    var expectedPrefix = selectedAgency.Substring(0, 3).ToUpper();
+    var code = guestCode.ToUpper();
+    bool validFormat = code.Length == 11 && code.StartsWith(expectedPrefix);
+    // Optionally, further validate MM, DD, AA, NN are digits
+    if (validFormat)
+    {
+      var mm = code.Substring(3,2);
+      var dd = code.Substring(5,2);
+      var aa = code.Substring(7,2);
+      var nn = code.Substring(9,2);
+      validFormat = int.TryParse(mm, out _) && int.TryParse(dd, out _) && int.TryParse(aa, out _) && int.TryParse(nn, out _);
+    }
+    var codeMatch = validFormat && PhilanthroPoints.Pages.Admin.Inventory.TempFamilyCodes.Any(c => c.Code == code);
+    if (codeMatch)
+    {
+      var guest = new PhilanthroPoints.Models.Member {
+        Username = code,
+        FirstName = "Guest",
+        LastName = "",
+        Email = "guest@philanthropoints.local"
+      };
+      await AuthStateProvider.MarkUserAsAuthenticated(guest);
+      guestLoginStatus = "✅ Guest login successful!";
+      StateHasChanged();
+      Nav.NavigateTo("/demographics");
+    }
+    else
+    {
+      guestLoginStatus = "❌ Invalid code or agency. Please check and try again.";
+      StateHasChanged();
+    }
   }
-
-    private void DemographicsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics); Nav.NavigateTo("/demographics"); }
-    private void CardsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cards); Nav.NavigateTo("/cards"); }
-    private void TreatsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Treats); Nav.NavigateTo("/treats"); }
-    private void BooksClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Books); Nav.NavigateTo("/parent/books"); }
-    private void GiftsClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Gifts); Nav.NavigateTo("/gifts"); }
-    private void CartClick(){ Flow.Set(PhilanthroPoints.Services.FlowStep.Cart); Nav.NavigateTo("/parent/cart"); }
-    private void AdminClick() => Nav.NavigateTo("/admin");
-
-  class LoginModel { public string Username { get; set; } = ""; public string Password { get; set; } = ""; }
 }
 
 <style>

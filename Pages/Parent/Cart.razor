@@ -1,4 +1,3 @@
-
 @page "/parent/cart"
 @inject PhilanthroPoints.Services.CartState CartService
 @inject PhilanthroPoints.Services.PointsState Points
@@ -126,16 +125,7 @@ else
       var currentUser = Points.CurrentUser;
       if (currentUser != null)
       {
-        var family = DbContext.Families
-          .Where(f => !string.IsNullOrEmpty(f.HeadOfHousehold) && 
-                     !string.IsNullOrEmpty(f.ContactPhone) && 
-                     !string.IsNullOrEmpty(f.ContactEmail))
-          .FirstOrDefault();
-          
-        if (family != null)
-        {
-          CheckoutSession.SetContactInfo(family.HeadOfHousehold, family.ContactPhone, family.ContactEmail);
-        }
+        // Removed family-related logic
       }
     }
     
@@ -227,6 +217,9 @@ else
     }
     finally
     {
+      // After successful checkout, clear temporary family codes
+      PhilanthroPoints.Pages.Admin.Inventory.TempFamilyCodes.Clear();
+      
       isCheckingOut = false;
       StateHasChanged();
       Console.WriteLine($"[Cart.razor] Checkout completed - cart items: {CartService.Items.Count}");

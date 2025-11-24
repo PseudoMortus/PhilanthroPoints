@@ -13,4 +13,5 @@ public class Member
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public int Points { get; set; } = 0;
+    public int Age { get; set; } = 0; // Two-digit age, default 0
 }
