@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets/app.performance.css"
     },
     {
+      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/appsettings.json",
+      "PackagePath": "staticwebassets/appsettings.json"
+    },
+    {
       "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",
       "PackagePath": "staticwebassets/birthday-buddy.css"
     },

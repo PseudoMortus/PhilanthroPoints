@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "C6ykk7zMKyx/hC+FIv4dTf1B95cQ3BwZ1wKyEU46ojc=",
+  "Hash": "OX02fY6DMCrC4mtkFtFGxMTyTHLqP6Qf3dUoyrjmHoo=",
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/app.performance.css"
+    },
+    {
+      "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/appsettings.json",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "appsettings.json",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/appsettings.json"
     },
     {
       "Identity": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",

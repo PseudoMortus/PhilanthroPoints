@@ -550,8 +550,6 @@ C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/ref/
 /run/media/jcarter/Storage/repos/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.pdb
 /run/media/jcarter/Storage/repos/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.genruntimeconfig.cache
 /run/media/jcarter/Storage/repos/PhilanthroPoints/obj/Debug/net8.0/ref/PhilanthroPoints.dll
-<<<<<<< HEAD
-=======
 =======
 >>>>>>> Mike's-Commits
 >>>>>>> main

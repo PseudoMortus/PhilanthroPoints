@@ -364,8 +364,6 @@
         existingFamily.HeadOfHousehold = family.HeadOfHousehold;
         existingFamily.PreferredGifts = family.PreferredGifts;
         existingFamily.SpecialNotes = family.SpecialNotes;
-        existingFamily.ContactPhone = family.ContactPhone;
-        existingFamily.ContactEmail = family.ContactEmail;
         
         DbContext.Families.Update(existingFamily);
       }
@@ -413,9 +411,7 @@
     {
       // Store contact information for checkout
       CheckoutSession.SetContactInfo(
-        family.HeadOfHousehold, 
-        family.ContactPhone, 
-        family.ContactEmail
+        family.HeadOfHousehold
       );
       
       Nav.NavigateTo("/cards");
@@ -425,8 +421,6 @@
 
   private bool IsValid()
   {
-    return !string.IsNullOrWhiteSpace(family.HeadOfHousehold) &&
-           !string.IsNullOrWhiteSpace(family.ContactPhone) &&
-           !string.IsNullOrWhiteSpace(family.ContactEmail);
+    return !string.IsNullOrWhiteSpace(family.HeadOfHousehold);
   }
 }

@@ -9,6 +9,10 @@
 @using PhilanthroPoints.Components
 @using PhilanthroPoints.Models
 @using Microsoft.JSInterop
+@using MailKit
+@using MailKit.Net.Smtp
+@inject IEmailSender EmailSender
+@inject IConfiguration Configuration
 @implements IDisposable
 
 <h2>Your Cart</h2>
@@ -129,18 +133,6 @@ else
       }
     }
     
-    // Final check - if still no contact info, redirect to demographics
-    if (!CheckoutSession.HasContactInfo)
-    {
-      errorMessage = "Please complete the demographics information first to provide contact details.";
-      showErrorMessage = true;
-      
-      // Auto-redirect to demographics page after 3 seconds
-      await Task.Delay(3000);
-      Nav.NavigateTo("/demographics");
-      return;
-    }
-    
     isCheckingOut = true;
     showErrorMessage = false;
     showSuccessMessage = false;
@@ -180,6 +172,13 @@ else
         
         // Send notifications
         await SendNotificationsAsync(order);
+        await EmailSender.SendEmailAsync(
+        // Temporary Email, should pull from a predetermined email in appsettings.json and/or emails from the db
+        "mikecriswell86@yahoo.com",
+        "🎉 Order Put In",
+        "<h2>Order Placed! ✅</h2><p>An Order Has Been Placed for a member.</p><p>Details:<br />Order ID: {order.Id}<br />Total Cost: ${totalCost} Points</p>"
+      );
+
         
         // Manually trigger cart refresh since we don't use OnCartChanged for checkout
         StateHasChanged();
@@ -240,8 +239,6 @@ else
       var order = new Order
       {
         HeadOfHousehold = CheckoutSession.HeadOfHousehold,
-        ContactPhone = CheckoutSession.ContactPhone,
-        ContactEmail = CheckoutSession.ContactEmail,
         OrderDate = DateTime.Now,
         TotalCost = totalCost,
         TotalItems = items.Count,
