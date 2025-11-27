@@ -1,27 +1,27 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\app.css",
+      "Id": "C:\\Users\\AntonioBanks\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\app.css",
       "PackagePath": "staticwebassets\\app.css"
     },
     {
-      "Id": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\app.performance.css",
+      "Id": "C:\\Users\\AntonioBanks\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\app.performance.css",
       "PackagePath": "staticwebassets\\app.performance.css"
     },
     {
-      "Id": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\birthday-buddy.css",
+      "Id": "C:\\Users\\AntonioBanks\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\birthday-buddy.css",
       "PackagePath": "staticwebassets\\birthday-buddy.css"
     },
     {
-      "Id": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\buddy-walk.js",
+      "Id": "C:\\Users\\AntonioBanks\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\buddy-walk.js",
       "PackagePath": "staticwebassets\\buddy-walk.js"
     },
     {
-      "Id": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\performance.js",
+      "Id": "C:\\Users\\AntonioBanks\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\performance.js",
       "PackagePath": "staticwebassets\\performance.js"
     },
     {
-      "Id": "C:\\Users\\MichaelCriswell\\Downloads\\mikec\\wwwroot\\points.js",
+      "Id": "C:\\Users\\AntonioBanks\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\points.js",
       "PackagePath": "staticwebassets\\points.js"
     },
     {
