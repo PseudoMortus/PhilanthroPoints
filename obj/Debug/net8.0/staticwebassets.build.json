@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "G+zY17W2v4gu41L3bm9PMuOkSBbyijxuCADe+IExTYM=",
+  "Hash": "UT6M96ZaDKCgZ6Pmbkv1Ty5Hm9RZwD7ffu7fRvz6zfk=",
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -129,6 +129,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\points.js"
+    },
+    {
+      "Identity": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\survey.css",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\wwwroot\\",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "survey.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\survey.css"
     }
   ]
 }

@@ -692,3 +692,4 @@ C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints\obj\Debug\net8.0\refi
 C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints\obj\Debug\net8.0\PhilanthroPoints.pdb
 C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints\obj\Debug\net8.0\PhilanthroPoints.genruntimeconfig.cache
 C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints\obj\Debug\net8.0\ref\PhilanthroPoints.dll
+C:\Users\MichaelCriswell\Documents\GitHub\PhilanthroPoints\bin\Debug\net8.0\appsettings.json

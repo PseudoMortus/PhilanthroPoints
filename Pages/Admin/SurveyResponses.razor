@@ -1,0 +1,58 @@
+@page "/admin/surveys"
+
+@inject PhilanthroPoints.Data.ApplicationDbContext Db
+@using PhilanthroPoints.Models
+
+<h2>Survey Responses</h2>
+
+<table class="table table-bordered table-sm" style="font-size:0.97em; border-collapse:separate; border-spacing:0;">
+    <thead>
+        <tr style="background:#f8f9fa;">
+            <th style="width:40px; padding:8px 10px;">ID</th>
+            <th style="width:110px; padding:8px 10px;">Satisfaction</th>
+            <th style="width:160px; padding:8px 10px;">Child Reaction</th>
+            <th style="width:140px; padding:8px 10px;">Likelihood</th>
+            <th style="width:180px; padding:8px 10px;">Comments</th>
+            <th style="width:110px; padding:8px 10px;">Submitted By</th>
+            <th style="width:120px; padding:8px 10px;">Date</th>
+            <th style="width:60px; padding:8px 10px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in responses)
+        {
+            <tr style="vertical-align:top; background:@((responses.IndexOf(r) % 2 == 0) ? "#fff" : "#f6f6f6")">
+                <td style="padding:8px 10px;">@r.Id</td>
+                <td style="padding:8px 10px;">@r.Satisfaction</td>
+                <td style="padding:8px 10px;">@r.ChildReaction</td>
+                <td style="padding:8px 10px;">@r.LikelihoodToRecommend</td>
+                <td style="padding:8px 10px;">@r.Comments</td>
+                <td style="padding:8px 10px;">@r.SubmittedBy</td>
+                <td style="padding:8px 10px;">@r.SubmittedAt.ToLocalTime().ToString("g")</td>
+                <td style="padding:8px 10px; text-align:center;">
+                    <button class="btn btn-danger btn-sm" style="padding:2px 8px;" @onclick="() => Delete(r.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<FamilySurveyResponse> responses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        responses = await Db.FamilySurveyResponses.ToListAsync();
+    }
+
+    async Task Delete(int id)
+    {
+        var item = await Db.FamilySurveyResponses.FindAsync(id);
+        if (item != null)
+        {
+            Db.FamilySurveyResponses.Remove(item);
+            await Db.SaveChangesAsync();
+            responses = await Db.FamilySurveyResponses.ToListAsync();
+        }
+    }
+}

@@ -9,6 +9,9 @@
 @using PhilanthroPoints.Components
 @using PhilanthroPoints.Models
 @using Microsoft.JSInterop
+@using MailKit
+@using MailKit.Net.Smtp
+@inject IEmailSender EmailSender
 @implements IDisposable
 
 <h2>Your Cart</h2>
@@ -147,9 +150,9 @@ else
     {
       var totalCost = CartService.TotalCost();
       var userPoints = Points.Points;
-      
+      // Save a copy of the cart items before clearing
+      var checkedOutItems = CartService.Items.ToList();
       Console.WriteLine($"[Cart.razor] Starting checkout - TotalCost: {totalCost}, UserPoints: {userPoints}");
-      
       // Check points locally first
       if (userPoints < totalCost)
       {
@@ -158,22 +161,35 @@ else
         Console.WriteLine($"[Cart.razor] Checkout failed - insufficient points");
         return;
       }
-      
       // Simulate processing
       await Task.Delay(1000);
-      
       // Process checkout with validation
       var checkoutResult = await CartService.ProcessCheckoutAsync(userPoints);
-      
       if (checkoutResult.Success)
       {
         Console.WriteLine($"[Cart.razor] Checkout successful - deducting {totalCost} points");
-        // Save order to database
-        var order = await SaveOrderAsync(CartService.Items, totalCost);
+        // Save order to database using checkedOutItems
+        var order = await SaveOrderAsync(checkedOutItems, totalCost);
         // Deduct points
         Points.Spend(totalCost);
         // Send notifications
         await SendNotificationsAsync(order);
+        // Build email from checkedOutItems
+        var itemsHtml = checkedOutItems.Count > 0
+            ? string.Join("", checkedOutItems.Select(i => $"<li>{i.Name} ({i.Cost} pts)</li>"))
+            : "<li><em>No items found in this order.</em></li>";
+        var orderIdText = order != null ? order.Id.ToString() : "N/A";
+        var totalCostText = order != null ? order.TotalCost.ToString() : totalCost.ToString();
+        var emailBody = $@"<h2>Order Placed! ✅</h2>
+<p>An Order Has Been Placed for a member.</p>
+<p>Details:<br />Order ID: {orderIdText}<br />Total Cost: {totalCostText} Points</p>
+<h3>Ordered Items:</h3>
+<ul>{itemsHtml}</ul>";
+        await EmailSender.SendEmailAsync(
+            "mikecriswell86@yahoo.com",
+            "🎉 Order Put In",
+            emailBody
+        );
         // Delete family info from database after successful checkout
         var family = DbContext.Families.FirstOrDefault(f => f.HeadOfHousehold == CheckoutSession.HeadOfHousehold);
         if (family != null)
@@ -194,10 +210,11 @@ else
         {
           Console.WriteLine($"[Cart.razor] Confetti error: {jsEx.Message}");
         }
-        // Auto-hide success message after 3 seconds
+        // Auto-hide success message after 3 seconds, then redirect to survey
         await Task.Delay(3000);
         showSuccessMessage = false;
         StateHasChanged();
+        Nav.NavigateTo("/family-survey");
       }
       else
       {
@@ -262,10 +279,14 @@ else
         DbContext.OrderItems.Add(orderItem);
       }
 
-      await DbContext.SaveChangesAsync();
-      Console.WriteLine($"[Cart.razor] Order {order.Id} saved successfully");
-      
-      return order;
+        await DbContext.SaveChangesAsync();
+        Console.WriteLine($"[Cart.razor] Order {order.Id} saved successfully");
+        // Reload the order with its items
+        var loadedOrder = DbContext.Orders
+          .Where(o => o.Id == order.Id)
+          .Include(o => o.OrderItems)
+          .FirstOrDefault();
+        return loadedOrder ?? order;
     }
     catch (Exception ex)
     {

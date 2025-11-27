@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhilanthroPoints.Data;
 
@@ -10,9 +11,11 @@ using PhilanthroPoints.Data;
 namespace PhilanthroPoints.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251125175250_AddFamilySurveyResponse")]
+    partial class AddFamilySurveyResponse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -257,17 +260,19 @@ namespace PhilanthroPoints.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ChildReaction")
+                    b.Property<string>("Likelihood")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Comments")
+                    b.Property<int>("PeopleCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Reaction")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("LikelihoodToRecommend")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ResponseCount")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Satisfaction")
                         .IsRequired()
