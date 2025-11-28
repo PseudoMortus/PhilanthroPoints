@@ -1,0 +1,77 @@
+@page "/gifts"
+@using System.Data
+@using OfficeOpenXml
+@inject IWebHostEnvironment Env
+
+<h3>Gifts List</h3>
+
+@if (gifts == null)
+{
+    <p>Loading gifts...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var gift in gifts)
+            {
+                <tr>
+                    <td>@gift.Name</td>
+                    <td>@gift.Description</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(gift.ImagePath))
+                        {
+                            <img src="@gift.ImagePath" alt="@gift.Name" width="100" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public class Gift
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string ImagePath { get; set; }
+    }
+
+    List<Gift> gifts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var filePath = Path.Combine(Env.WebRootPath, "Gifts.xlsx");
+        gifts = new List<Gift>();
+
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using (var package = new ExcelPackage(new FileInfo(filePath)))
+        {
+            var worksheet = package.Workbook.Worksheets[0];
+            int rowCount = worksheet.Dimension.Rows;
+
+            for (int row = 2; row <= rowCount; row++)
+            {
+                var name = worksheet.Cells[row, 1].Text;
+                var description = worksheet.Cells[row, 2].Text;
+                var imageFileName = worksheet.Cells[row, 3].Text;
+                var imagePath = !string.IsNullOrEmpty(imageFileName) ? $"/images/{imageFileName}" : null;
+
+                gifts.Add(new Gift
+                {
+                    Name = name,
+                    Description = description,
+                    ImagePath = imagePath
+                });
+            }
+        }
+    }
+}
