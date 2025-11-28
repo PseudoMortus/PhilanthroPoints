@@ -3,8 +3,6 @@ using PhilanthroPoints.Data;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -47,9 +45,6 @@ public class NotificationService : INotificationService
             
             switch (emailProvider?.ToLower())
             {
-                case "sendgrid":
-                    await SendEmailViaSendGridAsync(email, subject, emailBody);
-                    break;
                 case "smtp":
                     await SendEmailViaSmtpAsync(email, subject, emailBody);
                     break;
@@ -123,9 +118,6 @@ public class NotificationService : INotificationService
             
             switch (emailProvider?.ToLower())
             {
-                case "sendgrid":
-                    await SendEmailViaSendGridAsync(email, subject, message, false);
-                    break;
                 case "smtp":
                     await SendEmailViaSmtpAsync(email, subject, message, false);
                     break;
@@ -203,31 +195,6 @@ public class NotificationService : INotificationService
         catch
         {
             return false;
-        }
-    }
-
-    // SendGrid Implementation
-    private async Task SendEmailViaSendGridAsync(string email, string subject, string content, bool isHtml = true)
-    {
-        var apiKey = _configuration["Email:SendGrid:ApiKey"];
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            throw new InvalidOperationException("SendGrid API key not configured");
-        }
-
-        var client = new SendGridClient(apiKey);
-        var from = new EmailAddress(_configuration["Email:SendGrid:FromEmail"] ?? "noreply@philanthropopoints.com", 
-                                   _configuration["Email:SendGrid:FromName"] ?? "PhilanthroPoints");
-        var to = new EmailAddress(email);
-        
-        var msg = MailHelper.CreateSingleEmail(from, to, subject, isHtml ? null : content, isHtml ? content : null);
-        
-        var response = await client.SendEmailAsync(msg);
-        
-        if (response.StatusCode != System.Net.HttpStatusCode.Accepted)
-        {
-            var body = await response.Body.ReadAsStringAsync();
-            throw new Exception($"SendGrid failed with status {response.StatusCode}: {body}");
         }
     }
 
