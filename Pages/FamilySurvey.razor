@@ -1,0 +1,70 @@
+@page "/family-survey"
+
+@inject PhilanthroPoints.Data.ApplicationDbContext Db
+@using PhilanthroPoints.Models
+
+<h3 class="text-center" style="margin-top:20px;">Family Feedback Survey</h3>
+
+<div class="survey-card">
+    <EditForm Model="@survey" OnValidSubmit="SubmitSurvey">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="survey-grid">
+            <div class="survey-label">How satisfied are you with our service?</div>
+            <InputSelect class="form-control" @bind-Value="survey.Satisfaction">
+                <option value="">Select...</option>
+                <option value="Very Satisfied">Very Satisfied</option>
+                <option value="Satisfied">Satisfied</option>
+                <option value="Neutral">Neutral</option>
+                <option value="Dissatisfied">Dissatisfied</option>
+                <option value="Very Dissatisfied">Very Dissatisfied</option>
+            </InputSelect>
+
+            <div class="survey-label">How do you think your child will react to their gift?</div>
+            <InputText class="form-control" @bind-Value="survey.ChildReaction" placeholder="Describe their reaction..." />
+
+            <div class="survey-label">How likely are you to recommend us?</div>
+            <InputSelect class="form-control" @bind-Value="survey.LikelihoodToRecommend">
+                <option value="">Select...</option>
+                <option value="Very Likely">Very Likely</option>
+                <option value="Likely">Likely</option>
+                <option value="Neutral">Neutral</option>
+                <option value="Unlikely">Unlikely</option>
+                <option value="Very Unlikely">Very Unlikely</option>
+            </InputSelect>
+
+            <div class="survey-label">Additional Comments</div>
+            <InputTextArea class="form-control" @bind-Value="survey.Comments" placeholder="Share any feedback..." />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Survey</button>
+    </EditForm>
+    <!-- ...other markup such as survey response table goes here... -->
+</div>
+
+@code {
+    FamilySurveyResponse survey = new();
+    bool showSuccess = false;
+    List<FamilySurveyResponse> responses = new();
+
+    protected override void OnInitialized()
+    {
+        responses = Db.FamilySurveyResponses.OrderByDescending(x => x.SubmittedAt).ToList();
+    }
+
+    async Task SubmitSurvey()
+    {
+        survey.SubmittedAt = DateTime.UtcNow;
+        Db.FamilySurveyResponses.Add(survey);
+        await Db.SaveChangesAsync();
+        showSuccess = true;
+        responses = Db.FamilySurveyResponses.OrderByDescending(x => x.SubmittedAt).ToList();
+        survey = new(); // Reset form
+    }
+}
+
+
+
+
+
+
+

@@ -1,28 +1,32 @@
 {
   "Files": [
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/app.css",
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/app.css",
       "PackagePath": "staticwebassets/app.css"
     },
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/app.performance.css",
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/app.performance.css",
       "PackagePath": "staticwebassets/app.performance.css"
     },
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",
       "PackagePath": "staticwebassets/birthday-buddy.css"
     },
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/buddy-walk.js",
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/buddy-walk.js",
       "PackagePath": "staticwebassets/buddy-walk.js"
     },
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/performance.js",
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/performance.js",
       "PackagePath": "staticwebassets/performance.js"
     },
     {
-      "Id": "/run/media/jcarter/Storage/repos/PhilanthroPoints/wwwroot/points.js",
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/points.js",
       "PackagePath": "staticwebassets/points.js"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/survey.css",
+      "PackagePath": "staticwebassets/survey.css"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.PhilanthroPoints.Microsoft.AspNetCore.StaticWebAssets.props",

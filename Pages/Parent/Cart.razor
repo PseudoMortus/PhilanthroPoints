@@ -9,6 +9,9 @@
 @using PhilanthroPoints.Components
 @using PhilanthroPoints.Models
 @using Microsoft.JSInterop
+@using MailKit
+@using MailKit.Net.Smtp
+@inject IEmailSender EmailSender
 @implements IDisposable
 
 <h2>Your Cart</h2>
@@ -41,6 +44,7 @@ else
           <span>Checkout</span>
         }
       </button>
+      <!-- No login button present on checkout page -->
     </div>
   </div>
 }
@@ -117,28 +121,25 @@ else
   async Task Checkout()
   {
     if (CartService.Items.Count == 0) return;
-    
     // Check if we have contact information
     if (!CheckoutSession.HasContactInfo)
     {
-      // Try to load contact info from database as fallback
-      var currentUser = Points.CurrentUser;
-      if (currentUser != null)
-      {
-        // Removed family-related logic
-      }
+        // Try to load contact info from Family table
+        var family = DbContext.Families.FirstOrDefault();
+        if (family != null && !string.IsNullOrWhiteSpace(family.HeadOfHousehold) && !string.IsNullOrWhiteSpace(family.ContactPhone))
+        {
+          CheckoutSession.SetContactInfo(family.HeadOfHousehold, family.ContactPhone);
+        }
     }
-    
     // Final check - if still no contact info, redirect to demographics
     if (!CheckoutSession.HasContactInfo)
     {
-      errorMessage = "Please complete the demographics information first to provide contact details.";
-      showErrorMessage = true;
-      
-      // Auto-redirect to demographics page after 3 seconds
-      await Task.Delay(3000);
-      Nav.NavigateTo("/demographics");
-      return;
+        errorMessage = "Please complete the demographics information first to provide contact details.";
+        showErrorMessage = true;
+        // Auto-redirect to demographics page after 3 seconds
+        await Task.Delay(3000);
+        Nav.NavigateTo("/demographics");
+        return;
     }
     
     isCheckingOut = true;
@@ -150,9 +151,9 @@ else
     {
       var totalCost = CartService.TotalCost();
       var userPoints = Points.Points;
-      
+      // Save a copy of the cart items before clearing
+      var checkedOutItems = CartService.Items.ToList();
       Console.WriteLine($"[Cart.razor] Starting checkout - TotalCost: {totalCost}, UserPoints: {userPoints}");
-      
       // Check points locally first
       if (userPoints < totalCost)
       {
@@ -161,32 +162,46 @@ else
         Console.WriteLine($"[Cart.razor] Checkout failed - insufficient points");
         return;
       }
-      
       // Simulate processing
       await Task.Delay(1000);
-      
       // Process checkout with validation
       var checkoutResult = await CartService.ProcessCheckoutAsync(userPoints);
-      
       if (checkoutResult.Success)
       {
         Console.WriteLine($"[Cart.razor] Checkout successful - deducting {totalCost} points");
-        
-        // Save order to database
-        var order = await SaveOrderAsync(CartService.Items, totalCost);
-        
+        // Save order to database using checkedOutItems
+        var order = await SaveOrderAsync(checkedOutItems, totalCost);
         // Deduct points
         Points.Spend(totalCost);
-        
         // Send notifications
         await SendNotificationsAsync(order);
-        
+        // Build email from checkedOutItems
+        var itemsHtml = checkedOutItems.Count > 0
+            ? string.Join("", checkedOutItems.Select(i => $"<li>{i.Name} ({i.Cost} pts)</li>"))
+            : "<li><em>No items found in this order.</em></li>";
+        var orderIdText = order != null ? order.Id.ToString() : "N/A";
+        var totalCostText = order != null ? order.TotalCost.ToString() : totalCost.ToString();
+        var emailBody = $@"<h2>Order Placed! ✅</h2>
+<p>An Order Has Been Placed for a member.</p>
+<p>Details:<br />Order ID: {orderIdText}<br />Total Cost: {totalCostText} Points</p>
+<h3>Ordered Items:</h3>
+<ul>{itemsHtml}</ul>";
+        await EmailSender.SendEmailAsync(
+            "jcarter@icstars.org",
+            "🎉 Order Put In",
+            emailBody
+        );
+        // Delete family info from database after successful checkout
+        var family = DbContext.Families.FirstOrDefault(f => f.HeadOfHousehold == CheckoutSession.HeadOfHousehold);
+        if (family != null)
+        {
+            DbContext.Families.Remove(family);
+            await DbContext.SaveChangesAsync();
+        }
         // Manually trigger cart refresh since we don't use OnCartChanged for checkout
         StateHasChanged();
-        
         showSuccessMessage = true;
         StateHasChanged();
-        
         // Trigger confetti
         try
         {
@@ -196,11 +211,11 @@ else
         {
           Console.WriteLine($"[Cart.razor] Confetti error: {jsEx.Message}");
         }
-        
-        // Auto-hide success message after 3 seconds
+        // Auto-hide success message after 3 seconds, then redirect to survey
         await Task.Delay(3000);
         showSuccessMessage = false;
         StateHasChanged();
+        Nav.NavigateTo("/family-survey");
       }
       else
       {
@@ -241,7 +256,7 @@ else
       {
         HeadOfHousehold = CheckoutSession.HeadOfHousehold,
         ContactPhone = CheckoutSession.ContactPhone,
-        ContactEmail = CheckoutSession.ContactEmail,
+        ContactEmail = string.Empty,
         OrderDate = DateTime.Now,
         TotalCost = totalCost,
         TotalItems = items.Count,
@@ -265,10 +280,14 @@ else
         DbContext.OrderItems.Add(orderItem);
       }
 
-      await DbContext.SaveChangesAsync();
-      Console.WriteLine($"[Cart.razor] Order {order.Id} saved successfully");
-      
-      return order;
+        await DbContext.SaveChangesAsync();
+        Console.WriteLine($"[Cart.razor] Order {order.Id} saved successfully");
+        // Reload the order with its items
+        var loadedOrder = DbContext.Orders
+          .Where(o => o.Id == order.Id)
+          .Include(o => o.OrderItems)
+          .FirstOrDefault();
+        return loadedOrder ?? order;
     }
     catch (Exception ex)
     {
@@ -285,23 +304,9 @@ else
       var orderItems = CartService.Items.ToList();
       
       Console.WriteLine($"[Cart.razor] Attempting to send notifications for order {order.Id}");
-      Console.WriteLine($"[Cart.razor] Email: {order.ContactEmail}, Phone: {order.ContactPhone}");
+      Console.WriteLine($"[Cart.razor] Phone: {order.ContactPhone}");
       
-      try
-      {
-        // Send email notification
-        await NotificationService.SendOrderConfirmationEmailAsync(
-          order.ContactEmail,
-          order.HeadOfHousehold,
-          orderItems
-        );
-        order.EmailSent = true;
-        Console.WriteLine($"[Cart.razor] Email notification sent successfully");
-      }
-      catch (Exception emailEx)
-      {
-        Console.WriteLine($"[Cart.razor] Email notification failed: {emailEx.Message}");
-      }
+      // Email notification removed
       
       try
       {

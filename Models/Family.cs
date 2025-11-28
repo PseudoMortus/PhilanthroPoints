@@ -81,7 +81,5 @@ public class Family
     [Phone]
     public string ContactPhone { get; set; } = string.Empty;
     
-    [Display(Name = "Contact Email")]
-    [EmailAddress]
-    public string ContactEmail { get; set; } = string.Empty;
+    // Removed Contact Email field
 }

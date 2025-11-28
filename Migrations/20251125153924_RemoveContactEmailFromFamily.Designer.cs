@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhilanthroPoints.Data;
 
@@ -10,9 +11,11 @@ using PhilanthroPoints.Data;
 namespace PhilanthroPoints.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251125153924_RemoveContactEmailFromFamily")]
+    partial class RemoveContactEmailFromFamily
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -249,40 +252,6 @@ namespace PhilanthroPoints.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Families");
-                });
-
-            modelBuilder.Entity("PhilanthroPoints.Models.FamilySurveyResponse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ChildReaction")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LikelihoodToRecommend")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Satisfaction")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SubmittedBy")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FamilySurveyResponses");
                 });
 
             modelBuilder.Entity("PhilanthroPoints.Models.Item", b =>

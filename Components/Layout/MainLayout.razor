@@ -9,6 +9,7 @@
 @using PhilanthroPoints.Components.Layout
 @using PhilanthroPoints.Components
 
+<link href="/survey.css" rel="stylesheet" />
 <div class="page">
   
   <main>
@@ -19,20 +20,19 @@
     <section class="content" @onclick="CloseIfMobile">
       @Body
     </section>
-    @if (!IsCartPage())
+    @if (!IsSpecialPage())
     {
-      @if (isAuthenticated)
+      @if (isAuthenticated && !isAdmin)
       {
         <div class="points-floating" title="Available points for @currentUsername">
           <span>@currentPoints pts</span>
         </div>
       }
-      else
+      else if (!isAuthenticated)
       {
-        <div class="points-floating" title="Login to see points">
-          <span>Login</span>
-        </div>
+        <!-- Login button removed as requested -->
       }
+      // No points badge for admin
     }
     @if (menuOpen)
     {
@@ -48,16 +48,17 @@
   private int currentPoints = 0;
   private string currentUsername = "";
   private bool isAuthenticated = false;
+  private bool isAdmin = false;
   [Inject] PhilanthroPoints.Services.CustomAuthStateProvider AuthProvider { get; set; } = default!;
   private bool _initialized;
   void ToggleMenu() => menuOpen = !menuOpen;
   void CloseIfMobile(){ if(menuOpen) menuOpen = false; }
   async Task HeaderLogout(){ await AuthProvider.MarkUserAsLoggedOut(); menuOpen = false; await LoadUserPoints(); }
   
-  private bool IsCartPage()
+  private bool IsSpecialPage()
   {
-    var currentUrl = Navigation.Uri;
-    return currentUrl.Contains("/parent/cart") || currentUrl.Contains("cart");
+    var url = Navigation.Uri.ToLower();
+    return url.Contains("/login") || url.Contains("/login-with-code") || url.Contains("/admin") || url.Contains("/register");
   }
 
   protected override void OnInitialized()
@@ -109,10 +110,9 @@
       Console.WriteLine("[MainLayout] LoadUserPoints called");
       var authState = await AuthStateProvider.GetAuthenticationStateAsync();
       var user = authState.User;
-      
       isAuthenticated = user?.Identity?.IsAuthenticated == true;
-      Console.WriteLine($"[MainLayout] IsAuthenticated: {isAuthenticated}");
-      
+      isAdmin = user?.IsInRole("Admin") == true;
+      Console.WriteLine($"[MainLayout] IsAuthenticated: {isAuthenticated}, IsAdmin: {isAdmin}");
       if (isAuthenticated)
       {
         currentUsername = user?.Identity?.Name ?? "";
@@ -160,6 +160,7 @@
       Console.WriteLine($"[MainLayout] Error loading user points: {ex.Message}");
       Console.WriteLine($"[MainLayout] Stack trace: {ex.StackTrace}");
       isAuthenticated = false;
+      isAdmin = false;
       currentPoints = 0;
     }
   }

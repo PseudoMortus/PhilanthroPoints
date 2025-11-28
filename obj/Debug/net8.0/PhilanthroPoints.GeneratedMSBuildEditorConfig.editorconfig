@@ -54,12 +54,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vT3JkZXJzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Admin/SurveyResponses.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vU3VydmV5UmVzcG9uc2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Cards.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2FyZHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Demographics.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRGVtb2dyYXBoaWNzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/FamilySurvey.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRmFtaWx5U3VydmV5LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Gifts.razor]

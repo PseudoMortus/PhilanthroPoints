@@ -136,7 +136,6 @@ C:/Users/MichaelCriswell/Downloads/mikec/obj/Debug/net8.0/PhilanthroPoints.pdb
 C:/Users/MichaelCriswell/Downloads/mikec/obj/Debug/net8.0/PhilanthroPoints.genruntimeconfig.cache
 C:/Users/MichaelCriswell/Downloads/mikec/obj/Debug/net8.0/ref/PhilanthroPoints.dll
 C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/appsettings.Development.json
-C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/appsettings.json
 C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/PhilanthroPoints.staticwebassets.runtime.json
 C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/PhilanthroPoints.exe
 C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/PhilanthroPoints.deps.json
@@ -272,7 +271,6 @@ C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/Phil
 C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/PhilanthroPoints.genruntimeconfig.cache
 C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/ref/PhilanthroPoints.dll
 /home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/appsettings.Development.json
-/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/appsettings.json
 /home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/PhilanthroPoints.staticwebassets.runtime.json
 /home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/PhilanthroPoints
 /home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/PhilanthroPoints.deps.json
@@ -553,3 +551,10 @@ C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/obj/Debug/net8.0/ref/
 =======
 >>>>>>> Mike's-Commits
 /run/media/jcarter/Storage/repos/PhilanthroPoints/bin/Debug/net8.0/appsettings.json
+C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/BouncyCastle.Cryptography.dll
+C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/MailKit.dll
+C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/MimeKit.dll
+C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/System.Security.Cryptography.Pkcs.dll
+C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll
+C:/Users/MichaelCriswell/Documents/GitHub/PhilanthroPoints/bin/Debug/net8.0/appsettings.json
+/home/pseudomortus/Documents/repos/PhilanthroPoints/bin/Debug/net8.0/appsettings.json

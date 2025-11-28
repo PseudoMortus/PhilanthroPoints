@@ -23,15 +23,17 @@ public interface INotificationService
 
 public class NotificationService : INotificationService
 {
-    private readonly IConfiguration _configuration;
     private readonly ILogger<NotificationService> _logger;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IEmailSender _emailSender;
+    private readonly IConfiguration _configuration;
 
-    public NotificationService(IConfiguration configuration, ILogger<NotificationService> logger, ApplicationDbContext dbContext)
+    public NotificationService(ILogger<NotificationService> logger, ApplicationDbContext dbContext, IEmailSender emailSender, IConfiguration configuration)
     {
-        _configuration = configuration;
         _logger = logger;
         _dbContext = dbContext;
+        _emailSender = emailSender;
+        _configuration = configuration;
     }
 
     public async Task SendOrderConfirmationEmailAsync(string email, string customerName, List<Item> items)
@@ -40,42 +42,13 @@ public class NotificationService : INotificationService
         {
             var subject = "🎉 Order Confirmation - PhilanthroPoints";
             var emailBody = BuildEmailBody(customerName, items);
-
-            var emailProvider = _configuration["Email:Provider"];
-            
-            _logger.LogInformation($"Attempting to send email to {email} using provider: {emailProvider}");
-            
-            switch (emailProvider?.ToLower())
-            {
-                case "sendgrid":
-                    await SendEmailViaSendGridAsync(email, subject, emailBody);
-                    break;
-                case "smtp":
-                    await SendEmailViaSmtpAsync(email, subject, emailBody);
-                    break;
-                default:
-                    _logger.LogWarning($"Email provider '{emailProvider}' not configured. Logging email content:");
-                    _logger.LogInformation($"To: {email}, Subject: {subject}");
-                    Console.WriteLine($"[EMAIL] To: {email}");
-                    Console.WriteLine($"[EMAIL] Subject: {subject}");
-                    Console.WriteLine($"[EMAIL] Would send order confirmation for {items.Count} items");
-                    break;
-            }
-
+            await _emailSender.SendEmailAsync(email, subject, emailBody);
             _logger.LogInformation($"Order confirmation email sent successfully to {email}");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Failed to send order confirmation email to {email}");
-            
-            // Don't throw - try console fallback
             Console.WriteLine($"[EMAIL ERROR] Failed to send to {email}: {ex.Message}");
-            Console.WriteLine($"[EMAIL FALLBACK] Order confirmation for {customerName}:");
-            foreach (var item in items)
-            {
-                Console.WriteLine($"[EMAIL FALLBACK] - {item.Name} ({item.Cost} points)");
-            }
-            Console.WriteLine($"[EMAIL FALLBACK] Total: {items.Sum(i => i.Cost)} points");
         }
     }
 

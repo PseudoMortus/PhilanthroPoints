@@ -157,7 +157,7 @@
   <p class="text-muted">Help us better understand your family to provide the most appropriate gifts and services.</p>
   
   <div class="info-notice">
-    <strong>📧 Note:</strong> Your contact information (name, phone, and email) will be saved when you complete your order and used to send you order confirmation notifications.
+    <strong>📞 Note:</strong> Your contact information (name and phone) will be saved when you complete your order and used to send you order confirmation notifications.
   </div>
 
   <EditForm Model="family" OnValidSubmit="SaveFamily">
@@ -167,11 +167,14 @@
     <!-- Basic Family Information -->
     <div class="section">
       <h3>👨‍👩‍👧‍👦 Basic Information</h3>
-      
       <div class="form-row">
         <div class="form-group">
           <label for="headOfHousehold">Head of Household *</label>
           <InputText id="headOfHousehold" class="form-control" @bind-Value="family.HeadOfHousehold" />
+        </div>
+        <div class="form-group">
+          <label for="contactPhone">Contact Phone *</label>
+          <InputText id="contactPhone" class="form-control" @bind-Value="family.ContactPhone" />
         </div>
       </div>
     </div>
@@ -313,7 +316,7 @@
   @if (!IsValid() && hasAttemptedContinue)
   {
     <div class="error-message">
-      Please provide the head of household name, contact phone, and email before continuing.
+      Please provide the head of household name and contact phone before continuing.
     </div>
   }
 </div>
@@ -365,7 +368,6 @@
         existingFamily.PreferredGifts = family.PreferredGifts;
         existingFamily.SpecialNotes = family.SpecialNotes;
         existingFamily.ContactPhone = family.ContactPhone;
-        existingFamily.ContactEmail = family.ContactEmail;
         
         DbContext.Families.Update(existingFamily);
       }
@@ -414,10 +416,8 @@
       // Store contact information for checkout
       CheckoutSession.SetContactInfo(
         family.HeadOfHousehold, 
-        family.ContactPhone, 
-        family.ContactEmail
+        family.ContactPhone
       );
-      
       Nav.NavigateTo("/cards");
     }
     StateHasChanged();
@@ -426,7 +426,6 @@
   private bool IsValid()
   {
     return !string.IsNullOrWhiteSpace(family.HeadOfHousehold) &&
-           !string.IsNullOrWhiteSpace(family.ContactPhone) &&
-           !string.IsNullOrWhiteSpace(family.ContactEmail);
+           !string.IsNullOrWhiteSpace(family.ContactPhone);
   }
 }

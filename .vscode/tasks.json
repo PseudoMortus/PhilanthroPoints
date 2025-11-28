@@ -46,6 +46,12 @@
 			"command": "dotnet watch run",
 			"isBackground": true,
 			"group": "build"
+		},
+		{
+			"label": "Watch PhilanthroPoints",
+			"type": "shell",
+			"command": "dotnet watch run",
+			"group": "build"
 		}
 	]
 }
