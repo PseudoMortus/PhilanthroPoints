@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jZPT7vgiRfSZjPhX7UgKaecXECih/lIrzF8POIRb7eg=",
+  "Hash": "VP4+lxzq3DyBJOtVsEMoboUwCOubS2KjS6xipLue6Jw=",
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -167,25 +167,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png"
-    },
-    {
-      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png-autosave.kra",
-      "SourceId": "PhilanthroPoints",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
-      "BasePath": "_content/PhilanthroPoints",
-      "RelativePath": "images/Monochrome-BDay-Connections-Logo-Black.png-autosave.kra",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png-autosave.kra"
     },
     {
       "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png~",
