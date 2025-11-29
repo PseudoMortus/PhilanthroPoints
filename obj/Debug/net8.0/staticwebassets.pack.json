@@ -29,6 +29,42 @@
       "PackagePath": "staticwebassets/fonts/LilitaOne-Regular.ttf"
     },
     {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/BookImages/.directory",
+      "PackagePath": "staticwebassets/images/BookImages/.directory"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/BookImages/Adventure-Book.jpg",
+      "PackagePath": "staticwebassets/images/BookImages/Adventure-Book.jpg"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/BookImages/Education-Book.jpg",
+      "PackagePath": "staticwebassets/images/BookImages/Education-Book.jpg"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/BookImages/Picture-Book.jpg",
+      "PackagePath": "staticwebassets/images/BookImages/Picture-Book.jpg"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/CardImages/.directory",
+      "PackagePath": "staticwebassets/images/CardImages/.directory"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/CardImages/birthday-card.jpg",
+      "PackagePath": "staticwebassets/images/CardImages/birthday-card.jpg"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/CardImages/unicorn-card.jpg",
+      "PackagePath": "staticwebassets/images/CardImages/unicorn-card.jpg"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/GiftImages/.directory",
+      "PackagePath": "staticwebassets/images/GiftImages/.directory"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/GiftImages/lego-set.jpg",
+      "PackagePath": "staticwebassets/images/GiftImages/lego-set.jpg"
+    },
+    {
       "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png",
       "PackagePath": "staticwebassets/images/Monochrome-BDay-Connections-Logo-Black.png"
     },

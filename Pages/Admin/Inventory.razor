@@ -1,25 +1,11 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
 
-
-@if (activeTab == "inventory")
-{
-  <div class="toolbar">
-    <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search items..." />
-    <select value="@categoryFilter" @onchange="OnCategoryChanged">
-      <option value="">All Categories</option>
-      @foreach (var c in categories)
-      {
-        <option value="@c.Name">@c.Name</option>
-      }
-    </select>
-  </div>
-}
-
 @page "/admin/inventory"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using PhilanthroPoints.Models
+@using PhilanthroPoints.Data
 @attribute [Authorize(Roles="Admin")]
 @inject PhilanthroPoints.Services.CatalogService Catalog
 @inject PhilanthroPoints.Services.PointsService PointsSvc
@@ -30,29 +16,55 @@
 
 @inject AuthenticationStateProvider AuthStateProvider
 
-<h2>Admin 🔧 Inventory Management</h2>
+@using MailKit
+@using MailKit.Net.Smtp
+@inject IEmailSender EmailSender
+@inject IConfiguration Configuration
+@inject PhilanthroPoints.Services.INotificationService NotificationService
+@inject PhilanthroPoints.Data.ApplicationDbContext Db
+
+<h2 style="font-family: Gotham;">Admin 🔧 Inventory Management</h2>
 <nav class="admin-menu">
+  <div style="display: flex; flex-direction: column; width: 100%;">
   @if (IsSuperAdmin)
   {
-    <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")'>📦 Inventory</a>
-    <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
-    <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤 Users</a>
-    <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑 Admin Users</a>
-    <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊 Cart Monitor</a>
-    <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁 Gifts</a>
-    <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭 Treats</a>
-    <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏 Cards</a>
-    <a class="menu-link" href="/admin/notifications">📧 Notifications</a>
-    <a class="menu-link" href="/admin/surveys">📝 Survey Responses</a>
-  }
-  else
-  {
-    <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
-  }
-  <span class="spacer"></span>
-  <a class="menu-link" href="/">🏠 Back to Site</a>
+      <div style="display: flex; flex-wrap: wrap; justify-content: left; margin-bottom: 20px;">
+        <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥<br/>Members</a>
+        <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤<br/>Users</a>
+        <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑
+        <br/>Admin Users</a>
+        <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊<br/>Cart Monitor</a>
+        <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")' >📦<br/>Inventory</a>
+        <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁<br/>Gifts</a>
+        <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭<br/>Treats</a>
+        <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏<br/>Cards</a>
+        <a class="menu-link @(activeTab == "books" ? "active" : "")" href="#" @onclick='() => SetTab("books")'>📖<br/>Books</a>
+        <a class="menu-link @(activeTab == "notifications" ? "active" : "")" href="#" @onclick='() => SetTab("notifications")'>📧<br/>Notifications</a>
+        <a class="menu-link @(activeTab == "surveys" ? "active" : "")" href="#" @onclick='() => SetTab("surveys")'>📝<br/>Survey Responses</a>
+@{/*
+        <a class="menu-link" href="/admin/notifications">📧<br/>Notifications</a>
+        <a class="menu-link" href="/admin/surveys">📝<br/>Survey Responses</a>
+*/}
+      </div>
+    }
+    else
+    {
+      <div style="display: flex; justify-content: left;">
+        <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
+      </div>
+    }
+    <div style="display: flex; justify-content: right; width: 100%;">
+      <a class="menu-link" href="/">🏠 Back to Site</a>
+    </div>
+  </div>
+
+
+@{/*
+  Commenting this out due to imbalance of menu, can put back if important
   @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
+*/}
 </nav>
+
 @code {
   // Family login code generator popup state
   private bool showCodePopup = false;
@@ -130,6 +142,7 @@
     currentUsername = authState.User.Identity?.Name;
     // Call the rest of the original OnInitializedAsync logic
     await RefreshData();
+    responses = await Db.FamilySurveyResponses.ToListAsync();
   }
 }
 
@@ -137,106 +150,117 @@
 
 @if (activeTab == "inventory")
 {
-  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-  {
-    <span class="filter-info">
-      @if (!string.IsNullOrEmpty(search)) { <span>🔍 "@search"</span> }
-      @if (!string.IsNullOrEmpty(categoryFilter)) { <span>📊 @categoryFilter</span> }
-      <button class="btn-link" @onclick="ClearFilters">Clear filters</button>
-    </span>
-  }
-  <div class="table-container">
-    <table class="inv">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Image</th>
-          <th>Category</th>
-          <th>Cost</th>
-          <th>Stock</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @if (filtered.Any())
+<div class="category-page">
+  <div class="card">
+    <h2>📦 Inventory</h2>
+    <div class="toolbar">
+      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search items..." />
+      <select value="@categoryFilter" @onchange="OnCategoryChanged">
+        <option value="">All Categories</option>
+        @foreach (var c in categories)
         {
-          @foreach (var item in filtered)
+          <option value="@c.Name">@c.Name</option>
+        }
+      </select>
+      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>🎁 Add Inventory</button>
+    </div>
+    @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+    {
+    }
+    <div class="table-container">
+      <table class="inv">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Category</th>
+            <th>Cost</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (filtered.Any())
           {
-            <tr class="@(editingItemId == item.Id ? "editing" : "")">
-              <td class="id">@item.Id</td>
-              @if (editingItemId == item.Id)
-              {
-                <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
-                <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
-                <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
-                <td>
-                  <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
-                    @foreach (var c in categories)
+            @foreach (var item in filtered)
+            {
+              <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                <td class="id">@item.Id</td>
+                @if (editingItemId == item.Id)
+                {
+                  <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                  <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                  <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                  <td>
+                    <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                      @foreach (var c in categories)
+                      {
+                        <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                      }
+                    </select>
+                  </td>
+                  <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
+                  <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                  <td class="actions">
+                    <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                    <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                    <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                  </td>
+                }
+                else
+                {
+                  <td><strong>@item.Name</strong></td>
+                  <td class="desc">@(item.Description ?? "-")</td>
+                  <td class="image-cell">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
                     {
-                      <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                      <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
                     }
-                  </select>
-                </td>
-                <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
-                <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
-                <td class="actions">
-                  <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
-                  <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
-                  <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
-                </td>
-              }
-              else
-              {
-                <td><strong>@item.Name</strong></td>
-                <td class="desc">@(item.Description ?? "-")</td>
-                <td class="image-cell">
-                  @if (!string.IsNullOrEmpty(item.ImageUrl))
-                  {
-                    <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                  }
-                  else
-                  {
-                    <span class="no-image">🖼️</span>
-                  }
-                </td>
-                <td><span class="category-tag">@item.Category?.Name</span></td>
-                <td><span class="cost">@item.Cost pts</span></td>
-                <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-                <td class="actions">
-                  <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
-                  <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
-                </td>
-              }
+                    else
+                    {
+                      <span class="no-image">🖼️</span>
+                    }
+                  </td>
+                  <td><span class="category-tag">@item.Category?.Name</span></td>
+                  <td><span class="cost">@item.Cost pts</span></td>
+                  <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                  <td class="actions">
+                    <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
+                    <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                  </td>
+                }
+              </tr>
+            }
+          }
+          else
+          {
+            <tr>
+              <td colspan="8" class="no-items">
+                @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+                {
+                  <span>🔍 No items match your search criteria</span>
+                }
+                else
+                {
+                  <span>📎 No items in inventory</span>
+                }
+              </td>
             </tr>
           }
-        }
-        else
-        {
-          <tr>
-            <td colspan="8" class="no-items">
-              @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-              {
-                <span>🔍 No items match your search criteria</span>
-              }
-              else
-              {
-                <span>📎 No items in inventory</span>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
 }
 
 
 @if (activeTab == "members")
 {
 <div class="card">
-  <h3>🎯 Manage Member Points</h3>
+  <h2>🎯 Manage Member Points</h2>
   <button class="btn btn-primary" @onclick="ShowCodePopup" style="margin-bottom:1rem;">Generate Family Login Code</button>
   @if (showCodePopup)
   {
@@ -319,7 +343,7 @@
 @if (activeTab == "monitor")
 {
 <div class="card">
-  <h3>📊 Cart & Stock Monitor</h3>
+  <h2>📊 Cart & Stock Monitor</h2>
   <div class="monitor-grid">
     <div class="monitor-card">
       <h4>⚠️ Low Stock Alert (=5 items)</h4>
@@ -392,7 +416,7 @@
 @if (activeTab == "users")
 {
 <div class="card">
-  <h3>👤 Manage Users</h3>
+  <h2>👤 Manage Users</h2>
   <div class="toolbar">
     <button class="btn btn-primary" @onclick="ShowAddUserForm">👥 Add New User</button>
     <button class="btn btn-refresh" @onclick="RefreshUsersData">🔄 Refresh Users</button>
@@ -487,7 +511,7 @@
 @if (activeTab == "adminusers")
 {
 <div class="card">
-  <h3>👑 Manage Admin Users</h3>
+  <h2>👑 Manage Admin Users</h2>
   <div class="toolbar">
     <button class="btn btn-primary" @onclick="ShowAddAdminForm">👑 Add New Admin</button>
     <button class="btn btn-refresh" @onclick="RefreshAdminData">🔄 Refresh Admins</button>
@@ -638,7 +662,7 @@
 {
 <div class="category-page">
   <div class="card">
-    <h3>🎁 GIFTS Category</h3>
+    <h2>🎁 Gifts</h2>
     <div class="toolbar">
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search gifts..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>🎁 Add Gift</button>
@@ -646,26 +670,84 @@
     @{ var giftItems = filtered.Where(i => i.Category?.Name == "Gifts").ToList(); }
     <div class="table-container">
       <table class="inv">
-        <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Cost</th><th>Stock</th><th>Actions</th></tr></thead>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Cost</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
-          @foreach (var item in giftItems)
+          @if (filtered.Any())
           {
-            <tr>
-              <td class="id">@item.Id</td>
-              <td><strong>@item.Name</strong></td>
-              <td class="desc">@(item.Description ?? "-")</td>
-              <td><span class="cost">@item.Cost pts</span></td>
-              <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-              <td class="actions">
-                <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
-                <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
-              </td>
-            </tr>
-          }
-          @if (!giftItems.Any())
-          {
-            <tr><td colspan="7" class="no-items">🎁 No gifts found</td></tr>
-          }
+            @foreach (var item in giftItems)
+              {
+                <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                  <td class="id">@item.Id</td>
+                  @if (editingItemId == item.Id)
+                  {
+                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                    <td>
+                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                        @foreach (var c in categories)
+                        {
+                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                        }
+                      </select>
+                    </td>
+                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
+                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                    </td>
+                  }
+                  else
+                  {
+                    <td><strong>@item.Name</strong></td>
+                    <td class="desc">@(item.Description ?? "-")</td>
+                    <td class="image-cell">
+                      @if (!string.IsNullOrEmpty(item.ImageUrl))
+                      {
+                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                      }
+                      else
+                      {
+                        <span class="no-image">🖼️</span>
+                      }
+                    </td>
+                    <td><span class="cost">@item.Cost pts</span></td>
+                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
+                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                    </td>
+                  }
+                </tr>
+              }
+            }
+            else
+            {
+              <tr>
+                <td colspan="7" class="no-items">
+                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+                  {
+                    <span>🔍 No items match your search criteria</span>
+                  }
+                  else
+                  {
+                    <span>📎 No gifts found</span>
+                  }
+                </td>
+              </tr>
+            }
         </tbody>
       </table>
     </div>
@@ -677,7 +759,7 @@
 {
 <div class="category-page">
   <div class="card">
-    <h3>🍭 TREATS Category</h3>
+    <h2>🍭 Treats</h2>
     <div class="toolbar">
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search treats..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Treats")'>🍭 Add Treat</button>
@@ -685,36 +767,84 @@
     @{ var treatItems = filtered.Where(i => i.Category?.Name == "Treats").ToList(); }
     <div class="table-container">
       <table class="inv">
-        <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Image</th><th>Cost</th><th>Stock</th><th>Actions</th></tr></thead>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Cost</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
-          @foreach (var item in treatItems)
+          @if (filtered.Any())
           {
-            <tr>
-              <td class="id">@item.Id</td>
-              <td><strong>@item.Name</strong></td>
-              <td class="desc">@(item.Description ?? "-")</td>
-              <td class="image-cell">
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                  <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                }
-                else
-                {
-                  <span class="no-image">🖼️</span>
-                }
-              </td>
-              <td><span class="cost">@item.Cost pts</span></td>
-              <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-              <td class="actions">
-                <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
-                <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
-              </td>
-            </tr>
-          }
-          @if (!treatItems.Any())
-          {
-            <tr><td colspan="7" class="no-items">🍭 No treats found</td></tr>
-          }
+            @foreach (var item in treatItems)
+              {
+                <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                  <td class="id">@item.Id</td>
+                  @if (editingItemId == item.Id)
+                  {
+                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                    <td>
+                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                        @foreach (var c in categories)
+                        {
+                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                        }
+                      </select>
+                    </td>
+                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
+                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                    </td>
+                  }
+                  else
+                  {
+                    <td><strong>@item.Name</strong></td>
+                    <td class="desc">@(item.Description ?? "-")</td>
+                    <td class="image-cell">
+                      @if (!string.IsNullOrEmpty(item.ImageUrl))
+                      {
+                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                      }
+                      else
+                      {
+                        <span class="no-image">🖼️</span>
+                      }
+                    </td>
+                    <td><span class="cost">@item.Cost pts</span></td>
+                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
+                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                    </td>
+                  }
+                </tr>
+              }
+            }
+            else
+            {
+              <tr>
+                <td colspan="7" class="no-items">
+                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+                  {
+                    <span>🔍 No items match your search criteria</span>
+                  }
+                  else
+                  {
+                    <span>🍭 No treats found</span>
+                  }
+                </td>
+              </tr>
+            }
         </tbody>
       </table>
     </div>
@@ -726,7 +856,7 @@
 {
 <div class="category-page">
   <div class="card">
-    <h3>🃏 CARDS Category</h3>
+    <h2>🃏 Cards</h2>
     <div class="toolbar">
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>🃏 Add Card</button>
@@ -734,39 +864,343 @@
     @{ var cardItems = filtered.Where(i => i.Category?.Name == "Cards").ToList(); }
     <div class="table-container">
       <table class="inv">
-        <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Image</th><th>Cost</th><th>Stock</th><th>Actions</th></tr></thead>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Cost</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
-          @foreach (var item in cardItems)
+          @if (filtered.Any())
           {
-            <tr>
-              <td class="id">@item.Id</td>
-              <td><strong>@item.Name</strong></td>
-              <td class="desc">@(item.Description ?? "-")</td>
-              <td class="image-cell">
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                  <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                }
-                else
-                {
-                  <span class="no-image">🖼️</span>
-                }
-              </td>
-              <td><span class="cost">@item.Cost pts</span></td>
-              <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-              <td class="actions">
-                <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
-                <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
-              </td>
-            </tr>
-          }
-          @if (!cardItems.Any())
-          {
-            <tr><td colspan="7" class="no-items">🃏 No cards found</td></tr>
-          }
+            @foreach (var item in cardItems)
+              {
+                <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                  <td class="id">@item.Id</td>
+                  @if (editingItemId == item.Id)
+                  {
+                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                    <td>
+                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                        @foreach (var c in categories)
+                        {
+                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                        }
+                      </select>
+                    </td>
+                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
+                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                    </td>
+                  }
+                  else
+                  {
+                    <td><strong>@item.Name</strong></td>
+                    <td class="desc">@(item.Description ?? "-")</td>
+                    <td class="image-cell">
+                      @if (!string.IsNullOrEmpty(item.ImageUrl))
+                      {
+                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                      }
+                      else
+                      {
+                        <span class="no-image">🖼️</span>
+                      }
+                    </td>
+                    <td><span class="cost">@item.Cost pts</span></td>
+                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
+                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                    </td>
+                  }
+                </tr>
+              }
+            }
+            else
+            {
+              <tr>
+                <td colspan="7" class="no-items">
+                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+                  {
+                    <span>🔍 No items match your search criteria</span>
+                  }
+                  else
+                  {
+                    <span>🃏 No cards found</span>
+                  }
+                </td>
+              </tr>
+            }
         </tbody>
       </table>
     </div>
+  </div>
+</div>
+}
+
+@if (activeTab == "books")
+{
+<div class="category-page">
+  <div class="card">
+    <h2>📖 Books</h2>
+    <div class="toolbar">
+      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
+      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>📖 Add Book</button>
+    </div>
+    @{ var bookItems = filtered.Where(i => i.Category?.Name == "Books").ToList(); }
+    <div class="table-container">
+      <table class="inv">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Cost</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (filtered.Any())
+          {
+            @foreach (var item in bookItems)
+              {
+                <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                  <td class="id">@item.Id</td>
+                  @if (editingItemId == item.Id)
+                  {
+                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                    <td>
+                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                        @foreach (var c in categories)
+                        {
+                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                        }
+                      </select>
+                    </td>
+                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
+                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                    </td>
+                  }
+                  else
+                  {
+                    <td><strong>@item.Name</strong></td>
+                    <td class="desc">@(item.Description ?? "-")</td>
+                    <td class="image-cell">
+                      @if (!string.IsNullOrEmpty(item.ImageUrl))
+                      {
+                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                      }
+                      else
+                      {
+                        <span class="no-image">🖼️</span>
+                      }
+                    </td>
+                    <td><span class="cost">@item.Cost pts</span></td>
+                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                    <td class="actions">
+                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
+                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                    </td>
+                  }
+                </tr>
+              }
+            }
+            else
+            {
+              <tr>
+                <td colspan="7" class="no-items">
+                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+                  {
+                    <span>🔍 No items match your search criteria</span>
+                  }
+                  else
+                  {
+                    <span>📖 No books found</span>
+                  }
+                </td>
+              </tr>
+            }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+}
+
+
+
+@if (activeTab == "notifications")
+{
+  <div id="Configuration and Testing" class="category-page">
+    <div class="card">
+    <h2>📧 Notification Management</h2>
+    <div id="Email Configuration and Testing" class="notification-config">
+      <div id="SMTP Configuration" class="config-section">
+      <h3>📬 Email Configuration</h3>
+        <div class="config-info">
+          <p><strong>SMTP Host:</strong> @(Configuration["Email:Host"] ?? "Not set")</p>
+          <p><strong>SMTP Port:</strong> @(Configuration["Email:Port"] ?? "Not set")</p>
+          <p><strong>From Email:</strong> @(Configuration["Email:From"] ?? "Not set")</p>
+          <p><strong>SSL Enabled:</strong> @(Configuration["Email:EnableSSL"] ?? "Not set")</p>
+        </div>
+        <div id="Testing Email" class="test-section">
+          <label for="testEmail">Test Email Address:</label>
+          <div class="test-field">
+            <input @bind="testEmail" id="testEmail" type="email" class="form-control" placeholder="Enter email to test" />
+          </div>
+          <button @onclick="TestEmail" class="btn btn-primary" disabled="@isTestingEmail">
+            @if (isTestingEmail)
+            {
+              <span>Testing...</span>
+            }
+            else
+            {
+              <span>📬 Test Email</span>
+            }
+          </button>
+        </div>
+      </div>
+      <div class="config-section">
+        <h3>📱 SMS Configuration</h3>
+        <div class="config-info">
+          <p><strong>Provider:</strong> @(Configuration["Sms:Provider"] ?? "Not configured")</p>
+          @if (Configuration["Sms:Provider"]?.ToLower() == "twilio")
+          {
+            <p><strong>From Number:</strong> @(Configuration["Sms:Twilio:FromNumber"] ?? "Not set")</p>
+            <p><strong>Account SID:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AccountSid"]) ? "❌ Not configured" : "✅ Configured")</p>
+            <p><strong>Auth Token:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AuthToken"]) ? "❌ Not configured" : "✅ Configured")</p>
+          }
+        </div>
+        <div class="test-section">
+          <label for="testSms">Test Phone Number:</label>
+          <div class="test-field">
+            <input @bind="testPhoneNumber" id="testSms" class="form-control" placeholder="Enter phone number to test (e.g., +1234567890)" />
+          </div>
+          <button class="btn btn-primary" @onclick="TestSms" disabled="@isTestingSms">
+            @if (isTestingSms)
+            {
+              <span>Testing...</span>
+            }
+            else
+            {
+              <span>📱 Test SMS</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+    @if (!string.IsNullOrEmpty(statusMessage))
+    {
+      <div class="status-message @statusClass">
+        @statusMessage
+      </div>
+    }
+    <div class="setup-instructions">
+      <h3>🛠️ Setup Instructions</h3>
+      <div class="instruction-section">
+        <h4>✉️ Email Setup (SMTP)</h4>
+        <ol>
+          <li>Acquire your Email Provider's SMTP Credentials (often found in your Email Provider's settings or support section)</li>
+          <li>Generate a password if required (often referred to as an "App Password")</li>
+          <li>Update your <code>appsettings.json</code> with your SMTP details:</li>
+        </ol>
+        <pre><code>
+"Example SMTP Setup": {
+  "Provider": "smtp",
+  "Smtp": {
+    "Host": "smtp.gmail.com",
+    "Port": "587",
+    "Username": "your-email@gmail.com",
+    "Password": "your-app-password",
+    "FromEmail": "your-email@gmail.com",
+    "FromName": "PhilanthroPoints"
+  }
+}
+        </code></pre>
+      </div>
+      <div class="instruction-section">
+        <h4>📱 SMS Setup (Twilio)</h4>
+        <ol>
+          <li>Create a free account at <a href="https://twilio.com" target="_blank">Twilio.com</a></li>
+          <li>Get your Account SID and Auth Token from the dashboard</li>
+          <li>Purchase a phone number or use the trial number</li>
+          <li>Update your <code>appsettings.json</code>:</li>
+        </ol>
+        <pre><code>
+"Example SMS Setup": {
+  "Provider": "Twilio",
+  "Twilio": {
+    "AccountSid": "YOUR_TWILIO_ACCOUNT_SID",
+    "AuthToken": "YOUR_TWILIO_AUTH_TOKEN",
+    "FromNumber": "+1234567890"
+  }
+        </code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+
+
+
+
+@if (activeTab == "surveys")
+{
+  <div class="category-page">
+    <div class="card">
+    <h2>📝 Survey Responses</h2>
+
+    <table class="inv">
+        <thead>
+            <tr style="background:#f8f9fa;">
+                <th style="width:40px; padding:8px 10px;">ID</th>
+                <th style="width:110px; padding:8px 10px;">Satisfaction</th>
+                <th style="width:160px; padding:8px 10px;">Child Reaction</th>
+                <th style="width:140px; padding:8px 10px;">Likelihood</th>
+                <th style="width:180px; padding:8px 10px;">Comments</th>
+                <th style="width:110px; padding:8px 10px;">Submitted By</th>
+                <th style="width:120px; padding:8px 10px;">Date</th>
+                <th style="width:60px; padding:8px 10px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in responses)
+            {
+                <tr style="vertical-align:top; background:@((responses.IndexOf(r) % 2 == 0) ? "#fff" : "#f6f6f6")">
+                    <td style="padding:8px 10px;">@r.Id</td>
+                    <td style="padding:8px 10px;">@r.Satisfaction</td>
+                    <td style="padding:8px 10px;">@r.ChildReaction</td>
+                    <td style="padding:8px 10px;">@r.LikelihoodToRecommend</td>
+                    <td style="padding:8px 10px;">@r.Comments</td>
+                    <td style="padding:8px 10px;">@r.SubmittedBy</td>
+                    <td style="padding:8px 10px;">@r.SubmittedAt.ToLocalTime().ToString("g")</td>
+                    <td style="padding:8px 10px; text-align:center;">
+                        <button class="btn btn-danger btn-sm" style="padding:2px 8px;" @onclick="() => Delete(r.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
   </div>
 </div>
 }
@@ -1545,6 +1979,108 @@
       status = $"? Error toggling admin status: {ex.Message}";
     }
   }
+
+  private string testEmail = "";
+  private string testPhoneNumber = "";
+  private bool isTestingEmail = false;
+  private bool isTestingSms = false;
+  private string statusMessage = "";
+  private string statusClass = "";
+
+  private async Task TestEmail()
+  {
+    if (string.IsNullOrWhiteSpace(testEmail))
+    {
+      SetStatus("Please enter a test email address.", "error");
+      return;
+    }
+
+    isTestingEmail = true;
+    statusMessage = "";
+    StateHasChanged();
+
+    try
+    {
+      await EmailSender.SendEmailAsync(
+        testEmail,
+        "🎉 Test Email from PhilanthroPoints",
+        "<h2>Test Successful! ✅</h2><p>Your email configuration is working correctly. You should receive real-time order confirmations.</p><p>Best regards,<br/>PhilanthroPoints Team</p>"
+      );
+      
+      SetStatus($"✅ Test email sent successfully to {testEmail}!", "success");
+    }
+    catch (Exception ex)
+    {
+      SetStatus($"❌ Email test failed: {ex.Message}", "error");
+    }
+    finally
+    {
+      isTestingEmail = false;
+      StateHasChanged();
+    }
+  }
+
+  private async Task TestSms()
+  {
+    if (string.IsNullOrWhiteSpace(testPhoneNumber))
+    {
+      SetStatus("Please enter a test phone number.", "error");
+      return;
+    }
+
+    isTestingSms = true;
+    statusMessage = "";
+    StateHasChanged();
+
+    try
+    {
+      await NotificationService.SendOrderConfirmationSmsAsync(
+        testPhoneNumber,
+        "Test User",
+        new List<PhilanthroPoints.Models.Item> 
+        { 
+          new PhilanthroPoints.Models.Item { Name = "Test Item", Cost = 10 }
+        }
+      );
+      
+      SetStatus($"✅ Test SMS sent successfully to {testPhoneNumber}!", "success");
+    }
+    catch (Exception ex)
+    {
+      SetStatus($"❌ SMS test failed: {ex.Message}", "error");
+    }
+    finally
+    {
+      isTestingSms = false;
+      StateHasChanged();
+    }
+  }
+
+  private void SetStatus(string message, string type)
+  {
+    statusMessage = message;
+    statusClass = type;
+    
+    // Auto-hide after 5 seconds
+    Task.Run(async () =>
+    {
+      await Task.Delay(5000);
+      statusMessage = "";
+      await InvokeAsync(StateHasChanged);
+    });
+  }
+    List<FamilySurveyResponse> responses = new();
+
+    async Task Delete(int id)
+    {
+        var item = await Db.FamilySurveyResponses.FindAsync(id);
+        if (item != null)
+        {
+            Db.FamilySurveyResponses.Remove(item);
+            await Db.SaveChangesAsync();
+            responses = await Db.FamilySurveyResponses.ToListAsync();
+        }
+    }
   
   // Family management methods
 
@@ -1569,5 +2105,173 @@
   transition: all 0.2s ease;
   min-height: 44px;
   box-sizing: border-box;
+  
 }
+
+.menu-link {
+  font-family: 'LilitaOne';
+}
+
+th {
+  font-family: 'LilitaOne';
+}
+    .admin-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .notification-config {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .config-section {
+      background: #F7F9FC;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #249EA0;
+    }
+
+    .config-section h3 {
+      margin-top: 0;
+    }
+
+    .config-info {
+      margin-bottom: 20px;
+    }
+
+    .config-info p {
+      margin: 8px 0;
+      padding: 8px;
+      background: #F7F9FC;
+      border-radius: 4px;
+    }
+
+    .test-section {
+      background: #F7F9FC;
+      padding: 15px;
+      border-radius: 5px;
+      border: 2px solid #ddd;
+    }
+
+    .test-field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .test-section label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 95%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+// style="background-color: lightblue; padding: 20px; border-radius:8px; max-width:420px; margin: 2rem auto;"
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #249EA0;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #1e7a7c;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .setup-instructions {
+      background: #F7F9FC;
+      padding: 30px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    .setup-instructions h3 {
+      margin-top: 0;
+    }
+
+    .instruction-section {
+      margin-bottom: 30px;
+    }
+
+    .setup-option {
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border-left: 4px solid #FAAB36;
+    }
+
+    .setup-option h5 {
+      margin-top: 0;
+    }
+
+    pre {
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      border: 1px solid #ddd;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    a {
+      color: #249EA0;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @@media (max-width: 768px) {
+      .notification-config {
+        grid-template-columns: 1fr;
+      }
+    }
 </style>

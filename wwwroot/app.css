@@ -527,7 +527,7 @@ table.inv {
 }
 
 table.inv th {
-  background: var(--bc-gradient);
+  background: #005F60;
   color: white;
   padding: 1rem 0.5rem;
   font-weight: 600;
@@ -753,6 +753,7 @@ table.inv tr.editing {
   margin-bottom: 2rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(36, 158, 160, 0.2);
+  text-align: center;
 }
 
 .menu-link {

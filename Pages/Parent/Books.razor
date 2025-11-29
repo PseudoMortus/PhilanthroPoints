@@ -9,7 +9,7 @@
 @implements IDisposable
 
 <div class="page-header">
-  <div class="category-icon">📚</div>
+  <div><h1>📚</h1></div>
   <h1>Books</h1>
   <p>Educational and entertaining books for young readers</p>
 </div>
@@ -21,7 +21,7 @@ else
     @foreach (var i in items)
     {
       <div class="card product-card">
-        <div class="product-icon">📖</div>
+        <div class="product-icon"><img src="@i.ImageUrl" height="150"/></div>
         <h4>@i.Name</h4>
         <p class="product-description">@i.Description</p>
         <div class="product-meta">

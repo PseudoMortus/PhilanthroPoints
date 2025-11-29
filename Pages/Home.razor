@@ -37,7 +37,7 @@
   <AuthorizeView>
     <Authorized Context="authState">
       <p class="card">Use your points to choose gifts, sweets, and a card. Continue the flow below.</p>
-      <div class="grid">
+      <div display="flex" style="display: flex; flex-wrap: wrap; justify-content: space-evenly;">
         <div class="card">
           <div class="category-icon">👤</div>
           <h3>Demographics</h3>
@@ -51,7 +51,7 @@
           <button class="btn" @onclick="CardsClick">Browse</button>
         </div>
         <div class="card">
-          <div class="category-icon"></div>
+          <div class="category-icon">🍭</div>
           <h3>Sweets &amp; Treats</h3>
           <p class="card-description">Delicious cakes and sweet surprises</p>
           <button class="btn" @onclick="TreatsClick">Browse</button>
@@ -63,7 +63,7 @@
           <button class="btn" @onclick="BooksClick">Browse</button>
         </div>
         <div class="card">
-          <div class="category-icon"></div>
+          <div class="category-icon">🎁</div>
           <h3>Gifts</h3>
           <p class="card-description">Thoughtful presents they'll love</p>
           <button class="btn" @onclick="GiftsClick">Browse</button>
@@ -85,10 +85,10 @@
       </div>
     </Authorized>
     <NotAuthorized Context="na">
-      <button class="btn" style="font-size: 1.2rem; padding: 1rem 2rem;" @onclick="ShowLogin">Click Here to
+      <button class="btn" style="font-family: LilitaOne; font-size: 1.2rem; padding: 1rem 2rem;" @onclick="ShowLogin">Click Here to
         Start</button>
       <div style="margin-top:1rem;">
-        <button class="btn" @onclick="AdminClick">Admin</button>
+        <button class="btn" @onclick="AdminClick" style="font-family: LilitaOne;">Admin</button>
       </div>
       @if (showLoginForm)
       {
