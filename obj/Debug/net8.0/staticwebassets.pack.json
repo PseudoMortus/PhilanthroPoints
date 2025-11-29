@@ -17,6 +17,34 @@
       "PackagePath": "staticwebassets/buddy-walk.js"
     },
     {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/fonts/Feeling-Passionate.ttf",
+      "PackagePath": "staticwebassets/fonts/Feeling-Passionate.ttf"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/fonts/Gotham.otf",
+      "PackagePath": "staticwebassets/fonts/Gotham.otf"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/fonts/LilitaOne-Regular.ttf",
+      "PackagePath": "staticwebassets/fonts/LilitaOne-Regular.ttf"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png",
+      "PackagePath": "staticwebassets/images/Monochrome-BDay-Connections-Logo-Black.png"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png-autosave.kra",
+      "PackagePath": "staticwebassets/images/Monochrome-BDay-Connections-Logo-Black.png-autosave.kra"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-Black.png~",
+      "PackagePath": "staticwebassets/images/Monochrome-BDay-Connections-Logo-Black.png~"
+    },
+    {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/images/Monochrome-BDay-Connections-Logo-White.png",
+      "PackagePath": "staticwebassets/images/Monochrome-BDay-Connections-Logo-White.png"
+    },
+    {
       "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/performance.js",
       "PackagePath": "staticwebassets/performance.js"
     },

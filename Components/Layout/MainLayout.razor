@@ -15,7 +15,13 @@
   <main>
     <header class="topbar">
       <button class="hamburger" @onclick="ToggleMenu">☰</button>
-      <span class="nav-brand">Birthday connections</span>
+      <span class="nav-brand" style="
+  font-family: 'Feeling-Passionate', sans-serif;">
+        @{/*
+          Birthday connections
+        */}
+        <img src="/images/Monochrome-BDay-Connections-Logo-White.png" alt="Birthday Connections Logo" height=50px/>
+      </span>
     </header>
     <section class="content" @onclick="CloseIfMobile">
       @Body
