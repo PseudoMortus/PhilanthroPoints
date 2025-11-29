@@ -246,6 +246,7 @@ h2 {
   background: var(--bc-gradient);
   color: white;
   box-shadow: 0 3px 8px rgba(36, 158, 160, 0.3);
+  font-family: 'LilitaOne';
 }
 
 .btn-primary:hover {
@@ -735,6 +736,7 @@ table.inv tr.editing {
   background: linear-gradient(135deg, #17a2b8, #20c997);
   color: white;
   box-shadow: 0 3px 8px rgba(23, 162, 184, 0.3);
+  font-family: 'LilitaOne';
 }
 
 .btn-refresh:hover {

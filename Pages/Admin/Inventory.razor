@@ -23,7 +23,7 @@
 @inject PhilanthroPoints.Services.INotificationService NotificationService
 @inject PhilanthroPoints.Data.ApplicationDbContext Db
 
-<h2 style="font-family: Gotham;">Admin 🔧 Inventory Management</h2>
+<h1 style="font-family: Feeling-Passionate;">Admin 🔧</h1>
 <nav class="admin-menu">
   <div style="display: flex; flex-direction: column; width: 100%;">
   @if (IsSuperAdmin)
@@ -162,8 +162,65 @@
           <option value="@c.Name">@c.Name</option>
         }
       </select>
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>🎁 Add Inventory</button>
+      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("")'>📦 Add Inventory</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Inventory</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Category</label>
+              <select @bind="newItem.CategoryId" @bind:event="onchange"  class="input">
+                @foreach (var c in categories)
+                {
+                  <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                }
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Inventory</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
     {
     }
@@ -667,6 +724,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search gifts..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>🎁 Add Gift</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Gift</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Gift</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var giftItems = filtered.Where(i => i.Category?.Name == "Gifts").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -764,6 +869,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search treats..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Treats")'>🍭 Add Treat</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Treat</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Treat</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var treatItems = filtered.Where(i => i.Category?.Name == "Treats").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -861,6 +1014,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>🃏 Add Card</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Card</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Card</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var cardItems = filtered.Where(i => i.Category?.Name == "Cards").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -958,6 +1159,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>📖 Add Book</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Book</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Book</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var bookItems = filtered.Where(i => i.Category?.Name == "Books").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -1419,6 +1668,7 @@
     if (tab == "gifts") categoryFilter = "Gifts";
     else if (tab == "treats") categoryFilter = "Treats";
     else if (tab == "cards") categoryFilter = "Cards";
+    else if (tab == "books") categoryFilter = "Books";
     else if (tab == "inventory") categoryFilter = "";
     
     if (tab == "monitor")
@@ -2187,6 +2437,10 @@ th {
       cursor: pointer;
       font-weight: 600;
       transition: all 0.3s ease;
+    }
+
+    h2 {
+      font-family: 'Gotham';
     }
 
     .btn-primary {
