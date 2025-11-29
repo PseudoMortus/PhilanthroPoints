@@ -1,3 +1,4 @@
+
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
 
@@ -42,6 +43,7 @@
     <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁 Gifts</a>
     <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭 Treats</a>
     <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏 Cards</a>
+
     <a class="menu-link" href="/admin/notifications">📧 Notifications</a>
     <a class="menu-link" href="/admin/surveys">📝 Survey Responses</a>
   }
@@ -91,10 +93,7 @@
     if (appNum == null)
     {
       appNum = new PhilanthroPoints.Models.AgencyApplicationNumber {
-        AgencyAbbrev = agencyKey,
-        Year = now.Year,
-        Month = now.Month,
-        LastNumber = 1
+
       };
       DbContext.AgencyApplicationNumbers.Add(appNum);
     }
@@ -643,6 +642,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search gifts..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>🎁 Add Gift</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Gift</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Gift</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var giftItems = filtered.Where(i => i.Category?.Name == "Gifts").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -650,16 +697,31 @@
         <tbody>
           @foreach (var item in giftItems)
           {
-            <tr>
+            <tr class="@(editingItemId == item.Id ? "editing" : "")">
               <td class="id">@item.Id</td>
-              <td><strong>@item.Name</strong></td>
-              <td class="desc">@(item.Description ?? "-")</td>
-              <td><span class="cost">@item.Cost pts</span></td>
-              <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-              <td class="actions">
-                <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
-                <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
-              </td>
+              @if (editingItemId == item.Id)
+              {
+                <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Cost" /></td>
+                <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                <td class="actions">
+                  <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                  <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                  <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                </td>
+              }
+              else
+              {
+                <td><strong>@item.Name</strong></td>
+                <td class="desc">@(item.Description ?? "-")</td>
+                <td><span class="cost">@item.Cost pts</span></td>
+                <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                <td class="actions">
+                  <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
+                  <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
+                </td>
+              }
             </tr>
           }
           @if (!giftItems.Any())
@@ -682,6 +744,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search treats..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Treats")'>🍭 Add Treat</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Treat</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Treat</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var treatItems = filtered.Where(i => i.Category?.Name == "Treats").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -689,26 +799,42 @@
         <tbody>
           @foreach (var item in treatItems)
           {
-            <tr>
+            <tr class="@(editingItemId == item.Id ? "editing" : "")">
               <td class="id">@item.Id</td>
-              <td><strong>@item.Name</strong></td>
-              <td class="desc">@(item.Description ?? "-")</td>
-              <td class="image-cell">
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                  <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                }
-                else
-                {
-                  <span class="no-image">🖼️</span>
-                }
-              </td>
-              <td><span class="cost">@item.Cost pts</span></td>
-              <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-              <td class="actions">
-                <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
-                <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
-              </td>
+              @if (editingItemId == item.Id)
+              {
+                <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                <td class="image-cell"><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Cost" /></td>
+                <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                <td class="actions">
+                  <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                  <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                  <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                </td>
+              }
+              else
+              {
+                <td><strong>@item.Name</strong></td>
+                <td class="desc">@(item.Description ?? "-")</td>
+                <td class="image-cell">
+                  @if (!string.IsNullOrEmpty(item.ImageUrl))
+                  {
+                    <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                  }
+                  else
+                  {
+                    <span class="no-image">🖼️</span>
+                  }
+                </td>
+                <td><span class="cost">@item.Cost pts</span></td>
+                <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                <td class="actions">
+                  <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
+                  <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
+                </td>
+              }
             </tr>
           }
           @if (!treatItems.Any())
@@ -731,6 +857,54 @@
       <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
       <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>🃏 Add Card</button>
     </div>
+    @if (showAddForm)
+    {
+      <div class="card add-form">
+        <h4>Add New Card</h4>
+        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Name *</label>
+              <InputText @bind-Value="newItem.Name" class="input" />
+              <ValidationMessage For="@(() => newItem.Name)" />
+            </div>
+            <div class="form-field">
+              <label>Description</label>
+              <InputText @bind-Value="newItem.Description" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Image URL</label>
+              <InputText @bind-Value="newItem.ImageUrl" class="input" />
+            </div>
+            <div class="form-field">
+              <label>Cost *</label>
+              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Cost)" />
+            </div>
+            <div class="form-field">
+              <label>Stock *</label>
+              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+              <ValidationMessage For="@(() => newItem.Stock)" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+              @if (isSubmitting)
+              {
+                <span>⏳ Adding...</span>
+              }
+              else
+              {
+                <span>✅ Add Card</span>
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
+          </div>
+        </EditForm>
+      </div>
+    }
     @{ var cardItems = filtered.Where(i => i.Category?.Name == "Cards").ToList(); }
     <div class="table-container">
       <table class="inv">
@@ -738,26 +912,42 @@
         <tbody>
           @foreach (var item in cardItems)
           {
-            <tr>
+            <tr class="@(editingItemId == item.Id ? "editing" : "")">
               <td class="id">@item.Id</td>
-              <td><strong>@item.Name</strong></td>
-              <td class="desc">@(item.Description ?? "-")</td>
-              <td class="image-cell">
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                  <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                }
-                else
-                {
-                  <span class="no-image">🖼️</span>
-                }
-              </td>
-              <td><span class="cost">@item.Cost pts</span></td>
-              <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-              <td class="actions">
-                <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
-                <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
-              </td>
+              @if (editingItemId == item.Id)
+              {
+                <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
+                <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
+                <td class="image-cell"><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Cost" /></td>
+                <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
+                <td class="actions">
+                  <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
+                  <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
+                  <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
+                </td>
+              }
+              else
+              {
+                <td><strong>@item.Name</strong></td>
+                <td class="desc">@(item.Description ?? "-")</td>
+                <td class="image-cell">
+                  @if (!string.IsNullOrEmpty(item.ImageUrl))
+                  {
+                    <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                  }
+                  else
+                  {
+                    <span class="no-image">🖼️</span>
+                  }
+                </td>
+                <td><span class="cost">@item.Cost pts</span></td>
+                <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
+                <td class="actions">
+                  <button class="btn-sm btn-primary" @onclick="() => StartEdit(item)">✏️</button>
+                  <button class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)">🗑️</button>
+                </td>
+              }
             </tr>
           }
           @if (!cardItems.Any())
@@ -985,6 +1175,7 @@
     if (tab == "gifts") categoryFilter = "Gifts";
     else if (tab == "treats") categoryFilter = "Treats";
     else if (tab == "cards") categoryFilter = "Cards";
+    else if (tab == "books") categoryFilter = "Books";
     else if (tab == "inventory") categoryFilter = "";
     
     if (tab == "monitor")
