@@ -5,12 +5,12 @@
 @inject NavigationManager Nav
 
 <div style="text-align:center; padding: 40px 20px;">
-    <h1>Admin Login</h1>
+    <h1 style="font-family:Gotham;">Admin Login</h1>
     
     <!-- Demo Login Information -->
      <div style="background-color: #e3f2fd; padding: 15px; border-radius:8px; max-width:420px; margin: 1rem auto; border: 1px solid #bbdefb;">
-        <h4 style="color: #0d47a1; margin-top: 0;">Demo Login Credentials:</h4>
-        <div style="font-family: monospace; color: #1565c0; text-align: left;">
+        <h4 style="color: #0d47a1; margin-top: 0; font-family: 'Courier'">Demo Login Credentials:</h4>
+        <div style="font-family: Courier; color: #1565c0; text-align: left;">
             <p><strong>Owner Account:</strong><br/>
             Username: <code>mike</code><br/>
             Password: <code>Mike123!</code></p>
@@ -29,14 +29,14 @@
         @if (error != null) { <p style="color:red">@error</p> }
     <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
             <div style="margin-bottom:1rem">
-                <label>Username</label>
+                <label style="font-family: LilitaOne;">Username</label>
                 <input class="input" @bind-value="loginModel.Username" placeholder="Admin username" />
             </div>
             <div style="margin-bottom:1rem">
-                <label>Password</label>
+                <label style="font-family: LilitaOne;">Password</label>
                 <input class="input" type="password" @bind-value="loginModel.Password" placeholder="Admin password" />
             </div>
-            <button class="btn" type="submit">Login</button>
+            <button class="btn" type="submit" style="font-family: LilitaOne;">Login</button>
         </EditForm>
     </div>
 </div>
