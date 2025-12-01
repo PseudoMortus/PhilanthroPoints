@@ -4543,19 +4543,19 @@
     ]
   },
   "packageFolders": {
-    "/home/pseudomortus/.nuget/packages/": {}
+    "C:\\Users\\MichaelCriswell\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints.csproj",
+      "projectUniqueName": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
       "projectName": "PhilanthroPoints",
-      "projectPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/PhilanthroPoints.csproj",
-      "packagesPath": "/home/pseudomortus/.nuget/packages/",
-      "outputPath": "/home/pseudomortus/Documents/repos/PhilanthroPoints/obj/",
+      "projectPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\PhilanthroPoints.csproj",
+      "packagesPath": "C:\\Users\\MichaelCriswell\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\MichaelCriswell\\Documents\\GitHub\\PhilanthroPoints\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/pseudomortus/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\MichaelCriswell\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
