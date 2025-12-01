@@ -1,69 +1,114 @@
-@using Microsoft.JSInterop
-@inject IJSRuntime JS
-
 @page "/admin/inventory"
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
-@using PhilanthroPoints.Models
-@using PhilanthroPoints.Data
 @attribute [Authorize(Roles="Admin")]
-@inject PhilanthroPoints.Services.CatalogService Catalog
-@inject PhilanthroPoints.Services.PointsService PointsSvc
-@inject PhilanthroPoints.Services.CartMonitorService Monitor
-@inject PhilanthroPoints.Services.UserService UserSvc
-@inject PhilanthroPoints.Services.AdminUserService AdminSvc
-@inject PhilanthroPoints.Data.ApplicationDbContext DbContext
 
-@inject AuthenticationStateProvider AuthStateProvider
+<!-- Base Requirements -->
+  @using PhilanthroPoints.Models
+  @using PhilanthroPoints.Data
+  @using Microsoft.JSInterop
+  @inject IJSRuntime JS
+  @inject IConfiguration Configuration
 
-@using MailKit
-@using MailKit.Net.Smtp
-@inject IEmailSender EmailSender
-@inject IConfiguration Configuration
-@inject PhilanthroPoints.Services.INotificationService NotificationService
-@inject PhilanthroPoints.Data.ApplicationDbContext Db
+<!-- Authentication Requirements -->
+  @using Microsoft.AspNetCore.Authorization
+  @using Microsoft.AspNetCore.Components.Authorization
+  @inject AuthenticationStateProvider AuthStateProvider
+  @inject PhilanthroPoints.Services.AdminUserService AdminSvc
 
-<h1 style="font-family: Feeling-Passionate;">Admin 🔧</h1>
-<nav class="admin-menu">
-  <div style="display: flex; flex-direction: column; width: 100%;">
-  @if (IsSuperAdmin)
-  {
-      <div style="display: flex; flex-wrap: wrap; justify-content: left; margin-bottom: 20px;">
-        <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥<br/>Members</a>
-        <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤<br/>Users</a>
-        <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑
-        <br/>Admin Users</a>
-        <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊<br/>Cart Monitor</a>
-        <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")' >📦<br/>Inventory</a>
-        <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁<br/>Gifts</a>
-        <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭<br/>Treats</a>
-        <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏<br/>Cards</a>
-        <a class="menu-link @(activeTab == "books" ? "active" : "")" href="#" @onclick='() => SetTab("books")'>📖<br/>Books</a>
-        <a class="menu-link @(activeTab == "notifications" ? "active" : "")" href="#" @onclick='() => SetTab("notifications")'>📧<br/>Notifications</a>
-        <a class="menu-link @(activeTab == "surveys" ? "active" : "")" href="#" @onclick='() => SetTab("surveys")'>📝<br/>Survey Responses</a>
-@{/*
-        <a class="menu-link" href="/admin/notifications">📧<br/>Notifications</a>
-        <a class="menu-link" href="/admin/surveys">📝<br/>Survey Responses</a>
-*/}
+<!-- Database Management Requirements -->
+  @inject PhilanthroPoints.Data.ApplicationDbContext DbContext
+  @inject PhilanthroPoints.Data.ApplicationDbContext Db
+
+<!-- Catalog Management Requirements -->
+  @inject PhilanthroPoints.Services.CatalogService Catalog
+  @inject PhilanthroPoints.Services.CartMonitorService Monitor
+
+<!-- User Management Requirements -->
+  @inject PhilanthroPoints.Services.PointsService PointsSvc
+  @inject PhilanthroPoints.Services.UserService UserSvc
+
+<!-- Notification Requirements -->
+  @using MailKit
+  @using MailKit.Net.Smtp
+  @inject IEmailSender EmailSender
+  @inject PhilanthroPoints.Services.INotificationService NotificationService
+
+
+<!-- End of Requirements, Begining of Heading -->
+
+<!-- 
+
+---------Table of Contents:----------
+[Use Ctrl+F to sift through the page]
+
+  1. Navigation Bar: Line 
+    a. Ms. Benita's Nav Bar:
+    b. Providers' Nav Bar:
+    c. Back to Home Page:
+  2. 
+
+-->
+
+<!-- 1. Navigation Bar -->
+  <h1 style="font-family: Feeling-Passionate;">Admin 🔧</h1>
+  <nav class="admin-menu">
+    <div style="display: flex; flex-direction: column; width: 100%;">
+
+  <!-- a. Ms. Benita's Nav Bar -->
+      @if (IsSuperAdmin)
+      {
+        <div style="display: flex; flex-wrap: wrap; justify-content: left; margin-bottom: 20px;">
+
+          <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥<br/>Members</a>
+
+        @{/*
+          Commenting out Users tab due to lack of necessity. If needed, uncomment and implement.
+            <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤<br/>Users</a>
+        */}
+
+          <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑<br/>Admin Users</a>
+
+          <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊<br/>Cart Monitor</a>
+
+          <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")' >📦<br/>Inventory</a>
+
+          <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁<br/>Gifts</a>
+
+          <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭<br/>Treats</a>
+
+          <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏<br/>Cards</a>
+
+          <a class="menu-link @(activeTab == "books" ? "active" : "")" href="#" @onclick='() => SetTab("books")'>📖<br/>Books</a>
+
+          <a class="menu-link @(activeTab == "notifications" ? "active" : "")" href="#" @onclick='() => SetTab("notifications")'>📧<br/>Notifications</a>
+
+          <a class="menu-link @(activeTab == "surveys" ? "active" : "")" href="#" @onclick='() => SetTab("surveys")'>📝<br/>Survey Responses</a>
+
+        @{/*
+          Commenting Out due to Implementation changing from separate page to same page to keep navigation
+            <a class="menu-link" href="/admin/notifications">📧<br/>Notifications</a>
+            <a class="menu-link" href="/admin/surveys">📝<br/>Survey Responses</a>
+        */}
+        </div>
+
+  
+      }
+      else
+      {
+        <div style="display: flex; justify-content: left;">
+          <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
+        </div>
+      }
+      <div style="display: flex; justify-content: right; width: 100%;">
+        <a class="menu-link" href="/">🏠 Back to Site</a>
       </div>
-    }
-    else
-    {
-      <div style="display: flex; justify-content: left;">
-        <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
-      </div>
-    }
-    <div style="display: flex; justify-content: right; width: 100%;">
-      <a class="menu-link" href="/">🏠 Back to Site</a>
     </div>
-  </div>
 
 
-@{/*
-  Commenting this out due to imbalance of menu, can put back if important
-  @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
-*/}
-</nav>
+    @{/*
+      Commenting this out due to imbalance of menu, can put back if important
+      @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
+    */}
+    </nav>
 
 @code {
   // Family login code generator popup state
@@ -1156,8 +1201,8 @@
   <div class="card">
     <h2>📖 Books</h2>
     <div class="toolbar">
-      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>📖 Add Book</button>
+      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search books..." />
+      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Books")'>📖 Add Book</button>
     </div>
     @if (showAddForm)
     {
@@ -1681,7 +1726,7 @@
 
   async Task ApplyFilters()
   {
-    if (activeTab == "inventory" || activeTab == "gifts" || activeTab == "treats" || activeTab == "cards")
+    if (activeTab == "inventory" || activeTab == "gifts" || activeTab == "treats" || activeTab == "cards" || activeTab == "books")
     {
       filtered = await Catalog.SearchItemsAsync(search ?? "", 
         activeTab == "inventory" ? categoryFilter : activeTab.Substring(0, 1).ToUpper() + activeTab.Substring(1));
