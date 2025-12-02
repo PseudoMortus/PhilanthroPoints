@@ -58,20 +58,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vU3VydmV5UmVzcG9uc2VzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Cards.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2FyZHMucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Demographics.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRGVtb2dyYXBoaWNzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/FamilySurvey.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRmFtaWx5U3VydmV5LnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Gifts.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvR2lmdHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Home.razor]
@@ -86,20 +74,32 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L0Jvb2tzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Parent/Cards.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L0NhcmRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Parent/Cart.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L0NhcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Parent/Demographics.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L0RlbW9ncmFwaGljcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Parent/Gifts.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L0dpZnRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Parent/Intro.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L0ludHJvLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Register.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVnaXN0ZXIucmF6b3I=
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Parent/Treats.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFyZW50L1RyZWF0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Treats.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVHJlYXRzLnJhem9y
+[/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVnaXN0ZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/pseudomortus/Documents/repos/PhilanthroPoints/Pages/UserManagement.razor]

@@ -1,5 +1,5 @@
 
-@page "/treats"
+@page "/parent/cards"
 @inject PhilanthroPoints.Services.CatalogService Catalog
 @inject PhilanthroPoints.Services.PointsState Points
 @inject PhilanthroPoints.Services.CartState Cart
@@ -9,37 +9,38 @@
 @implements IDisposable
 
 <div class="page-header">
-  <div class="category-icon"></div>
-  <h1>Sweets &amp; Treats</h1>
-  <p>Delicious cakes, cupcakes, and sweet surprises to celebrate</p>
+  <div class="category-icon"><h1>💌</h1></div>
+  <h1>Birthday Cards</h1>
+  <p>Choose the perfect greeting to make their day special</p>
 </div>
 
-@if (items is null) { <p>Loading...</p> }
-else
-{
+@if (items is null) {
+  <p>Loading...</p>
+} else {
   <div class="grid">
-    @foreach (var i in items)
-    {
+    @foreach (var i in items) {
       <div class="card product-card">
-        <div class="product-icon"></div>
-        <h4>@i.Name</h4>
+        <div class="product-icon"><img src="@i.ImageUrl" height="150"/></div>
+        <h3>@i.Name</h3>
+        @if (!string.IsNullOrWhiteSpace(i.Description)) { <p class="desc">@i.Description</p> }
         <div class="product-meta">
+          <p class="meta">SKU: <span class="sku">@i.Id</span></p>
           <div class="badges">
-            <span class="badge cost-badge">@i.Cost points</span> 
-            <span class="badge stock-badge">@i.Stock left</span>
+            <span class="badge cost-badge">💰 @i.Cost points</span> 
+            <span class="badge stock-badge">📦 @i.Stock left</span>
           </div>
         </div>
         <button class="btn @(CanBuy(i) ? "" : "disabled")" disabled="@(!CanBuy(i))" @onclick="(()=>Buy(i))">
-          @if (CanBuy(i)) { <span>Add to Cart</span> } else { <span>Cannot Buy</span> }
+          @if (CanBuy(i)) { <span>🛒 Add to Cart</span> } else { <span>❌ Cannot Buy</span> }
         </button>
       </div>
     }
   </div>
   <div style="margin-top:1rem">
-    <button class="btn" @onclick="Continue" disabled="@(!HasTreatInCart())">Proceed to Books</button>
-    @if (!HasTreatInCart() && hasAttemptedContinue) 
+    <button class="btn" @onclick="Continue" disabled="@(!HasCardInCart())"><span>Proceed to Sweets & Treats</span></button>
+    @if (!HasCardInCart() && hasAttemptedContinue) 
     {
-      <p class="card error">Please select at least one sweet or treat before proceeding.</p>
+      <p class="card error">Please select at least one card before proceeding.</p>
     }
   </div>
 }
@@ -52,8 +53,8 @@ else
   protected override async Task OnInitializedAsync() 
   { 
     await Points.InitializeAsync(); 
-    items = await Catalog.ByCategoryAsync("Treats"); 
-    Flow.Set(PhilanthroPoints.Services.FlowStep.Treats);
+    items = await Catalog.ByCategoryAsync("Cards"); 
+    Flow.Set(PhilanthroPoints.Services.FlowStep.Cards);
     Cart.OnCartChanged += StateHasChanged;
   }
   
@@ -67,9 +68,9 @@ else
     }
   }
   
-  private bool HasTreatInCart()
+  private bool HasCardInCart()
   {
-    return Cart.Items.Any(item => item.Category?.Name == "Treats");
+    return Cart.Items.Any(item => item.Category?.Name == "Cards");
   }
   
   bool CanBuy(Item i) => Points.Points >= i.Cost && i.Stock > 0;
@@ -90,9 +91,9 @@ else
   void Continue() 
   {
     hasAttemptedContinue = true;
-    if (HasTreatInCart())
+    if (HasCardInCart())
     {
-      Nav.NavigateTo("/parent/books");
+      Nav.NavigateTo("/parent/treats");
     }
     StateHasChanged();
   }
@@ -104,6 +105,15 @@ else
 }
 
 <style>
+
+h1 {
+  font-family: Gotham;
+}
+
+h3, span {
+  font-family: LilitaOne;
+}
+
 .page-header {
   animation: pageEnter 0.8s ease-out;
 }
@@ -133,8 +143,29 @@ else
   animation: bounce 0.6s ease-in-out;
 }
 
+.desc {
+  margin: 0.5rem 0 1rem;
+  color: #555;
+  line-height: 1.5;
+  font-style: italic;
+}
+
 .product-meta {
   margin: 1rem 0;
+}
+
+.meta {
+  margin: 0 0 0.75rem 0;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.sku {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: rgba(36, 158, 160, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 .badges {
@@ -163,8 +194,5 @@ else
   transform: none !important;
 }
 
-@@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
+@@keyframes bounce {\n  0%, 100% { transform: translateY(0); }\n  50% { transform: translateY(-5px); }\n}
 </style>

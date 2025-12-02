@@ -22,7 +22,7 @@ else
     {
       <div class="card product-card">
         <div class="product-icon"><img src="@i.ImageUrl" height="150"/></div>
-        <h4>@i.Name</h4>
+        <h3>@i.Name</h3>
         <p class="product-description">@i.Description</p>
         <div class="product-meta">
           <div class="badges">
@@ -37,12 +37,17 @@ else
     }
   </div>
   <div style="margin-top:1rem">
-    <button class="btn" @onclick="Continue">Continue Shopping</button>
+    <button class="btn" @onclick="Continue" disabled="@(!HasBookInCart())"><span>Proceed to Cards</span></button>
+    @if (!HasBookInCart() && hasAttemptedContinue) 
+    {
+      <p class="card error">Please select at least one book before proceeding.</p>
+    }
   </div>
 }
 
 @code {
   private List<Item>? items;
+  private bool hasAttemptedContinue = false;
   private bool _jsInitialized = false;
   
   protected override async Task OnInitializedAsync() 
@@ -63,6 +68,11 @@ else
     }
   }
   
+  private bool HasBookInCart()
+  {
+    return Cart.Items.Any(item => item.Category?.Name == "Books");
+  }
+  
   bool CanBuy(Item i) => Points.Points >= i.Cost && i.Stock > 0;
   async Task Buy(Item i)
   {
@@ -80,7 +90,12 @@ else
 
   void Continue() 
   {
-    Nav.NavigateTo("/gifts");
+    hasAttemptedContinue = true;
+    if (HasBookInCart())
+    {
+      Nav.NavigateTo("/parent/cards");
+    }
+    StateHasChanged();
   }
   
   public void Dispose()
@@ -90,6 +105,15 @@ else
 }
 
 <style>
+
+h1 {
+  font-family: Gotham;
+}
+
+h3, span {
+  font-family: LilitaOne;
+}
+
 .page-header {
   animation: pageEnter 0.8s ease-out;
 }

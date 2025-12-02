@@ -15,8 +15,7 @@
 @implements IDisposable
 
 <h2>Your Cart</h2>
-@if(!CartService.Items.Any())
-{
+@if(!CartService.Items.Any()) {
   <p class="card">Your cart is empty.</p>
 }
 else
@@ -33,15 +32,15 @@ else
     </ul>
     <p><b>Total:</b> @CartService.TotalCost() pts</p>
     <div class="cart-actions">
-      <button class="btn secondary" @onclick="ClearCart">Clear Cart</button>
+      <button class="btn secondary" @onclick="ClearCart" style="font-family: LilitaOne;">Clear Cart</button>
       <button class="btn checkout-btn" @onclick="Checkout" disabled="@isCheckingOut">
         @if (isCheckingOut)
         {
-          <span class="spinner"></span><text> Processing...</text>
+          <span class="spinner"style="font-family: LilitaOne;"></span><text> Processing...</text>
         }
         else
         {
-          <span>Checkout</span>
+          <span style="font-family: LilitaOne;">Checkout</span>
         }
       </button>
       <!-- No login button present on checkout page -->
@@ -128,7 +127,7 @@ else
         var family = DbContext.Families.FirstOrDefault();
         if (family != null && !string.IsNullOrWhiteSpace(family.HeadOfHousehold) && !string.IsNullOrWhiteSpace(family.ContactPhone))
         {
-          CheckoutSession.SetContactInfo(family.HeadOfHousehold, family.ContactPhone);
+          CheckoutSession.SetContactInfo(family.HeadOfHousehold/*, family.ContactPhone*/);
         }
     }
     // Final check - if still no contact info, redirect to demographics
@@ -255,7 +254,7 @@ else
       var order = new Order
       {
         HeadOfHousehold = CheckoutSession.HeadOfHousehold,
-        ContactPhone = CheckoutSession.ContactPhone,
+        /*ContactPhone = CheckoutSession.ContactPhone,*/
         ContactEmail = string.Empty,
         OrderDate = DateTime.Now,
         TotalCost = totalCost,
@@ -339,6 +338,15 @@ else
 }
 
 <style>
+
+h1, h2 {
+  font-family: Gotham;
+}
+
+h3 {
+  font-family: LilitaOne;
+}
+
 .cart-items { list-style: none; padding: 0; margin: 0 0 1rem 0; }
 .cart-item { 
   display: flex; 

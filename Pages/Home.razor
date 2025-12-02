@@ -92,10 +92,10 @@
       </div>
       @if (showLoginForm)
       {
-        <h2 style="text-align:center; color:#2CA6A4; font-size:2.5rem; margin-bottom:2rem;">Guest Login</h2>
+        <h2 style="font-family: 'Gotham'; text-align:center; color:#2CA6A4; font-size:2.5rem; margin-bottom:2rem;">Guest Login</h2>
         <div class="login-card"
           style="background:#B3E0EA; border-radius:16px; max-width:600px; margin:2rem auto; padding:2.5rem; box-shadow:0 2px 16px rgba(44,166,164,0.08);">
-          <label for="agencySelect" style="font-size:1.2rem; font-weight:500; color:#2CA6A4; margin-bottom:0.5rem;">Agency
+          <label for="agencySelect" style="font-family: 'LilitaOne'; font-size:1.2rem; font-weight:500; color:#2CA6A4; margin-bottom:0.5rem;">Agency
             *</label>
           <select id="agencySelect" class="input" @bind="selectedAgency"
             style="width:100%; padding:1rem; font-size:1.1rem; border-radius:8px; border:1px solid #2CA6A4; margin-bottom:1.5rem;">
@@ -166,7 +166,7 @@
   private void DemographicsClick()
   {
     Flow.Set(PhilanthroPoints.Services.FlowStep.Demographics);
-    Nav.NavigateTo("/demographics");
+    Nav.NavigateTo("/parent/demographics");
   }
   private void CardsClick() { Flow.Set(PhilanthroPoints.Services.FlowStep.Cards); Nav.NavigateTo("/cards"); }
   private void TreatsClick() { Flow.Set(PhilanthroPoints.Services.FlowStep.Treats); Nav.NavigateTo("/treats"); }
@@ -209,7 +209,7 @@
       await AuthStateProvider.MarkUserAsAuthenticated(guest);
       guestLoginStatus = "✅ Guest login successful!";
       StateHasChanged();
-      Nav.NavigateTo("/demographics");
+      Nav.NavigateTo("/parent/demographics");
     }
     else
     {

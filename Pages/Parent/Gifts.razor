@@ -1,17 +1,17 @@
 
-@page "/cards"
+@page "/parent/gifts"
 @inject PhilanthroPoints.Services.CatalogService Catalog
 @inject PhilanthroPoints.Services.PointsState Points
 @inject PhilanthroPoints.Services.CartState Cart
 @inject PhilanthroPoints.Services.FlowState Flow
-@inject NavigationManager Nav
+@inject NavigationManager NavigationManager
 @using PhilanthroPoints.Components
 @implements IDisposable
 
 <div class="page-header">
-  <div class="category-icon">💌</div>
-  <h1>Birthday Cards</h1>
-  <p>Choose the perfect greeting to make their day special</p>
+  <div class="category-icon"><h1>🎁</h1></div>
+  <h1>Gifts</h1>
+  <p>Thoughtful presents to make their birthday unforgettable</p>
 </div>
 
 @if (items is null) { <p>Loading...</p> }
@@ -21,11 +21,10 @@ else
     @foreach (var i in items)
     {
       <div class="card product-card">
-        <div class="product-icon">💌</div>
+        <div class="product-icon"><img src="@i.ImageUrl" height="150"/></div>
         <h4>@i.Name</h4>
-        @if (!string.IsNullOrWhiteSpace(i.Description)) { <p class="desc">@i.Description</p> }
+        <p class="desc">@i.Description</p>
         <div class="product-meta">
-          <p class="meta">SKU: <span class="sku">@i.Id</span></p>
           <div class="badges">
             <span class="badge cost-badge">💰 @i.Cost points</span> 
             <span class="badge stock-badge">📦 @i.Stock left</span>
@@ -37,25 +36,30 @@ else
       </div>
     }
   </div>
-  <div style="margin-top:1rem">
-    <button class="btn" @onclick="Continue" disabled="@(!HasCardInCart())">Proceed to Sweets & Treats</button>
-    @if (!HasCardInCart() && hasAttemptedContinue) 
-    {
-      <p class="card error">Please select at least one card before proceeding.</p>
-    }
+  <div style="margin-top:2rem">
+    <div class="completion-card card">
+      <div class="category-icon">✨</div>
+      <h3>Perfect Selection!</h3>
+      <p>You've reached the end of the selection flow. Review your cart and complete checkout.</p>
+      <button class="btn" @onclick="GoToCart" disabled="@(!HasGiftInCart())"><span>🛒 View Cart & Checkout</span></button>
+      @if (!HasGiftInCart() && hasAttemptedCheckout) 
+      {
+        <p class="card error" style="margin-top: 1rem;">Please select at least one gift before proceeding to checkout.</p>
+      }
+    </div>
   </div>
 }
 
 @code {
   private List<Item>? items;
-  private bool hasAttemptedContinue = false;
+  private bool hasAttemptedCheckout = false;
   private bool _jsInitialized = false;
   
   protected override async Task OnInitializedAsync() 
   { 
     await Points.InitializeAsync(); 
-    items = await Catalog.ByCategoryAsync("Cards"); 
-    Flow.Set(PhilanthroPoints.Services.FlowStep.Cards);
+    items = await Catalog.ByCategoryAsync("Gifts"); 
+    Flow.Set(PhilanthroPoints.Services.FlowStep.Gifts);
     Cart.OnCartChanged += StateHasChanged;
   }
   
@@ -69,9 +73,9 @@ else
     }
   }
   
-  private bool HasCardInCart()
+  private bool HasGiftInCart()
   {
-    return Cart.Items.Any(item => item.Category?.Name == "Cards");
+    return Cart.Items.Any(item => item.Category?.Name == "Gifts");
   }
   
   bool CanBuy(Item i) => Points.Points >= i.Cost && i.Stock > 0;
@@ -89,12 +93,12 @@ else
     }
   }
 
-  void Continue() 
+  void GoToCart() 
   {
-    hasAttemptedContinue = true;
-    if (HasCardInCart())
+    hasAttemptedCheckout = true;
+    if (HasGiftInCart())
     {
-      Nav.NavigateTo("/treats");
+      NavigationManager.NavigateTo("/parent/cart");
     }
     StateHasChanged();
   }
@@ -106,6 +110,15 @@ else
 }
 
 <style>
+
+h1 {
+  font-family: Gotham;
+}
+
+h3, span {
+  font-family: LilitaOne;
+}
+
 .page-header {
   animation: pageEnter 0.8s ease-out;
 }
@@ -146,20 +159,6 @@ else
   margin: 1rem 0;
 }
 
-.meta {
-  margin: 0 0 0.75rem 0;
-  color: #666;
-  font-size: 0.85rem;
-}
-
-.sku {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  background: rgba(36, 158, 160, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
 .badges {
   display: flex;
   gap: 0.5rem;
@@ -175,6 +174,25 @@ else
   background: linear-gradient(135deg, #249EA0, #008083);
 }
 
+.completion-card {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bc-gradient);
+  color: white;
+  border-radius: 25px;
+  animation: pageEnter 1s ease-out;
+}
+
+.completion-card h3 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.completion-card .category-icon {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
 .btn.disabled {
   background: #ccc;
   cursor: not-allowed;
@@ -186,5 +204,8 @@ else
   transform: none !important;
 }
 
-@@keyframes bounce {\n  0%, 100% { transform: translateY(0); }\n  50% { transform: translateY(-5px); }\n}
+@@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
 </style>

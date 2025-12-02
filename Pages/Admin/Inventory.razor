@@ -1,1423 +1,1499 @@
-@page "/admin/inventory"
-@attribute [Authorize(Roles="Admin")]
-
-<!-- Base Requirements -->
-  @using PhilanthroPoints.Models
-  @using PhilanthroPoints.Data
-  @using Microsoft.JSInterop
-  @inject IJSRuntime JS
-  @inject IConfiguration Configuration
-
-<!-- Authentication Requirements -->
-  @using Microsoft.AspNetCore.Authorization
-  @using Microsoft.AspNetCore.Components.Authorization
-  @inject AuthenticationStateProvider AuthStateProvider
-  @inject PhilanthroPoints.Services.AdminUserService AdminSvc
-
-<!-- Database Management Requirements -->
-  @inject PhilanthroPoints.Data.ApplicationDbContext DbContext
-  @inject PhilanthroPoints.Data.ApplicationDbContext Db
-
-<!-- Catalog Management Requirements -->
-  @inject PhilanthroPoints.Services.CatalogService Catalog
-  @inject PhilanthroPoints.Services.CartMonitorService Monitor
-
-<!-- User Management Requirements -->
-  @inject PhilanthroPoints.Services.PointsService PointsSvc
-  @inject PhilanthroPoints.Services.UserService UserSvc
-
-<!-- Notification Requirements -->
-  @using MailKit
-  @using MailKit.Net.Smtp
-  @inject IEmailSender EmailSender
-  @inject PhilanthroPoints.Services.INotificationService NotificationService
-
-
-<!-- End of Requirements, Begining of Heading -->
-
-<!-- 
-
----------Table of Contents:----------
+<!-------Table of Contents:----------
 [Use Ctrl+F to sift through the page]
 
-  1. Navigation Bar: Line 
-    a. Ms. Benita's Nav Bar:
-    b. Providers' Nav Bar:
-    c. Back to Home Page:
-  2. 
-
+  1. Required Callings
+    A. Base Requirements
+    B. Authentication Requirements
+    C. Database Management Requirements
+    D. Catalog Management Requirements
+    E. User Management Requirements
+    F. Notification Requirements
+  2. Navigation Bar
+    A. Ms. Benita's Team's Tabs
+    B. Providers' Tabs
+  3. Members Tab
+    A. Agency Selector Dropdown
+    B. Child Birthdate and Age
+    C. Manual Application Number
+    D. Generation Button
+    E. Code Generation Confirmation
+    F. History of Family Codes
+  4. Users Tab (Commented Out)
+  5. Admin Users Tab
+    A. Manage Admin Users
+    B. Admin Users Table
+  6. Cart Monitor Tab
+    A. Low Stock Section
+    B. Out of Stock Section
+    C. Stock Summary Section
+    D. Monitor Refresh Button
+  7. Inventory Tab
+    A. Inventory Toolbar
+    B. Inventory Addition Form
+    C. Inventory Table Header
+    D. Inventory Table Body
+  8. Gifts Tab
+    A. Gifts Toolbar
+    B. Gifts Addition Form
+    C. Gifts Table Header
+    D. Gifts Table Body
+  9. Treats Tab
+    A. Treats Toolbar
+    B. Treats Addition Form
+    C. Treats Table Header
+    D. Treats Table Body
+  10. Cards Tab
+    A. Cards Toolbar
+    B. Cards Addition Form
+    C. Cards Table Header
+    D. Cards Table Body
+  11. Books Tab
+    A. Books Toolbar
+    B. Books Addition Form
+    C. Books Table Header
+    D. Books Table Body
+  12. Notifications Tab
+    A. Notification Configuration
+      a. SMTP Configuration
+      b. SMS Configuration
+    B. Status Message Post Test
+    C. Setup Instructions
+  13. Surveys Tab
 -->
 
-<!-- 1. Navigation Bar -->
-  <h1 style="font-family: Feeling-Passionate;">Admin 🔧</h1>
-  <nav class="admin-menu">
-    <div style="display: flex; flex-direction: column; width: 100%;">
 
-  <!-- a. Ms. Benita's Nav Bar -->
-      @if (IsSuperAdmin)
+
+@{/* 1. Required Callings */}
+      @page "/admin/inventory"
+      @attribute [Authorize(Roles="Admin")]
+  @{/* A. Base Requirements */}
+      @using PhilanthroPoints.Models
+      @using PhilanthroPoints.Data
+      @using Microsoft.JSInterop
+      @inject IJSRuntime JS
+      @inject IConfiguration Configuration
+  @{/* B. Authentication Requirements */}
+      @using Microsoft.AspNetCore.Authorization
+      @using Microsoft.AspNetCore.Components.Authorization
+      @inject AuthenticationStateProvider AuthStateProvider
+      @inject PhilanthroPoints.Services.AdminUserService AdminSvc
+  @{/* C. Database Management Requirements */}
+      @inject PhilanthroPoints.Data.ApplicationDbContext DbContext
+      @inject PhilanthroPoints.Data.ApplicationDbContext Db
+  @{/* D. Catalog Management Requirements */}
+      @inject PhilanthroPoints.Services.CatalogService Catalog
+      @inject PhilanthroPoints.Services.CartMonitorService Monitor
+  @{/* E. User Management Requirements */}
+      @inject PhilanthroPoints.Services.PointsService PointsSvc
+      @inject PhilanthroPoints.Services.UserService UserSvc
+  @{/* F. Notification Requirements */}
+      @using MailKit
+      @using MailKit.Net.Smtp
+      @inject IEmailSender EmailSender
+      @inject PhilanthroPoints.Services.INotificationService NotificationService
+
+
+
+@{/* 2. Navigation Bar */}
+      <h1 style="font-family: Feeling-Passionate;">Admin 🔧</h1>
+      <nav class="admin-menu">
+        <div style="display: flex; flex-direction: column; width: 100%;">
+  @{/* A. Ms. Benita's Team's Tabs */}
+          @if (IsSuperAdmin) {
+            <div style="display: flex; flex-wrap: wrap; justify-content: left; margin-bottom: 20px;">
+              <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>
+                👥<br/>Members</a>
+            @{/*
+              Commenting out Users tab due to lack of necessity. If needed, uncomment and implement.
+                <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤<br/>Users</a>
+            */}
+              <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>
+                👑<br/>Admin Users</a>
+              <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>
+                📊<br/>Cart Monitor</a>
+              <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")' >
+                📦<br/>Inventory</a>
+              <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>
+                🎁<br/>Gifts</a>
+              <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>
+                🍭<br/>Treats</a>
+              <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>
+                🃏<br/>Cards</a>
+              <a class="menu-link @(activeTab == "books" ? "active" : "")" href="#" @onclick='() => SetTab("books")'>
+                📖<br/>Books</a>
+              <a class="menu-link @(activeTab == "notifications" ? "active" : "")" href="#" @onclick='() => SetTab("notifications")'>
+                📧<br/>Notifications</a>
+              <a class="menu-link @(activeTab == "surveys" ? "active" : "")" href="#" @onclick='() => SetTab("surveys")'>
+                📝<br/>Survey Responses</a>
+            @{/*
+              Commenting Out due to Implementation changing from separate page to same page to keep navigation
+                <a class="menu-link" href="/admin/notifications">📧<br/>Notifications</a>
+                <a class="menu-link" href="/admin/surveys">📝<br/>Survey Responses</a>
+            */}
+            </div>
+  /* B. Providers' Tabs */
+          } else {
+            <div style="display: flex; justify-content: left;">
+              <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
+            </div>
+          }
+          <div style="display: flex; justify-content: right; width: 100%;">
+            <a class="menu-link" href="/">🏠 Back to Site</a>
+          </div>
+        </div>
+      @{/*
+        Commenting this out due to imbalance of menu, can put back if important
+        @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
+      */}
+        </nav>
+
+
+
+@{/* 3. Members Tab */}
+      @if (activeTab == "members") {
+        <div class="card">
+          <h2>🎯 Manage Members</h2>
+          <div class="modal-bg"></div>
+            <div class="modal-card">
+              <h2 style="color:#178a7c; text-align:center; margin-bottom:1.5rem;">Generate Family Login Code</h2>
+              <div style="margin-bottom:1.2rem;">
+  @{/* A. Agency Selector Dropdown */}
+                <label for="agencySelect" style="font-size:1.2rem; font-weight:500; color:#178a7c; margin-bottom:0.5rem;">Agency *</label>
+                <select id="agencySelect" class="input" @bind="agencyAbbrev" style="width:100%; padding:1rem; font-size:1.1rem; border-radius:8px; border:1px solid #222; margin-bottom:1rem;">
+                  <option value="">Select an Agency</option>
+                  <option>Big Brothers Big Sisters</option>
+                  <option>Children's Center for Visually Impaired</option>
+                  <option>Cornerstones of Care</option>
+                  <option>Demonstration</option>
+                  <option>HALO</option>
+                  <option>Hillcrest Transitional Housing</option>
+                  <option>i.c.stars</option>
+                  <option>Jackson County Courts</option>
+                  <option>KC Cares</option>
+                  <option>KC Heroes</option>
+                  <option>Metro Lutheran Ministries</option>
+                  <option>PACES</option>
+                  <option>Rose Brooks</option>
+                  <option>Turner Parents as Teachers</option>
+                </select>
+              </div>
+  @{/* B. Child Birthdate and Age */}
+              <div style="margin-bottom:1.2rem; display:flex; align-items:center; gap:1.2rem;">
+                <div>
+                  <label style="font-size:1.1rem; color:#178a7c;">Child's Birthday</label><br />
+                  <input type="text" maxlength="2" placeholder="MM" @bind="birthdayMonth" style="width:40px; margin-right:8px;" /> /
+                  <input type="text" maxlength="2" placeholder="DD" @bind="birthdayDay" style="width:40px;" />
+                </div>
+                <div>
+                  <label style="font-size:1.1rem; color:#178a7c;">Age</label><br />
+                  <input type="text" maxlength="2" placeholder="Age" @bind="childage" style="width:40px;" />
+                </div>
+              </div>
+  @{/* C. Manual Application Number */}
+              <div style="margin-bottom:1.2rem;">
+                <label style="font-size:1.1rem; color:#178a7c;">Application Number</label>
+                <input type="text" maxlength="2" placeholder="01" @bind="applicationNumber" style="width:40px; margin-left:8px;" />
+              </div>
+  @{/* D. Generation Button */}
+              <div style="display:flex; gap:1.5rem; justify-content:center; margin-top:2rem;">
+                <button class="btn" style="background:#2ecc40; color:#fff; font-size:1.2rem; padding:0.8rem 2.2rem; border-radius:16px; box-shadow:0 2px 8px rgba(44,166,164,0.12);" @onclick="GenerateFamilyLoginCode">
+                  Generate
+                </button>
+              </div>
+  @{/* E. Code Generation Confirmation */}
+              @if (!string.IsNullOrEmpty(generatedFamilyCode))
+              {
+                <div style="margin-top:1.5rem; color:#178a7c; font-weight:bold; text-align:center; font-size:1.2rem;">
+                  Generated Code: @generatedFamilyCode
+                </div>
+              }
+            </div>
+  @{/* F. History of Family Codes */}
+          @if (IsSuperAdmin && TempFamilyCodes.Any()) {
+            <div class="table-container" style="margin-top:2rem;">
+              <h4>Generated Family Login Codes</h4>
+              <table class="inv">
+                <thead>
+                  <tr>
+                    <th>Family Login Code</th>
+                    <th>Agency</th>
+                    <th>Application Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var info in TempFamilyCodes) {
+                    <tr>
+                      <td>@info.Code</td>
+                      <td>@info.Agency</td>
+                      <td>@info.ApplicationNumber</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+
+
+@{/* 4. Users Tab (Commented Out)
+  This was originally a tab for managing users, but it was commented out due to new inplementation.
+  It could be uncommented if deemed necessary
+*/}
+@{/*
+      @if (activeTab == "users")
       {
-        <div style="display: flex; flex-wrap: wrap; justify-content: left; margin-bottom: 20px;">
-
-          <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥<br/>Members</a>
-
-        @{/*
-          Commenting out Users tab due to lack of necessity. If needed, uncomment and implement.
-            <a class="menu-link @(activeTab == "users" ? "active" : "")" href="#" @onclick='() => SetTab("users")'>👤<br/>Users</a>
-        */}
-
-          <a class="menu-link @(activeTab == "adminusers" ? "active" : "")" href="#" @onclick='() => SetTab("adminusers")'>👑<br/>Admin Users</a>
-
-          <a class="menu-link @(activeTab == "monitor" ? "active" : "")" href="#" @onclick='() => SetTab("monitor")'>📊<br/>Cart Monitor</a>
-
-          <a class="menu-link @(activeTab == "inventory" ? "active" : "")" href="#" @onclick='() => SetTab("inventory")' >📦<br/>Inventory</a>
-
-          <a class="menu-link @(activeTab == "gifts" ? "active" : "")" href="#" @onclick='() => SetTab("gifts")'>🎁<br/>Gifts</a>
-
-          <a class="menu-link @(activeTab == "treats" ? "active" : "")" href="#" @onclick='() => SetTab("treats")'>🍭<br/>Treats</a>
-
-          <a class="menu-link @(activeTab == "cards" ? "active" : "")" href="#" @onclick='() => SetTab("cards")'>🃏<br/>Cards</a>
-
-          <a class="menu-link @(activeTab == "books" ? "active" : "")" href="#" @onclick='() => SetTab("books")'>📖<br/>Books</a>
-
-          <a class="menu-link @(activeTab == "notifications" ? "active" : "")" href="#" @onclick='() => SetTab("notifications")'>📧<br/>Notifications</a>
-
-          <a class="menu-link @(activeTab == "surveys" ? "active" : "")" href="#" @onclick='() => SetTab("surveys")'>📝<br/>Survey Responses</a>
-
-        @{/*
-          Commenting Out due to Implementation changing from separate page to same page to keep navigation
-            <a class="menu-link" href="/admin/notifications">📧<br/>Notifications</a>
-            <a class="menu-link" href="/admin/surveys">📝<br/>Survey Responses</a>
-        */}
+      <div class="card">
+        <h2>👤 Manage Users</h2>
+        <div class="toolbar">
+          <button class="btn btn-primary" @onclick="ShowAddUserForm">👥 Add New User</button>
+          <button class="btn btn-refresh" @onclick="RefreshUsersData">🔄 Refresh Users</button>
         </div>
 
-  
-      }
-      else
-      {
-        <div style="display: flex; justify-content: left;">
-          <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>👥 Members</a>
-        </div>
-      }
-      <div style="display: flex; justify-content: right; width: 100%;">
-        <a class="menu-link" href="/">🏠 Back to Site</a>
-      </div>
-    </div>
-
-
-    @{/*
-      Commenting this out due to imbalance of menu, can put back if important
-      @if(!string.IsNullOrWhiteSpace(status)) { <span class="status">@status</span> }
-    */}
-    </nav>
-
-@code {
-  // Family login code generator popup state
-  private bool showCodePopup = false;
-  private string agencyAbbrev = "";
-  private string birthdayMonth = "";
-  private string birthdayDay = "";
-  private string applicationNumber = "";
-  private string childage = "";
-  private string generatedFamilyCode = string.Empty;
-
-  // Temporary in-memory list for generated codes with agency and app number
-  public class FamilyLoginCodeInfo {
-    public string Code { get; set; } = "";
-    public string Agency { get; set; } = "";
-    public string ApplicationNumber { get; set; } = "";
-  }
-  public static List<FamilyLoginCodeInfo> TempFamilyCodes { get; set; } = new();
-
-  private void ShowCodePopup() { showCodePopup = true; generatedFamilyCode = string.Empty; }
-  private void HideCodePopup() { showCodePopup = false; agencyAbbrev = ""; birthdayMonth = ""; birthdayDay = ""; applicationNumber = ""; generatedFamilyCode = string.Empty; }
-
-  private async Task GenerateFamilyLoginCode()
-  {
-    // Validate input (applicationNumber will be auto-filled)
-    if (string.IsNullOrWhiteSpace(agencyAbbrev) || agencyAbbrev.Length < 3 || string.IsNullOrWhiteSpace(birthdayMonth) || string.IsNullOrWhiteSpace(birthdayDay) || string.IsNullOrWhiteSpace(childage))
-    {
-      status = "❌ Please enter valid agency (3 letters), month, day, and age. Code must be 3 letters and 8 digits.";
-      StateHasChanged();
-      return;
-    }
-
-    // Get or create AgencyApplicationNumber for this agency/month/year
-    var now = DateTime.UtcNow;
-    var agencyKey = agencyAbbrev.ToUpper().Substring(0, 3);
-    var appNum = await DbContext.AgencyApplicationNumbers.FirstOrDefaultAsync(a => a.AgencyAbbrev == agencyKey && a.Year == now.Year && a.Month == now.Month);
-    if (appNum == null)
-    {
-      appNum = new PhilanthroPoints.Models.AgencyApplicationNumber {
-        AgencyAbbrev = agencyKey,
-        Year = now.Year,
-        Month = now.Month,
-        LastNumber = 1
-      };
-      DbContext.AgencyApplicationNumbers.Add(appNum);
-    }
-    else
-    {
-      appNum.LastNumber++;
-    }
-    await DbContext.SaveChangesAsync();
-    applicationNumber = appNum.LastNumber.ToString().PadLeft(2, '0');
-
-    // Format: [ABC][MM][DD][AA][NN] (ABC = first 3 of agency, MM = month, DD = day, AA = age, NN = app number)
-    var code = agencyKey
-      + birthdayMonth.PadLeft(2, '0').Substring(0, 2)
-      + birthdayDay.PadLeft(2, '0').Substring(0, 2)
-      + childage.PadLeft(2, '0').Substring(0, 2)
-      + applicationNumber;
-    generatedFamilyCode = code;
-    TempFamilyCodes.Add(new FamilyLoginCodeInfo {
-      Code = code,
-      Agency = agencyAbbrev,
-      ApplicationNumber = applicationNumber
-    }); // Save code, agency, and app number temporarily
-    status = $"✅ Family login code generated: {generatedFamilyCode}";
-    StateHasChanged();
-  }
-
-  private string? currentUsername;
-  private bool IsSuperAdmin => adminUsers.FirstOrDefault(a => a.Username == currentUsername)?.Role == "Super Admin";
-
-  protected override async Task OnInitializedAsync()
-  {
-    var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-    currentUsername = authState.User.Identity?.Name;
-    // Call the rest of the original OnInitializedAsync logic
-    await RefreshData();
-    responses = await Db.FamilySurveyResponses.ToListAsync();
-  }
-}
-
-
-
-@if (activeTab == "inventory")
-{
-<div class="category-page">
-  <div class="card">
-    <h2>📦 Inventory</h2>
-    <div class="toolbar">
-      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search items..." />
-      <select value="@categoryFilter" @onchange="OnCategoryChanged">
-        <option value="">All Categories</option>
-        @foreach (var c in categories)
+        @if (showAddUserForm)
         {
-          <option value="@c.Name">@c.Name</option>
+          <div class="add-form">
+            <h4>Add New User</h4>
+            <EditForm Model="newUser" OnValidSubmit="CreateUser">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Username *</label>
+                  <InputText @bind-Value="newUser.Username" class="input" />
+                </div>
+                <div class="form-field">
+                  <label>Email *</label>
+                  <InputText @bind-Value="newUser.Email" class="input" />
+                </div>
+                <div class="form-field">
+                  <label>First Name *</label>
+                  <InputText @bind-Value="newUser.FirstName" class="input" />
+                </div>
+                <div class="form-field">
+                  <label>Last Name *</label>
+                  <InputText @bind-Value="newUser.LastName" class="input" />
+                </div>
+                <div class="form-field">
+                  <label>Phone</label>
+                  <InputText @bind-Value="newUser.PhoneNumber" class="input" />
+                </div>
+                <div class="form-field">
+                  <label>Date of Birth</label>
+                  <InputDate @bind-Value="newUser.DateOfBirth" class="input" />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                  ✅ Create User
+                </button>
+                <button type="button" class="btn btn-secondary" @onclick="CancelAddUser">
+                  ❌ Cancel
+                </button>
+              </div>
+            </EditForm>
+          </div>
         }
-      </select>
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("")'>📦 Add Inventory</button>
-    </div>
-    @if (showAddForm)
-    {
-      <div class="card add-form">
-        <h4>Add New Inventory</h4>
-        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Name *</label>
-              <InputText @bind-Value="newItem.Name" class="input" />
-              <ValidationMessage For="@(() => newItem.Name)" />
-            </div>
-            <div class="form-field">
-              <label>Description</label>
-              <InputText @bind-Value="newItem.Description" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Category</label>
-              <select @bind="newItem.CategoryId" @bind:event="onchange"  class="input">
-                @foreach (var c in categories)
-                {
-                  <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
-                }
-              </select>
-            </div>
-            <div class="form-field">
-              <label>Image URL</label>
-              <InputText @bind-Value="newItem.ImageUrl" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Cost *</label>
-              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Cost)" />
-            </div>
-            <div class="form-field">
-              <label>Stock *</label>
-              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Stock)" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
-              @if (isSubmitting)
+
+        <div class="table-container">
+          <table class="inv">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Created</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (var user in users)
               {
-                <span>⏳ Adding...</span>
-              }
-              else
-              {
-                <span>✅ Add Inventory</span>
-              }
-            </button>
-            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
-          </div>
-        </EditForm>
-      </div>
-    }
-    @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-    {
-    }
-    <div class="table-container">
-      <table class="inv">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Category</th>
-            <th>Cost</th>
-            <th>Stock</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (filtered.Any())
-          {
-            @foreach (var item in filtered)
-            {
-              <tr class="@(editingItemId == item.Id ? "editing" : "")">
-                <td class="id">@item.Id</td>
-                @if (editingItemId == item.Id)
-                {
-                  <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
-                  <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
-                  <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
+                <tr>
+                  <td class="id">@user.Id</td>
                   <td>
-                    <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
-                      @foreach (var c in categories)
-                      {
-                        <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
-                      }
-                    </select>
+                    <strong>@user.Username</strong>
                   </td>
-                  <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
-                  <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
-                  <td class="actions">
-                    <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
-                    <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
-                    <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
-                  </td>
-                }
-                else
-                {
-                  <td><strong>@item.Name</strong></td>
-                  <td class="desc">@(item.Description ?? "-")</td>
-                  <td class="image-cell">
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                  <td>@user.FirstName @user.LastName</td>
+                  <td>@user.Email</td>
+                  <td>@user.CreatedDate.ToString("MM/dd/yyyy")</td>
+                  <td>
+                    @if (user.IsActive)
                     {
-                      <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                      <span class="status-badge active">Active</span>
                     }
                     else
                     {
-                      <span class="no-image">🖼️</span>
+                      <span class="status-badge inactive">Inactive</span>
                     }
                   </td>
-                  <td><span class="category-tag">@item.Category?.Name</span></td>
-                  <td><span class="cost">@item.Cost pts</span></td>
-                  <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-                  <td class="actions">
-                    <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
-                    <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                  <td>
+                    <div class="action-btns">
+                      <button class="btn-sm btn-edit" @onclick="() => StartEditUser(user)">✏️</button>
+                      <button class="btn-sm btn-remove" @onclick="() => DeleteUser(user.Id)">🗑️</button>
+                      <button class="btn-sm btn-add" @onclick="() => AddPointsToUser(user.Id, 100)">➕</button>
+                    </div>
                   </td>
-                }
-              </tr>
-            }
-          }
-          else
-          {
-            <tr>
-              <td colspan="8" class="no-items">
-                @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-                {
-                  <span>🔍 No items match your search criteria</span>
-                }
-                else
-                {
-                  <span>📎 No items in inventory</span>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-}
-
-
-@if (activeTab == "members")
-{
-<div class="card">
-  <h2>🎯 Manage Member Points</h2>
-  <button class="btn btn-primary" @onclick="ShowCodePopup" style="margin-bottom:1rem;">Generate Family Login Code</button>
-  @if (showCodePopup)
-  {
-    <div class="modal-bg"></div>
-    <div class="modal-card" style="background:#fff; border-radius:16px; max-width:500px; margin:2rem auto; padding:2.5rem; box-shadow:0 2px 16px rgba(44,166,164,0.08);">
-      <h2 style="color:#178a7c; text-align:center; margin-bottom:1.5rem;">Generate Family Login Code</h2>
-      <div style="margin-bottom:1.2rem;">
-        <label for="agencySelect" style="font-size:1.2rem; font-weight:500; color:#178a7c; margin-bottom:0.5rem;">Agency *</label>
-        <select id="agencySelect" class="input" @bind="agencyAbbrev" style="width:100%; padding:1rem; font-size:1.1rem; border-radius:8px; border:1px solid #222; margin-bottom:1rem;">
-          <option value="">Select an Agency</option>
-          <option>Big Brothers Big Sisters</option>
-          <option>Children's Center for Visually Impaired</option>
-          <option>Cornerstones of Care</option>
-          <option>Demonstration</option>
-          <option>HALO</option>
-          <option>Hillcrest Transitional Housing</option>
-          <option>i.c.stars</option>
-          <option>Jackson County Courts</option>
-          <option>KC Cares</option>
-          <option>KC Heroes</option>
-          <option>Metro Lutheran Ministries</option>
-          <option>PACES</option>
-          <option>Rose Brooks</option>
-          <option>Turner Parents as Teachers</option>
-        </select>
-      </div>
-      <div style="margin-bottom:1.2rem; display:flex; align-items:center; gap:1.2rem;">
-        <div>
-          <label style="font-size:1.1rem; color:#178a7c;">Child's Birthday</label><br />
-          <input type="text" maxlength="2" placeholder="MM" @bind="birthdayMonth" style="width:40px; margin-right:8px;" /> /
-          <input type="text" maxlength="2" placeholder="DD" @bind="birthdayDay" style="width:40px;" />
-        </div>
-        <div>
-          <label style="font-size:1.1rem; color:#178a7c;">Age</label><br />
-          <input type="text" maxlength="2" placeholder="Age" @bind="childage" style="width:40px;" />
-        </div>
-      </div>
-      <div style="margin-bottom:1.2rem;">
-        <label style="font-size:1.1rem; color:#178a7c;">Application Number</label>
-        <input type="text" maxlength="2" placeholder="01" @bind="applicationNumber" style="width:40px; margin-left:8px;" />
-      </div>
-      <div style="display:flex; gap:1.5rem; justify-content:center; margin-top:2rem;">
-        <button class="btn" style="background:#2ecc40; color:#fff; font-size:1.2rem; padding:0.8rem 2.2rem; border-radius:16px; box-shadow:0 2px 8px rgba(44,166,164,0.12);" @onclick="GenerateFamilyLoginCode">Generate</button>
-        <button class="btn" style="background:#6c757d; color:#fff; font-size:1.2rem; padding:0.8rem 2.2rem; border-radius:16px; box-shadow:0 2px 8px rgba(44,166,164,0.12);" @onclick="HideCodePopup">Cancel</button>
-      </div>
-      @if (!string.IsNullOrEmpty(generatedFamilyCode))
-      {
-        <div style="margin-top:1.5rem; color:#178a7c; font-weight:bold; text-align:center; font-size:1.2rem;">Generated Code: @generatedFamilyCode</div>
-      }
-    </div>
-  }
-  @if (IsSuperAdmin && TempFamilyCodes.Any())
-  {
-    <div class="table-container" style="margin-top:2rem;">
-      <h4>Generated Family Login Codes</h4>
-      <table class="inv">
-        <thead>
-          <tr>
-            <th>Family Login Code</th>
-            <th>Agency</th>
-            <th>Application Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach (var info in TempFamilyCodes)
-          {
-            <tr>
-              <td>@info.Code</td>
-              <td>@info.Agency</td>
-              <td>@info.ApplicationNumber</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
-</div>
-}
-
-@if (activeTab == "monitor")
-{
-<div class="card">
-  <h2>📊 Cart & Stock Monitor</h2>
-  <div class="monitor-grid">
-    <div class="monitor-card">
-      <h4>⚠️ Low Stock Alert (=5 items)</h4>
-      @if (lowStockItems?.Any() == true)
-      {
-        <div class="alert-list">
-          @foreach (var item in lowStockItems)
-          {
-            <div class="alert-item low-stock">
-              <span class="item-name">@item.Name (@item.Category?.Name)</span>
-              <span class="stock-count">@item.Stock left</span>
-            </div>
-          }
-        </div>
-      }
-      else
-      {
-        <p class="no-alerts">? All items have sufficient stock!</p>
-      }
-    </div>
-    
-    <div class="monitor-card">
-      <h4>? Out of Stock</h4>
-      @if (outOfStockItems?.Any() == true)
-      {
-        <div class="alert-list">
-          @foreach (var item in outOfStockItems)
-          {
-            <div class="alert-item out-of-stock">
-              <span class="item-name">@item.Name (@item.Category?.Name)</span>
-              <span class="stock-count">SOLD OUT</span>
-            </div>
-          }
-        </div>
-      }
-      else
-      {
-        <p class="no-alerts">? No items out of stock!</p>
-      }
-    </div>
-    
-    <div class="monitor-card">
-      <h4>📊 Stock Summary by Category</h4>
-      @if (stockSummary?.Any() == true)
-      {
-        <div class="summary-list">
-          @foreach (var category in stockSummary)
-          {
-            <div class="summary-item">
-              <span class="category-name">@category.Key</span>
-              <span class="total-stock">@category.Value items</span>
-            </div>
-          }
-        </div>
-      }
-      else
-      {
-        <p class="no-alerts">Loading summary...</p>
-      }
-    </div>
-  </div>
-  
-  <div class="monitor-actions">
-    <button class="btn btn-primary" @onclick="RefreshMonitorData">🔄 Refresh Monitor</button>
-    <span class="last-updated">Last updated: @lastMonitorUpdate.ToString("HH:mm:ss")</span>
-  </div>
-</div>
-}
-
-@if (activeTab == "users")
-{
-<div class="card">
-  <h2>👤 Manage Users</h2>
-  <div class="toolbar">
-    <button class="btn btn-primary" @onclick="ShowAddUserForm">👥 Add New User</button>
-    <button class="btn btn-refresh" @onclick="RefreshUsersData">🔄 Refresh Users</button>
-  </div>
-
-  @if (showAddUserForm)
-  {
-    <div class="add-form">
-      <h4>Add New User</h4>
-      <EditForm Model="newUser" OnValidSubmit="CreateUser">
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Username *</label>
-            <InputText @bind-Value="newUser.Username" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Email *</label>
-            <InputText @bind-Value="newUser.Email" class="input" />
-          </div>
-          <div class="form-field">
-            <label>First Name *</label>
-            <InputText @bind-Value="newUser.FirstName" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Last Name *</label>
-            <InputText @bind-Value="newUser.LastName" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Phone</label>
-            <InputText @bind-Value="newUser.PhoneNumber" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Date of Birth</label>
-            <InputDate @bind-Value="newUser.DateOfBirth" class="input" />
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-success">✅ Create User</button>
-          <button type="button" class="btn btn-secondary" @onclick="CancelAddUser">❌ Cancel</button>
-        </div>
-      </EditForm>
-    </div>
-  }
-
-  <div class="table-container">
-    <table class="inv">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Username</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Created</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var user in users)
-        {
-          <tr>
-            <td class="id">@user.Id</td>
-            <td><strong>@user.Username</strong></td>
-            <td>@user.FirstName @user.LastName</td>
-            <td>@user.Email</td>
-            <td>@user.CreatedDate.ToString("MM/dd/yyyy")</td>
-            <td>
-              @if (user.IsActive)
-              {
-                <span class="status-badge active">Active</span>
+                </tr>
               }
-              else
-              {
-                <span class="status-badge inactive">Inactive</span>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      }
+*/}
+
+
+
+@{/* 5. Admin Users Tab */}
+      @if (activeTab == "adminusers") {
+        <div class="card">
+          <h2>👑 Manage Admin Users</h2>
+          <div class="toolbar">
+            <button class="btn btn-primary" @onclick="ShowAddAdminForm">👑 Add New Admin</button>
+            <button class="btn btn-refresh" @onclick="RefreshAdminData">🔄 Refresh Admins</button>
+          </div>
+  @{/* A. Manage Admin Users */}
+          @if (showAddAdminForm) {
+            <div class="add-form">
+              <h4>Add New Admin User</h4>
+              <EditForm Model="newAdmin" OnValidSubmit="CreateAdmin">
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label>Username *</label>
+                    <InputText @bind-Value="newAdmin.Username" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Email *</label>
+                    <InputText @bind-Value="newAdmin.Email" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Password *</label>
+                    <InputText @bind-Value="tempPassword" type="password" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>First Name *</label>
+                    <InputText @bind-Value="newAdmin.FirstName" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Last Name *</label>
+                    <InputText @bind-Value="newAdmin.LastName" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Role</label>
+                    <select @bind="newAdmin.Role" class="input">
+                      <option value="Admin">Admin</option>
+                      <option value="Super Admin">Super Admin</option>
+                    </select>
+                  </div>
+                  <div class="form-field">
+                    <label>Department</label>
+                    <InputText @bind-Value="newAdmin.Department" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Phone</label>
+                    <InputText @bind-Value="newAdmin.PhoneNumber" class="input" />
+                  </div>
+                </div>
+
+              @{/* Permission Modification: Commented Out, can be reimplemented if need be
+                <div class="permissions-section">
+                  <h5>Permissions</h5>
+                  <div class="permissions-grid">
+                    <label class="checkbox-label">
+                      <InputCheckbox @bind-Value="newAdmin.CanManageInventory" />
+                      Can Manage Inventory
+                    </label>
+                    <label class="checkbox-label">
+                      <InputCheckbox @bind-Value="newAdmin.CanManageUsers" />
+                      Can Manage Users
+                    </label>
+                    <label class="checkbox-label">
+                      <InputCheckbox @bind-Value="newAdmin.CanViewReports" />
+                      Can View Reports
+                    </label>
+                  </div>
+                </div>
+              */}
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-success">
+                    ✅ Create Admin
+                  </button>
+                  <button type="button" class="btn btn-secondary" @onclick="CancelAddAdmin">
+                    ❌ Cancel
+                  </button>
+                </div>
+              </EditForm>
+            </div>
+          }
+  @{/* B. Admin Users Table */}
+          <div class="table-container">
+            <table class="inv">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Department</th>
+                  <th>Last Login</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach (var admin in adminUsers) {
+                  <tr class="@(editingAdminId == admin.Id ? "editing" : "")">
+                    <td class="id">@admin.Id</td>
+                    @if (editingAdminId == admin.Id) {
+                      <td>
+                        <input @bind="editAdmin.Username" class="edit-input" placeholder="Username..." />
+                      </td>
+                      <td>
+                        <input @bind="editAdmin.FirstName" class="edit-input" placeholder="First Name..." />
+                        <input @bind="editAdmin.LastName" class="edit-input" placeholder="Last Name..." />
+                      </td>
+                      <td>
+                        <input @bind="editAdmin.Email" class="edit-input" placeholder="Email..." />
+                      </td>
+                      <td>
+                        <input @bind="editAdmin.Role" class="edit-input" placeholder="Role..." />
+                      </td>
+                      <td>
+                        <input @bind="editAdmin.Department" class="edit-input" placeholder="Department..." />
+                      </td>
+                      <td>
+                        @admin.LastLoginDate.ToString("MM/dd/yyyy")
+                      </td>
+                      <td>
+                        <label><input type="checkbox" @bind="editAdmin.IsActive" /> Active</label>
+                      </td>
+                      <td class="actions">
+                        <button type="button" class="btn-sm btn-success" @onclick="SaveAdminEdit" title="Save Changes">
+                          ✔️ Save
+                        </button>
+                        <button type="button" class="btn-sm btn-warning" @onclick="UndoAdminEdit" title="Undo Changes">
+                          ↺ Undo
+                        </button>
+                        <button type="button" class="btn-sm btn-secondary" @onclick="CancelAdminEdit" title="Cancel Edit">
+                          ❌ Cancel
+                        </button>
+                      </td>
+                    } else {
+                      <td>
+                        <strong>@admin.Username</strong>
+                      </td>
+                      <td>@admin.FirstName @admin.LastName</td>
+                      <td>@admin.Email</td>
+                      <td>@admin.Role</td>
+                      <td>@(admin.Department ?? "-")</td>
+                      <td>@admin.LastLoginDate.ToString("MM/dd/yyyy HH:mm")</td>
+                      <td>
+                        @if (admin.IsActive){
+                          <span class="status-badge active">Active</span>
+                        } else {
+                          <span class="status-badge inactive">Inactive</span>
+                        }
+                      </td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-sm btn-edit" @onclick="() => StartEditAdmin(admin)">
+                            ✏️
+                          </button>
+                          <button class="btn-sm btn-remove" @onclick="() => DeleteAdmin(admin.Id)">
+                            🗑️
+                          </button>
+                          <button class="btn-sm btn-toggle" @onclick="() => ToggleAdminStatus(admin.Id)">
+                            🔄
+                          </button>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+
+
+@{/* 6. Cart Monitor Tab */}
+      @if (activeTab == "monitor") {
+        <div class="card">
+          <h2>📊 Cart & Stock Monitor</h2>
+          <div class="monitor-grid">
+  @{/* A. Low Stock Section */}
+            <div class="monitor-card">
+              <h4>⚠️ Low Stock Alert (=5 items)</h4>
+              @if (lowStockItems?.Any() == true) {
+                <div class="alert-list">
+                  @foreach (var item in lowStockItems) {
+                    <div class="alert-item low-stock">
+                      <span class="item-name">@item.Name (@item.Category?.Name)</span>
+                      <span class="stock-count">@item.Stock left</span>
+                    </div>
+                  }
+                </div>
+              } else {
+                <p class="no-alerts">? All items have sufficient stock!</p>
               }
-            </td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-sm btn-edit" @onclick="() => StartEditUser(user)">✏️</button>
-                <button class="btn-sm btn-remove" @onclick="() => DeleteUser(user.Id)">🗑️</button>
-                <button class="btn-sm btn-add" @onclick="() => AddPointsToUser(user.Id, 100)">➕</button>
-              </div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</div>
-}
+            </div>
+  @{/* B. Out of Stock Section */}
+            <div class="monitor-card">
+              <h4>? Out of Stock</h4>
+              @if (outOfStockItems?.Any() == true) {
+                <div class="alert-list">
+                  @foreach (var item in outOfStockItems) {
+                    <div class="alert-item out-of-stock">
+                      <span class="item-name">@item.Name (@item.Category?.Name)</span>
+                      <span class="stock-count">SOLD OUT</span>
+                    </div>
+                  }
+                </div>
+              } else {
+                <p class="no-alerts">? No items out of stock!</p>
+              }
+            </div>
+  @{/* C. Stock Summary Section */}
+            <div class="monitor-card">
+              <h4>📊 Stock Summary by Category</h4>
+              @if (stockSummary?.Any() == true) {
+                <div class="summary-list">
+                  @foreach (var category in stockSummary) {
+                    <div class="summary-item">
+                      <span class="category-name">@category.Key</span>
+                      <span class="total-stock">@category.Value items</span>
+                    </div>
+                  }
+                </div>
+              } else {
+                <p class="no-alerts">Loading summary...</p>
+              }
+            </div>
+          </div>
+  @{/* D. Monitor Refresh Button */}
+          <div class="monitor-actions">
+            <button class="btn btn-primary" @onclick="RefreshMonitorData">
+              🔄 Refresh Monitor
+            </button>
+            <span class="last-updated">Last updated: @lastMonitorUpdate.ToString("HH:mm:ss")</span>
+          </div>
+        </div>
+      }
 
-@if (activeTab == "adminusers")
-{
-<div class="card">
-  <h2>👑 Manage Admin Users</h2>
-  <div class="toolbar">
-    <button class="btn btn-primary" @onclick="ShowAddAdminForm">👑 Add New Admin</button>
-    <button class="btn btn-refresh" @onclick="RefreshAdminData">🔄 Refresh Admins</button>
-  </div>
 
-  @if (showAddAdminForm)
-  {
-    <div class="add-form">
-      <h4>Add New Admin User</h4>
-      <EditForm Model="newAdmin" OnValidSubmit="CreateAdmin">
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Username *</label>
-            <InputText @bind-Value="newAdmin.Username" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Email *</label>
-            <InputText @bind-Value="newAdmin.Email" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Password *</label>
-            <InputText @bind-Value="tempPassword" type="password" class="input" />
-          </div>
-          <div class="form-field">
-            <label>First Name *</label>
-            <InputText @bind-Value="newAdmin.FirstName" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Last Name *</label>
-            <InputText @bind-Value="newAdmin.LastName" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Role</label>
-            <select @bind="newAdmin.Role" class="input">
-              <option value="Admin">Admin</option>
-              <option value="Super Admin">Super Admin</option>
+
+@{/* 7. Inventory Tab */}
+      @if (activeTab == "inventory") {
+      <div class="category-page">
+        <div class="card">
+  @{/* A. Inventory Toolbar */}
+          <h2>📦 Inventory</h2>
+          <div class="toolbar">
+            <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search items..." />
+            <select value="@categoryFilter" @onchange="OnCategoryChanged">
+              <option value="">All Categories</option>
+              @foreach (var c in categories) {
+                <option value="@c.Name">@c.Name</option>
+              }
             </select>
+            <button class="btn btn-primary" @onclick='() => ShowAddItemForm("")'>📦 Add Inventory</button>
           </div>
-          <div class="form-field">
-            <label>Department</label>
-            <InputText @bind-Value="newAdmin.Department" class="input" />
-          </div>
-          <div class="form-field">
-            <label>Phone</label>
-            <InputText @bind-Value="newAdmin.PhoneNumber" class="input" />
-          </div>
-        </div>
-        <div class="permissions-section">
-          <h5>Permissions</h5>
-          <div class="permissions-grid">
-            <label class="checkbox-label">
-              <InputCheckbox @bind-Value="newAdmin.CanManageInventory" />
-              Can Manage Inventory
-            </label>
-            <label class="checkbox-label">
-              <InputCheckbox @bind-Value="newAdmin.CanManageUsers" />
-              Can Manage Users
-            </label>
-            <label class="checkbox-label">
-              <InputCheckbox @bind-Value="newAdmin.CanViewReports" />
-              Can View Reports
-            </label>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-success">✅ Create Admin</button>
-          <button type="button" class="btn btn-secondary" @onclick="CancelAddAdmin">❌ Cancel</button>
-        </div>
-      </EditForm>
-    </div>
-  }
-
-  <div class="table-container">
-    <table class="inv">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Username</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Department</th>
-          <th>Last Login</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var admin in adminUsers)
-        {
-          <tr class="@(editingAdminId == admin.Id ? "editing" : "")">
-            <td class="id">@admin.Id</td>
-            @if (editingAdminId == admin.Id)
-            {
-              <td><input @bind="editAdmin.Username" class="edit-input" placeholder="Username..." /></td>
-              <td>
-                <input @bind="editAdmin.FirstName" class="edit-input" placeholder="First Name..." />
-                <input @bind="editAdmin.LastName" class="edit-input" placeholder="Last Name..." />
-              </td>
-              <td><input @bind="editAdmin.Email" class="edit-input" placeholder="Email..." /></td>
-              <td><input @bind="editAdmin.Role" class="edit-input" placeholder="Role..." /></td>
-              <td><input @bind="editAdmin.Department" class="edit-input" placeholder="Department..." /></td>
-              <td>@admin.LastLoginDate.ToString("MM/dd/yyyy")</td>
-              <td>
-                <label><input type="checkbox" @bind="editAdmin.IsActive" /> Active</label>
-              </td>
-              <td class="actions">
-                <button type="button" class="btn-sm btn-success" @onclick="SaveAdminEdit" title="Save Changes">✔️ Save</button>
-                <button type="button" class="btn-sm btn-warning" @onclick="UndoAdminEdit" title="Undo Changes">↺ Undo</button>
-                <button type="button" class="btn-sm btn-secondary" @onclick="CancelAdminEdit" title="Cancel Edit">❌ Cancel</button>
-              </td>
-            }
-            else
-            {
-              <td><strong>@admin.Username</strong></td>
-              <td>@admin.FirstName @admin.LastName</td>
-              <td>@admin.Email</td>
-              <td>@admin.Role</td>
-              <td>@(admin.Department ?? "-")</td>
-            <td>@admin.LastLoginDate.ToString("MM/dd/yyyy HH:mm")</td>
-            <td>
-              @if (admin.IsActive)
-              {
-                <span class="status-badge active">Active</span>
-              }
-              else
-              {
-                <span class="status-badge inactive">Inactive</span>
-              }
-            </td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-sm btn-edit" @onclick="() => StartEditAdmin(admin)">✏️</button>
-                <button class="btn-sm btn-remove" @onclick="() => DeleteAdmin(admin.Id)">🗑️</button>
-                <button class="btn-sm btn-toggle" @onclick="() => ToggleAdminStatus(admin.Id)">🔄</button>
-              </div>
-            </td>
-            }
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</div>
-}
-
-@if (activeTab == "gifts")
-{
-<div class="category-page">
-  <div class="card">
-    <h2>🎁 Gifts</h2>
-    <div class="toolbar">
-      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search gifts..." />
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>🎁 Add Gift</button>
-    </div>
-    @if (showAddForm)
-    {
-      <div class="card add-form">
-        <h4>Add New Gift</h4>
-        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Name *</label>
-              <InputText @bind-Value="newItem.Name" class="input" />
-              <ValidationMessage For="@(() => newItem.Name)" />
-            </div>
-            <div class="form-field">
-              <label>Description</label>
-              <InputText @bind-Value="newItem.Description" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Image URL</label>
-              <InputText @bind-Value="newItem.ImageUrl" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Cost *</label>
-              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Cost)" />
-            </div>
-            <div class="form-field">
-              <label>Stock *</label>
-              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Stock)" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
-              @if (isSubmitting)
-              {
-                <span>⏳ Adding...</span>
-              }
-              else
-              {
-                <span>✅ Add Gift</span>
-              }
-            </button>
-            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
-          </div>
-        </EditForm>
-      </div>
-    }
-    @{ var giftItems = filtered.Where(i => i.Category?.Name == "Gifts").ToList(); }
-    <div class="table-container">
-      <table class="inv">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Cost</th>
-            <th>Stock</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (filtered.Any())
-          {
-            @foreach (var item in giftItems)
-              {
-                <tr class="@(editingItemId == item.Id ? "editing" : "")">
-                  <td class="id">@item.Id</td>
-                  @if (editingItemId == item.Id)
-                  {
-                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
-                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
-                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
-                    <td>
-                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
-                        @foreach (var c in categories)
-                        {
-                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
-                        }
-                      </select>
-                    </td>
-                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
-                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
-                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
-                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
-                    </td>
-                  }
-                  else
-                  {
-                    <td><strong>@item.Name</strong></td>
-                    <td class="desc">@(item.Description ?? "-")</td>
-                    <td class="image-cell">
-                      @if (!string.IsNullOrEmpty(item.ImageUrl))
-                      {
-                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+  @{/* B. Inventory Addition Form */}
+          @if (showAddForm) {
+            <div class="card add-form">
+              <h4>Add New Inventory</h4>
+              <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label>Name *</label>
+                    <InputText @bind-Value="newItem.Name" class="input" />
+                    <ValidationMessage For="@(() => newItem.Name)" />
+                  </div>
+                  <div class="form-field">
+                    <label>Description</label>
+                    <InputText @bind-Value="newItem.Description" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Category</label>
+                    <select @bind="newItem.CategoryId" @bind:event="onchange"  class="input">
+                      @foreach (var c in categories) {
+                        <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
                       }
-                      else
-                      {
-                        <span class="no-image">🖼️</span>
-                      }
-                    </td>
-                    <td><span class="cost">@item.Cost pts</span></td>
-                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
-                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
-                    </td>
-                  }
-                </tr>
-              }
-            }
-            else
-            {
-              <tr>
-                <td colspan="7" class="no-items">
-                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-                  {
-                    <span>🔍 No items match your search criteria</span>
-                  }
-                  else
-                  {
-                    <span>📎 No gifts found</span>
-                  }
-                </td>
-              </tr>
-            }
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-}
-
-@if (activeTab == "treats")
-{
-<div class="category-page">
-  <div class="card">
-    <h2>🍭 Treats</h2>
-    <div class="toolbar">
-      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search treats..." />
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Treats")'>🍭 Add Treat</button>
-    </div>
-    @if (showAddForm)
-    {
-      <div class="card add-form">
-        <h4>Add New Treat</h4>
-        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Name *</label>
-              <InputText @bind-Value="newItem.Name" class="input" />
-              <ValidationMessage For="@(() => newItem.Name)" />
+                    </select>
+                  </div>
+                  <div class="form-field">
+                    <label>Image URL</label>
+                    <InputText @bind-Value="newItem.ImageUrl" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Cost *</label>
+                    <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+                    <ValidationMessage For="@(() => newItem.Cost)" />
+                  </div>
+                  <div class="form-field">
+                    <label>Stock *</label>
+                    <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+                    <ValidationMessage For="@(() => newItem.Stock)" />
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+                    @if (isSubmitting) {
+                      <span>⏳ Adding...</span>
+                    } else {
+                      <span>✅ Add Inventory</span>
+                    }
+                  </button>
+                  <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">
+                    ❌ Cancel
+                  </button>
+                </div>
+              </EditForm>
             </div>
-            <div class="form-field">
-              <label>Description</label>
-              <InputText @bind-Value="newItem.Description" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Image URL</label>
-              <InputText @bind-Value="newItem.ImageUrl" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Cost *</label>
-              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Cost)" />
-            </div>
-            <div class="form-field">
-              <label>Stock *</label>
-              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Stock)" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
-              @if (isSubmitting)
-              {
-                <span>⏳ Adding...</span>
-              }
-              else
-              {
-                <span>✅ Add Treat</span>
-              }
-            </button>
-            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
-          </div>
-        </EditForm>
-      </div>
-    }
-    @{ var treatItems = filtered.Where(i => i.Category?.Name == "Treats").ToList(); }
-    <div class="table-container">
-      <table class="inv">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Cost</th>
-            <th>Stock</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (filtered.Any())
-          {
-            @foreach (var item in treatItems)
-              {
-                <tr class="@(editingItemId == item.Id ? "editing" : "")">
-                  <td class="id">@item.Id</td>
-                  @if (editingItemId == item.Id)
-                  {
-                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
-                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
-                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
-                    <td>
-                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
-                        @foreach (var c in categories)
-                        {
-                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
-                        }
-                      </select>
-                    </td>
-                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
-                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
-                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
-                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
-                    </td>
-                  }
-                  else
-                  {
-                    <td><strong>@item.Name</strong></td>
-                    <td class="desc">@(item.Description ?? "-")</td>
-                    <td class="image-cell">
-                      @if (!string.IsNullOrEmpty(item.ImageUrl))
-                      {
-                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                      }
-                      else
-                      {
-                        <span class="no-image">🖼️</span>
-                      }
-                    </td>
-                    <td><span class="cost">@item.Cost pts</span></td>
-                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
-                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
-                    </td>
-                  }
-                </tr>
-              }
-            }
-            else
-            {
-              <tr>
-                <td colspan="7" class="no-items">
-                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-                  {
-                    <span>🔍 No items match your search criteria</span>
-                  }
-                  else
-                  {
-                    <span>🍭 No treats found</span>
-                  }
-                </td>
-              </tr>
-            }
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-}
-
-@if (activeTab == "cards")
-{
-<div class="category-page">
-  <div class="card">
-    <h2>🃏 Cards</h2>
-    <div class="toolbar">
-      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>🃏 Add Card</button>
-    </div>
-    @if (showAddForm)
-    {
-      <div class="card add-form">
-        <h4>Add New Card</h4>
-        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Name *</label>
-              <InputText @bind-Value="newItem.Name" class="input" />
-              <ValidationMessage For="@(() => newItem.Name)" />
-            </div>
-            <div class="form-field">
-              <label>Description</label>
-              <InputText @bind-Value="newItem.Description" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Image URL</label>
-              <InputText @bind-Value="newItem.ImageUrl" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Cost *</label>
-              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Cost)" />
-            </div>
-            <div class="form-field">
-              <label>Stock *</label>
-              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Stock)" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
-              @if (isSubmitting)
-              {
-                <span>⏳ Adding...</span>
-              }
-              else
-              {
-                <span>✅ Add Card</span>
-              }
-            </button>
-            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
-          </div>
-        </EditForm>
-      </div>
-    }
-    @{ var cardItems = filtered.Where(i => i.Category?.Name == "Cards").ToList(); }
-    <div class="table-container">
-      <table class="inv">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Cost</th>
-            <th>Stock</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (filtered.Any())
-          {
-            @foreach (var item in cardItems)
-              {
-                <tr class="@(editingItemId == item.Id ? "editing" : "")">
-                  <td class="id">@item.Id</td>
-                  @if (editingItemId == item.Id)
-                  {
-                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
-                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
-                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
-                    <td>
-                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
-                        @foreach (var c in categories)
-                        {
-                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
-                        }
-                      </select>
-                    </td>
-                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
-                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
-                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
-                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
-                    </td>
-                  }
-                  else
-                  {
-                    <td><strong>@item.Name</strong></td>
-                    <td class="desc">@(item.Description ?? "-")</td>
-                    <td class="image-cell">
-                      @if (!string.IsNullOrEmpty(item.ImageUrl))
-                      {
-                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                      }
-                      else
-                      {
-                        <span class="no-image">🖼️</span>
-                      }
-                    </td>
-                    <td><span class="cost">@item.Cost pts</span></td>
-                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
-                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
-                    </td>
-                  }
-                </tr>
-              }
-            }
-            else
-            {
-              <tr>
-                <td colspan="7" class="no-items">
-                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-                  {
-                    <span>🔍 No items match your search criteria</span>
-                  }
-                  else
-                  {
-                    <span>🃏 No cards found</span>
-                  }
-                </td>
-              </tr>
-            }
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-}
-
-@if (activeTab == "books")
-{
-<div class="category-page">
-  <div class="card">
-    <h2>📖 Books</h2>
-    <div class="toolbar">
-      <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search books..." />
-      <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Books")'>📖 Add Book</button>
-    </div>
-    @if (showAddForm)
-    {
-      <div class="card add-form">
-        <h4>Add New Book</h4>
-        <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Name *</label>
-              <InputText @bind-Value="newItem.Name" class="input" />
-              <ValidationMessage For="@(() => newItem.Name)" />
-            </div>
-            <div class="form-field">
-              <label>Description</label>
-              <InputText @bind-Value="newItem.Description" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Image URL</label>
-              <InputText @bind-Value="newItem.ImageUrl" class="input" />
-            </div>
-            <div class="form-field">
-              <label>Cost *</label>
-              <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Cost)" />
-            </div>
-            <div class="form-field">
-              <label>Stock *</label>
-              <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
-              <ValidationMessage For="@(() => newItem.Stock)" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-success" disabled="@isSubmitting">
-              @if (isSubmitting)
-              {
-                <span>⏳ Adding...</span>
-              }
-              else
-              {
-                <span>✅ Add Book</span>
-              }
-            </button>
-            <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">❌ Cancel</button>
-          </div>
-        </EditForm>
-      </div>
-    }
-    @{ var bookItems = filtered.Where(i => i.Category?.Name == "Books").ToList(); }
-    <div class="table-container">
-      <table class="inv">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Cost</th>
-            <th>Stock</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (filtered.Any())
-          {
-            @foreach (var item in bookItems)
-              {
-                <tr class="@(editingItemId == item.Id ? "editing" : "")">
-                  <td class="id">@item.Id</td>
-                  @if (editingItemId == item.Id)
-                  {
-                    <td><input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." /></td>
-                    <td><textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea></td>
-                    <td><input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." /></td>
-                    <td>
-                      <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
-                        @foreach (var c in categories)
-                        {
-                          <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
-                        }
-                      </select>
-                    </td>
-                    <td><input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" /></td>
-                    <td><input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" /></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">✔️ Save</button>
-                      <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">↺ Undo</button>
-                      <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">❌ Cancel</button>
-                    </td>
-                  }
-                  else
-                  {
-                    <td><strong>@item.Name</strong></td>
-                    <td class="desc">@(item.Description ?? "-")</td>
-                    <td class="image-cell">
-                      @if (!string.IsNullOrEmpty(item.ImageUrl))
-                      {
-                        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
-                      }
-                      else
-                      {
-                        <span class="no-image">🖼️</span>
-                      }
-                    </td>
-                    <td><span class="cost">@item.Cost pts</span></td>
-                    <td><span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span></td>
-                    <td class="actions">
-                      <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
-                      <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
-                    </td>
-                  }
-                </tr>
-              }
-            }
-            else
-            {
-              <tr>
-                <td colspan="7" class="no-items">
-                  @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
-                  {
-                    <span>🔍 No items match your search criteria</span>
-                  }
-                  else
-                  {
-                    <span>📖 No books found</span>
-                  }
-                </td>
-              </tr>
-            }
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-}
-
-
-
-@if (activeTab == "notifications")
-{
-  <div id="Configuration and Testing" class="category-page">
-    <div class="card">
-    <h2>📧 Notification Management</h2>
-    <div id="Email Configuration and Testing" class="notification-config">
-      <div id="SMTP Configuration" class="config-section">
-      <h3>📬 Email Configuration</h3>
-        <div class="config-info">
-          <p><strong>SMTP Host:</strong> @(Configuration["Email:Host"] ?? "Not set")</p>
-          <p><strong>SMTP Port:</strong> @(Configuration["Email:Port"] ?? "Not set")</p>
-          <p><strong>From Email:</strong> @(Configuration["Email:From"] ?? "Not set")</p>
-          <p><strong>SSL Enabled:</strong> @(Configuration["Email:EnableSSL"] ?? "Not set")</p>
-        </div>
-        <div id="Testing Email" class="test-section">
-          <label for="testEmail">Test Email Address:</label>
-          <div class="test-field">
-            <input @bind="testEmail" id="testEmail" type="email" class="form-control" placeholder="Enter email to test" />
-          </div>
-          <button @onclick="TestEmail" class="btn btn-primary" disabled="@isTestingEmail">
-            @if (isTestingEmail)
-            {
-              <span>Testing...</span>
-            }
-            else
-            {
-              <span>📬 Test Email</span>
-            }
-          </button>
-        </div>
-      </div>
-      <div class="config-section">
-        <h3>📱 SMS Configuration</h3>
-        <div class="config-info">
-          <p><strong>Provider:</strong> @(Configuration["Sms:Provider"] ?? "Not configured")</p>
-          @if (Configuration["Sms:Provider"]?.ToLower() == "twilio")
-          {
-            <p><strong>From Number:</strong> @(Configuration["Sms:Twilio:FromNumber"] ?? "Not set")</p>
-            <p><strong>Account SID:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AccountSid"]) ? "❌ Not configured" : "✅ Configured")</p>
-            <p><strong>Auth Token:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AuthToken"]) ? "❌ Not configured" : "✅ Configured")</p>
           }
-        </div>
-        <div class="test-section">
-          <label for="testSms">Test Phone Number:</label>
-          <div class="test-field">
-            <input @bind="testPhoneNumber" id="testSms" class="form-control" placeholder="Enter phone number to test (e.g., +1234567890)" />
+  @{/* C. Inventory Table Header */}
+          @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter)) {}
+          <div class="table-container">
+            <table class="inv">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Image</th>
+                  <th>Category</th>
+                  <th>Cost</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+  @{/* D. Inventory Table Body */}
+              <tbody>
+                @if (filtered.Any()) {
+                  @foreach (var item in filtered) {
+                    <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                      <td class="id">
+                        @item.Id
+                      </td>
+                      @if (editingItemId == item.Id) {
+                        <td>
+                          <input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." />
+                        </td>
+                        <td>
+                          <textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea>
+                        </td>
+                        <td>
+                          <input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." />
+                        </td>
+                        <td>
+                          <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                            @foreach (var c in categories) {
+                              <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                            }
+                          </select>
+                        </td>
+                        <td>
+                          <input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" />
+                        </td>
+                        <td>
+                          <input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" />
+                        </td>
+                        <td class="actions">
+                          <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">
+                            ✔️ Save
+                          </button>
+                          <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">
+                            ↺ Undo
+                          </button>
+                          <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">
+                            ❌ Cancel
+                          </button>
+                        </td>
+                      } else {
+                        <td>
+                          <strong>@item.Name</strong>
+                        </td>
+                        <td class="desc">@(item.Description ?? "-")
+                        </td>
+                        <td class="image-cell">
+                          @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                            <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                          } else {
+                            <span class="no-image">🖼️</span>
+                          }
+                        </td>
+                        <td>
+                          <span class="category-tag">@item.Category?.Name</span>
+                        </td>
+                        <td>
+                          <span class="cost">@item.Cost pts</span>
+                        </td>
+                        <td>
+                          <span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span>
+                        </td>
+                        <td class="actions">
+                          <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">
+                            ✏️
+                          </button>
+                          <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">
+                            🗑️
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  }
+                } else {
+                  <tr>
+                    <td colspan="8" class="no-items">
+                      @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter))
+                      {
+                        <span>🔍 No items match your search criteria</span>
+                      }
+                      else
+                      {
+                        <span>📎 No items in inventory</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
-          <button class="btn btn-primary" @onclick="TestSms" disabled="@isTestingSms">
-            @if (isTestingSms)
-            {
-              <span>Testing...</span>
-            }
-            else
-            {
-              <span>📱 Test SMS</span>
-            }
-          </button>
         </div>
       </div>
-    </div>
-    @if (!string.IsNullOrEmpty(statusMessage))
-    {
-      <div class="status-message @statusClass">
-        @statusMessage
+      }
+
+
+
+@{/* 8. Gifts Tab */}
+      @if (activeTab == "gifts") {
+        <div class="category-page">
+          <div class="card">
+  @{/* A. Gifts Toolbar */}
+            <h2>🎁 Gifts</h2>
+            <div class="toolbar">
+              <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search gifts..." />
+              <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Gifts")'>
+                🎁 Add Gift
+              </button>
+            </div>
+  @{/* B. Gifts Addition Form */}
+            @if (showAddForm) {
+              <div class="card add-form">
+                <h4>Add New Gift</h4>
+                <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <label>Name *</label>
+                      <InputText @bind-Value="newItem.Name" class="input" />
+                      <ValidationMessage For="@(() => newItem.Name)" />
+                    </div>
+                    <div class="form-field">
+                      <label>Description</label>
+                      <InputText @bind-Value="newItem.Description" class="input" />
+                    </div>
+                    <div class="form-field">
+                      <label>Image URL</label>
+                      <InputText @bind-Value="newItem.ImageUrl" class="input" />
+                    </div>
+                    <div class="form-field">
+                      <label>Cost *</label>
+                      <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+                      <ValidationMessage For="@(() => newItem.Cost)" />
+                    </div>
+                    <div class="form-field">
+                      <label>Stock *</label>
+                      <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+                      <ValidationMessage For="@(() => newItem.Stock)" />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+                      @if (isSubmitting) {
+                        <span>⏳ Adding...</span>
+                      } else {
+                        <span>✅ Add Gift</span>
+                      }
+                    </button>
+                    <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </EditForm>
+              </div>
+            }
+  @{/* C. Gifts Table Header */}
+            @{ var giftItems = filtered.Where(i => i.Category?.Name == "Gifts").ToList(); }
+            <div class="table-container">
+              <table class="inv">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Cost</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+  @{/* D. Gifts Table Body */}
+                <tbody>
+                  @if (filtered.Any()) {
+                    @foreach (var item in giftItems) {
+                        <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                          <td class="id">
+                            @item.Id
+                          </td>
+                          @if (editingItemId == item.Id) {
+                            <td>
+                              <input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." />
+                            </td>
+                            <td>
+                              <textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea>
+                            </td>
+                            <td>
+                              <input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." />
+                            </td>
+                            <td>
+                              <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                                @foreach (var c in categories) {
+                                  <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">
+                                    @c.Name
+                                  </option>
+                                }
+                              </select>
+                            </td>
+                            <td>
+                              <input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" />
+                            </td>
+                            <td>
+                              <input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" />
+                            </td>
+                            <td class="actions">
+                              <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">
+                                ✔️ Save
+                              </button>
+                              <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">
+                                ↺ Undo
+                              </button>
+                              <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">
+                                ❌ Cancel
+                              </button>
+                            </td>
+                          } else {
+                            <td>
+                              <strong>@item.Name</strong>
+                            </td>
+                            <td class="desc">@(item.Description ?? "-")
+                            </td>
+                            <td class="image-cell">
+                              @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                                <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                              } else {
+                                <span class="no-image">🖼️</span>
+                              }
+                            </td>
+                            <td>
+                              <span class="cost">@item.Cost pts</span>
+                            </td>
+                            <td>
+                              <span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span>
+                            </td>
+                            <td class="actions">
+                              <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">
+                                ✏️
+                              </button>
+                              <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">
+                                🗑️
+                              </button>
+                            </td>
+                          }
+                        </tr>
+                      }
+                    } else {
+                      <tr>
+                        <td colspan="7" class="no-items">
+                          @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter)) {
+                            <span>🔍 No items match your search criteria</span>
+                          } else {
+                            <span>📎 No gifts found</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+
+
+@{/* 9. Treats Tab */}
+      @if (activeTab == "treats") {
+      <div class="category-page">
+        <div class="card">
+  @{/* A. Treats Toolbar */}
+          <h2>🍭 Treats</h2>
+          <div class="toolbar">
+            <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search treats..." />
+            <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Treats")'>
+              🍭 Add Treat
+            </button>
+          </div>
+  @{/* B. Treats Addition Form */}
+          @if (showAddForm)
+          {
+            <div class="card add-form">
+              <h4>Add New Treat</h4>
+              <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label>Name *</label>
+                    <InputText @bind-Value="newItem.Name" class="input" />
+                    <ValidationMessage For="@(() => newItem.Name)" />
+                  </div>
+                  <div class="form-field">
+                    <label>Description</label>
+                    <InputText @bind-Value="newItem.Description" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Image URL</label>
+                    <InputText @bind-Value="newItem.ImageUrl" class="input" />
+                  </div>
+                  <div class="form-field">
+                    <label>Cost *</label>
+                    <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+                    <ValidationMessage For="@(() => newItem.Cost)" />
+                  </div>
+                  <div class="form-field">
+                    <label>Stock *</label>
+                    <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+                    <ValidationMessage For="@(() => newItem.Stock)" />
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+                    @if (isSubmitting) {
+                      <span>⏳ Adding...</span>
+                    } else {
+                      <span>✅ Add Treat</span>
+                    }
+                  </button>
+                  <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">
+                    ❌ Cancel
+                  </button>
+                </div>
+              </EditForm>
+            </div>
+          }
+  @{/* C. Treats Table Header */}
+          @{ var treatItems = filtered.Where(i => i.Category?.Name == "Treats").ToList(); }
+          <div class="table-container">
+            <table class="inv">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Image</th>
+                  <th>Cost</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+  @{/* D. Treats Table Body */}
+              <tbody>
+                @if (filtered.Any()) {
+                  @foreach (var item in treatItems) {
+                      <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                        <td class="id">
+                          @item.Id
+                        </td>
+                        @if (editingItemId == item.Id) {
+                          <td>
+                            <input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." />
+                          </td>
+                          <td>
+                            <textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea>
+                          </td>
+                          <td>
+                            <input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." />
+                          </td>
+                          <td>
+                            <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                              @foreach (var c in categories) {
+                                <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                              }
+                            </select>
+                          </td>
+                          <td>
+                            <input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" />
+                          </td>
+                          <td>
+                            <input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" />
+                          </td>
+                          <td class="actions">
+                            <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">
+                              ✔️ Save
+                            </button>
+                            <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">
+                              ↺ Undo
+                            </button>
+                            <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">
+                              ❌ Cancel
+                            </button>
+                          </td>
+                        } else {
+                          <td>
+                            <strong>@item.Name</strong>
+                          </td>
+                          <td class="desc">
+                            @(item.Description ?? "-")
+                          </td>
+                          <td class="image-cell">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl)){
+                              <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                            } else {
+                              <span class="no-image">🖼️</span>
+                            }
+                          </td>
+                          <td>
+                            <span class="cost">@item.Cost pts</span>
+                          </td>
+                          <td>
+                            <span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span>
+                          </td>
+                          <td class="actions">
+                            <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">
+                              ✏️
+                            </button>
+                            <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">
+                              🗑️
+                            </button>
+                          </td>
+                        }
+                      </tr>
+                    }
+                  } else {
+                    <tr>
+                      <td colspan="7" class="no-items">
+                        @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter)) {
+                          <span>🔍 No items match your search criteria</span>
+                        } else {
+                          <span>🍭 No treats found</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    }
-    <div class="setup-instructions">
-      <h3>🛠️ Setup Instructions</h3>
-      <div class="instruction-section">
-        <h4>✉️ Email Setup (SMTP)</h4>
-        <ol>
-          <li>Acquire your Email Provider's SMTP Credentials (often found in your Email Provider's settings or support section)</li>
-          <li>Generate a password if required (often referred to as an "App Password")</li>
-          <li>Update your <code>appsettings.json</code> with your SMTP details:</li>
-        </ol>
-        <pre><code>
+      }
+
+
+
+@{/* 10. Cards Tab */}
+      @if (activeTab == "cards") {
+        <div class="category-page">
+          <div class="card">
+  @{/* A. Cards Toolbar */}
+            <h2>🃏 Cards</h2>
+            <div class="toolbar">
+              <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search cards..." />
+              <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Cards")'>
+                🃏 Add Card
+              </button>
+            </div>
+  @{/* B. Cards Addition Form */}
+            @if (showAddForm) {
+              <div class="card add-form">
+                <h4>Add New Card</h4>
+                <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <label>Name *</label>
+                      <InputText @bind-Value="newItem.Name" class="input" />
+                      <ValidationMessage For="@(() => newItem.Name)" />
+                    </div>
+                    <div class="form-field">
+                      <label>Description</label>
+                      <InputText @bind-Value="newItem.Description" class="input" />
+                    </div>
+                    <div class="form-field">
+                      <label>Image URL</label>
+                      <InputText @bind-Value="newItem.ImageUrl" class="input" />
+                    </div>
+                    <div class="form-field">
+                      <label>Cost *</label>
+                      <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+                      <ValidationMessage For="@(() => newItem.Cost)" />
+                    </div>
+                    <div class="form-field">
+                      <label>Stock *</label>
+                      <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+                      <ValidationMessage For="@(() => newItem.Stock)" />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+                      @if (isSubmitting) {
+                        <span>⏳ Adding...</span>
+                      } else {
+                        <span>✅ Add Card</span>
+                      }
+                    </button>
+                    <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </EditForm>
+              </div>
+            }
+  @{/* C. Cards Table Header */}
+            @{ var cardItems = filtered.Where(i => i.Category?.Name == "Cards").ToList(); }
+            <div class="table-container">
+              <table class="inv">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Cost</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+  @{/* D. Cards Table Body */}
+                <tbody>
+                  @if (filtered.Any()) {
+                    @foreach (var item in cardItems) {
+                        <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                          <td class="id">@item.Id</td>
+                          @if (editingItemId == item.Id) {
+                            <td>
+                              <input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." />
+                            </td>
+                            <td>
+                              <textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea>
+                            </td>
+                            <td>
+                              <input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." />
+                            </td>
+                            <td>
+                              <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                                @foreach (var c in categories) {
+                                  <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                                }
+                              </select>
+                            </td>
+                            <td>
+                              <input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" />
+                            </td>
+                            <td>
+                              <input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" />
+                            </td>
+                            <td class="actions">
+                              <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">
+                                ✔️ Save
+                              </button>
+                              <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">
+                                ↺ Undo
+                              </button>
+                              <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">
+                                ❌ Cancel
+                              </button>
+                            </td>
+                          } else {
+                            <td>
+                              <strong>@item.Name</strong>
+                            </td>
+                            <td class="desc">@(item.Description ?? "-")</td>
+                            <td class="image-cell">
+                              @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                                <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                              } else {
+                                <span class="no-image">🖼️</span>
+                              }
+                            </td>
+                            <td>
+                              <span class="cost">@item.Cost pts</span>
+                            </td>
+                            <td>
+                              <span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span>
+                            </td>
+                            <td class="actions">
+                              <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">
+                                ✏️
+                              </button>
+                              <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">
+                                🗑️
+                              </button>
+                            </td>
+                          }
+                        </tr>
+                      }
+                    } else {
+                      <tr>
+                        <td colspan="7" class="no-items">
+                          @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter)) {
+                            <span>🔍 No items match your search criteria</span>
+                          } else {
+                            <span>🃏 No cards found</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+
+
+@{/* 11. Books Tab */}
+      @if (activeTab == "books") {
+        <div class="category-page">
+          <div class="card">
+  @{/* A. Books Toolbar */}
+            <h2>📖 Books</h2>
+            <div class="toolbar">
+              <input @bind="search" @oninput="OnSearchChanged" placeholder="🔍 Search books..." />
+              <button class="btn btn-primary" @onclick='() => ShowAddItemForm("Books")'>
+                📖 Add Book
+              </button>
+            </div>
+  @{/* B. Books Addition Form */}
+            @if (showAddForm) {
+              <div class="card add-form">
+                <h4>Add New Book</h4>
+                <EditForm Model="newItem" OnValidSubmit="SubmitNewItem">
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <label>Name *</label>
+                      <InputText @bind-Value="newItem.Name" class="input" />
+                      <ValidationMessage For="@(() => newItem.Name)" />
+                    </div>
+                    <div class="form-field">
+                      <label>Description</label>
+                      <InputText @bind-Value="newItem.Description" class="input" />
+                    </div>
+                    <div class="form-field">
+                      <label>Image URL</label>
+                      <InputText @bind-Value="newItem.ImageUrl" class="input" />
+                    </div>
+                    <div class="form-field">
+                      <label>Cost *</label>
+                      <InputNumber @bind-Value="newItem.Cost" class="input" min="0" />
+                      <ValidationMessage For="@(() => newItem.Cost)" />
+                    </div>
+                    <div class="form-field">
+                      <label>Stock *</label>
+                      <InputNumber @bind-Value="newItem.Stock" class="input" min="0" />
+                      <ValidationMessage For="@(() => newItem.Stock)" />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success" disabled="@isSubmitting">
+                      @if (isSubmitting) {
+                        <span>⏳ Adding...</span>
+                      } else {
+                        <span>✅ Add Book</span>
+                      }
+                    </button>
+                    <button type="button" class="btn btn-secondary" @onclick="CancelAddItem">
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </EditForm>
+              </div>
+            }
+  @{/* C. Books Table Header */}
+            @{ var bookItems = filtered.Where(i => i.Category?.Name == "Books").ToList(); }
+            <div class="table-container">
+              <table class="inv">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Cost</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+  @{/* D. Books Table Body */}
+                <tbody>
+                  @if (filtered.Any()) {
+                    @foreach (var item in bookItems) {
+                        <tr class="@(editingItemId == item.Id ? "editing" : "")">
+                          <td class="id">@item.Id</td>
+                          @if (editingItemId == item.Id) {
+                            <td>
+                              <input @bind="editItem.Name" @bind:event="oninput" class="edit-input" placeholder="Item name..." />
+                            </td>
+                            <td>
+                              <textarea @bind="editItem.Description" @bind:event="oninput" class="edit-textarea" rows="2" placeholder="Description..."></textarea>
+                            </td>
+                            <td>
+                              <input @bind="editItem.ImageUrl" @bind:event="oninput" class="edit-input" placeholder="Image URL..." />
+                            </td>
+                            <td>
+                              <select @bind="editItem.CategoryId" @bind:event="onchange" class="edit-select">
+                                @foreach (var c in categories) {
+                                  <option value="@c.Id" selected="@(editItem.CategoryId == c.Id)">@c.Name</option>
+                                }
+                              </select>
+                            </td>
+                            <td>
+                              <input type="number" @bind="editItem.Cost" @bind:event="oninput" class="edit-input-sm" min="1" step="1" placeholder="Cost" />
+                            </td>
+                            <td>
+                              <input type="number" @bind="editItem.Stock" @bind:event="oninput" class="edit-input-sm" min="0" step="1" placeholder="Stock" />
+                            </td>
+                            <td class="actions">
+                            <button type="button" class="btn-sm btn-success" @onclick="SaveEdit" title="Save Changes">
+                              ✔️ Save
+                            </button>
+                            <button type="button" class="btn-sm btn-warning" @onclick="UndoEdit" title="Undo Changes">
+                              ↺ Undo
+                            </button>
+                            <button type="button" class="btn-sm btn-secondary" @onclick="CancelEdit" title="Cancel Edit">
+                              ❌ Cancel
+                            </button>
+                            </td>
+                          } else {
+                            <td>
+                              <strong>@item.Name</strong>
+                            </td>
+                            <td class="desc">@(item.Description ?? "-")</td>
+                            <td class="image-cell">
+                              @if (!string.IsNullOrEmpty(item.ImageUrl)) {
+                                <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+                              } else {
+                                <span class="no-image">🖼️</span>
+                              }
+                            </td>
+                            <td>
+                              <span class="cost">@item.Cost pts</span>
+                            </td>
+                            <td>
+                              <span class="stock @(item.Stock <= 5 ? "low-stock" : "")">@item.Stock</span>
+                            </td>
+                            <td class="actions">
+                              <button type="button" class="btn-sm btn-primary" @onclick="() => StartEdit(item)" title="Edit Item">✏️</button>
+                              <button type="button" class="btn-sm btn-danger" @onclick="() => DeleteItem(item.Id)" title="Delete Item">🗑️</button>
+                            </td>
+                          }
+                        </tr>
+                      }
+                    } else {
+                      <tr>
+                        <td colspan="7" class="no-items">
+                          @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(categoryFilter)) {
+                            <span>🔍 No items match your search criteria</span>
+                          } else {
+                            <span>📖 No books found</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+
+
+@{/* 12. Notifications Tab */}
+      @if (activeTab == "notifications") {
+          <div id="Configuration and Testing" class="category-page">
+  @{/* A. Notification Configuration */}
+            <div class="card">
+              <h2>📧 Notification Management</h2>
+              <div id="Email Configuration and Testing" class="notification-config">
+    @{/* a. SMTP Configuration */}
+                <div id="SMTP Configuration" class="config-section">
+                  <h3>📬 Email Configuration</h3>
+                  <div class="config-info">
+                    <p><strong>SMTP Host:</strong> @(Configuration["Email:Host"] ?? "Not set")</p>
+                    <p><strong>SMTP Port:</strong> @(Configuration["Email:Port"] ?? "Not set")</p>
+                    <p><strong>From Email:</strong> @(Configuration["Email:From"] ?? "Not set")</p>
+                    <p><strong>SSL Enabled:</strong> @(Configuration["Email:EnableSSL"] ?? "Not set")</p>
+                  </div>
+                  <div id="Testing Email" class="test-section">
+                    <label for="testEmail">Test Email Address:</label>
+                    <div class="test-field">
+                      <input @bind="testEmail" id="testEmail" type="email" class="form-control" placeholder="Enter email to test" />
+                    </div>
+                    <button @onclick="TestEmail" class="btn btn-primary" disabled="@isTestingEmail">
+                      @if (isTestingEmail) {
+                        <span>Testing...</span>
+                      } else {
+                        <span>📬 Test Email</span>
+                      }
+                    </button>
+                  </div>
+                </div>
+    @{/* b. SMS Configuration */}
+                <div class="config-section">
+                  <h3>📱 SMS Configuration</h3>
+                  <div class="config-info">
+                    <p><strong>Provider:</strong> @(Configuration["Sms:Provider"] ?? "Not configured")</p>
+                    @if (Configuration["Sms:Provider"]?.ToLower() == "twilio") {
+                      <p><strong>From Number:</strong> @(Configuration["Sms:Twilio:FromNumber"] ?? "Not set")</p>
+                      <p><strong>Account SID:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AccountSid"]) ? "❌ Not configured" : "✅ Configured")</p>
+                      <p><strong>Auth Token:</strong> @(string.IsNullOrEmpty(Configuration["Sms:Twilio:AuthToken"]) ? "❌ Not configured" : "✅ Configured")</p>
+                    }
+                  </div>
+                  <div class="test-section">
+                    <label for="testSms">Test Phone Number:</label>
+                    <div class="test-field">
+                      <input @bind="testPhoneNumber" id="testSms" class="form-control" placeholder="Enter phone number to test (e.g., +1234567890)" />
+                    </div>
+                    <button class="btn btn-primary" @onclick="TestSms" disabled="@isTestingSms">
+                      @if (isTestingSms) {
+                        <span>Testing...</span>
+                      } else {
+                        <span>📱 Test SMS</span>
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+  @{/* B. Status Message Post Test */}
+              @if (!string.IsNullOrEmpty(statusMessage)) {
+                <div class="status-message @statusClass">
+                  @statusMessage
+                </div>
+              }
+  @{/* C. Setup Instructions */}
+              <div class="setup-instructions">
+                <h3>🛠️ Setup Instructions</h3>
+                <div class="instruction-section">
+                  <h4>✉️ Email Setup (SMTP)</h4>
+                  <ol>
+                    <li>Acquire your Email Provider's SMTP Credentials (often found in your Email Provider's settings or support section)</li>
+                    <li>Generate a password if required (often referred to as an "App Password")</li>
+                    <li>Update your <code>appsettings.json</code> with your SMTP details:</li>
+                  </ol>
+                  <pre><code>
 "Example SMTP Setup": {
   "Provider": "smtp",
   "Smtp": {
@@ -1429,17 +1505,17 @@
     "FromName": "PhilanthroPoints"
   }
 }
-        </code></pre>
-      </div>
-      <div class="instruction-section">
-        <h4>📱 SMS Setup (Twilio)</h4>
-        <ol>
-          <li>Create a free account at <a href="https://twilio.com" target="_blank">Twilio.com</a></li>
-          <li>Get your Account SID and Auth Token from the dashboard</li>
-          <li>Purchase a phone number or use the trial number</li>
-          <li>Update your <code>appsettings.json</code>:</li>
-        </ol>
-        <pre><code>
+                </code></pre>
+              </div>
+              <div class="instruction-section">
+                <h4>📱 SMS Setup (Twilio)</h4>
+                <ol>
+                  <li>Create a free account at <a href="https://twilio.com" target="_blank">Twilio.com</a></li>
+                  <li>Get your Account SID and Auth Token from the dashboard</li>
+                  <li>Purchase a phone number or use the trial number</li>
+                  <li>Update your <code>appsettings.json</code>:</li>
+                </ol>
+                <pre><code>
 "Example SMS Setup": {
   "Provider": "Twilio",
   "Twilio": {
@@ -1447,40 +1523,38 @@
     "AuthToken": "YOUR_TWILIO_AUTH_TOKEN",
     "FromNumber": "+1234567890"
   }
-        </code></pre>
-      </div>
-    </div>
-  </div>
-</div>
 }
+                </code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
 
 
 
 
-
-@if (activeTab == "surveys")
-{
-  <div class="category-page">
-    <div class="card">
-    <h2>📝 Survey Responses</h2>
-
-    <table class="inv">
-        <thead>
-            <tr style="background:#f8f9fa;">
-                <th style="width:40px; padding:8px 10px;">ID</th>
-                <th style="width:110px; padding:8px 10px;">Satisfaction</th>
-                <th style="width:160px; padding:8px 10px;">Child Reaction</th>
-                <th style="width:140px; padding:8px 10px;">Likelihood</th>
-                <th style="width:180px; padding:8px 10px;">Comments</th>
-                <th style="width:110px; padding:8px 10px;">Submitted By</th>
-                <th style="width:120px; padding:8px 10px;">Date</th>
-                <th style="width:60px; padding:8px 10px;"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in responses)
-            {
-                <tr style="vertical-align:top; background:@((responses.IndexOf(r) % 2 == 0) ? "#fff" : "#f6f6f6")">
+@{/* 13. Surveys Tab */}
+      @if (activeTab == "surveys") {
+        <div class="category-page">
+          <div class="card">
+            <h2>📝 Survey Responses</h2>
+            <table class="inv">
+              <thead>
+                <tr style="background:#f8f9fa;">
+                  <th style="width:40px; padding:8px 10px;">ID</th>
+                  <th style="width:110px; padding:8px 10px;">Satisfaction</th>
+                  <th style="width:160px; padding:8px 10px;">Child Reaction</th>
+                  <th style="width:140px; padding:8px 10px;">Likelihood</th>
+                  <th style="width:180px; padding:8px 10px;">Comments</th>
+                  <th style="width:110px; padding:8px 10px;">Submitted By</th>
+                  <th style="width:120px; padding:8px 10px;">Date</th>
+                  <th style="width:60px; padding:8px 10px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach (var r in responses) {
+                  <tr style="vertical-align:top; background:@((responses.IndexOf(r) % 2 == 0) ? "#fff" : "#f6f6f6")">
                     <td style="padding:8px 10px;">@r.Id</td>
                     <td style="padding:8px 10px;">@r.Satisfaction</td>
                     <td style="padding:8px 10px;">@r.ChildReaction</td>
@@ -1489,16 +1563,21 @@
                     <td style="padding:8px 10px;">@r.SubmittedBy</td>
                     <td style="padding:8px 10px;">@r.SubmittedAt.ToLocalTime().ToString("g")</td>
                     <td style="padding:8px 10px; text-align:center;">
-                        <button class="btn btn-danger btn-sm" style="padding:2px 8px;" @onclick="() => Delete(r.Id)">Delete</button>
+                      <button class="btn btn-danger btn-sm" style="padding:2px 8px;" @onclick="() => Delete(r.Id)">
+                        Delete
+                      </button>
                     </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-  </div>
-</div>
-}
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
 
+
+
+@{/* 14. Necesary Code */}
 @code {
   // Member editing logic for inline editing in Members table
   private int editingMemberId = 0;
@@ -2379,6 +2458,85 @@
   
   // Family management methods
 
+  
+  // Family login code generator popup state
+  private bool showCodePopup = false;
+  private string agencyAbbrev = "";
+  private string birthdayMonth = "";
+  private string birthdayDay = "";
+  private string applicationNumber = "";
+  private string childage = "";
+  private string generatedFamilyCode = string.Empty;
+
+  // Temporary in-memory list for generated codes with agency and app number
+  public class FamilyLoginCodeInfo {
+    public string Code { get; set; } = "";
+    public string Agency { get; set; } = "";
+    public string ApplicationNumber { get; set; } = "";
+  }
+  public static List<FamilyLoginCodeInfo> TempFamilyCodes { get; set; } = new();
+
+  private void ShowCodePopup() { showCodePopup = true; generatedFamilyCode = string.Empty; }
+  private void HideCodePopup() { showCodePopup = false; agencyAbbrev = ""; birthdayMonth = ""; birthdayDay = ""; applicationNumber = ""; generatedFamilyCode = string.Empty; }
+
+  private async Task GenerateFamilyLoginCode()
+  {
+    // Validate input (applicationNumber will be auto-filled)
+    if (string.IsNullOrWhiteSpace(agencyAbbrev) || agencyAbbrev.Length < 3 || string.IsNullOrWhiteSpace(birthdayMonth) || string.IsNullOrWhiteSpace(birthdayDay) || string.IsNullOrWhiteSpace(childage))
+    {
+      status = "❌ Please enter valid agency (3 letters), month, day, and age. Code must be 3 letters and 8 digits.";
+      StateHasChanged();
+      return;
+    }
+
+    // Get or create AgencyApplicationNumber for this agency/month/year
+    var now = DateTime.UtcNow;
+    var agencyKey = agencyAbbrev.ToUpper().Substring(0, 3);
+    var appNum = await DbContext.AgencyApplicationNumbers.FirstOrDefaultAsync(a => a.AgencyAbbrev == agencyKey && a.Year == now.Year && a.Month == now.Month);
+    if (appNum == null)
+    {
+      appNum = new PhilanthroPoints.Models.AgencyApplicationNumber {
+        AgencyAbbrev = agencyKey,
+        Year = now.Year,
+        Month = now.Month,
+        LastNumber = 1
+      };
+      DbContext.AgencyApplicationNumbers.Add(appNum);
+    }
+    else
+    {
+      appNum.LastNumber++;
+    }
+    await DbContext.SaveChangesAsync();
+    applicationNumber = appNum.LastNumber.ToString().PadLeft(2, '0');
+
+    // Format: [ABC][MM][DD][AA][NN] (ABC = first 3 of agency, MM = month, DD = day, AA = age, NN = app number)
+    var code = agencyKey
+      + birthdayMonth.PadLeft(2, '0').Substring(0, 2)
+      + birthdayDay.PadLeft(2, '0').Substring(0, 2)
+      + childage.PadLeft(2, '0').Substring(0, 2)
+      + applicationNumber;
+    generatedFamilyCode = code;
+    TempFamilyCodes.Add(new FamilyLoginCodeInfo {
+      Code = code,
+      Agency = agencyAbbrev,
+      ApplicationNumber = applicationNumber
+    }); // Save code, agency, and app number temporarily
+    status = $"✅ Family login code generated: {generatedFamilyCode}";
+    StateHasChanged();
+  }
+
+  private string? currentUsername;
+  private bool IsSuperAdmin => adminUsers.FirstOrDefault(a => a.Username == currentUsername)?.Role == "Super Admin";
+
+  protected override async Task OnInitializedAsync()
+  {
+    var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+    currentUsername = authState.User.Identity?.Name;
+    // Call the rest of the original OnInitializedAsync logic
+    await RefreshData();
+    responses = await Db.FamilySurveyResponses.ToListAsync();
+  }
 }
 
 <style>
@@ -2430,8 +2588,12 @@ th {
       border-left: 4px solid #249EA0;
     }
 
-    .config-section h3 {
-      margin-top: 0;
+    h3 {
+      font-family: 'LilitaOne';
+    }
+
+    h4 {
+      font-family: 'LilitaOne';
     }
 
     .config-info {
@@ -2573,4 +2735,13 @@ th {
         grid-template-columns: 1fr;
       }
     }
+  
+  .modal-card {
+    background:#fff;
+    border-radius:16px;
+    max-width:500px;
+    margin:2rem auto;
+    padding:2.5rem;
+    box-shadow:0 2px 16px rgba(44,166,164,0.08);
+  }
 </style>
