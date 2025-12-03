@@ -101,6 +101,8 @@
   @{/* A. Ms. Benita's Team's Tabs */}
           @if (IsSuperAdmin) {
             <div style="display: flex; flex-wrap: wrap; justify-content: left; margin-bottom: 20px;">
+              <a class="menu-link @(activeTab == "orders" ? "active" : "")" href="#" @onclick='() => SetTab("orders")'>
+                🧾<br/>Orders</a>
               <a class="menu-link @(activeTab == "members" ? "active" : "")" href="#" @onclick='() => SetTab("members")'>
                 👥<br/>Members</a>
             @{/*
@@ -1577,6 +1579,50 @@
 
 
 
+@{/* 13. Recent Orders Tab */}
+      @if (activeTab == "orders") {
+        <div class="category-page">
+          <div class="card">
+            <h2>🧾 Recent Orders</h2>
+            <div class="table-container">
+              <table class="inv">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Head of Household</th>
+                    <th>Order Date</th>
+                    <th>Items</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var order in recentOrders)
+                  {
+                    <tr>
+                      <td>@order.Id</td>
+                      <td>@order.HeadOfHousehold</td>
+                      <td>@order.OrderDate.ToLocalTime().ToString("g")</td>
+                      <td>
+                        @if (order.OrderItems != null)
+                        {
+                          <ul>
+                            @foreach (var item in order.OrderItems)
+                            {
+                              <li>@item.ItemName (@item.Quantity)</li>
+                            }
+                          </ul>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+
+
 @{/* 14. Necesary Code */}
 @code {
   // Member editing logic for inline editing in Members table
@@ -1656,6 +1702,7 @@
       }
     }
   private string? activeTab = null;
+  private List<Order> recentOrders = new();
   private List<Item> items = new();
   private List<Item> filtered = new();
   private List<Category> categories = new();
@@ -1708,8 +1755,18 @@
     members = PointsSvc.GetAllMembers();
     users = await UserSvc.GetAllUsersAsync();
     adminUsers = await AdminSvc.GetAllAdminUsersAsync();
-    
-    
+    recentOrders = Db.Orders
+      .OrderByDescending(o => o.OrderDate)
+      .Take(20)
+      .Select(o => new Order {
+        Id = o.Id,
+        HeadOfHousehold = o.HeadOfHousehold,
+        OrderDate = o.OrderDate,
+        OrderItems = o.OrderItems.Select(oi => new OrderItem {
+          ItemName = oi.ItemName,
+          Quantity = oi.Quantity
+        }).ToList()
+      }).ToList();
     // Initialize points inputs
     foreach (var m in members)
     {
