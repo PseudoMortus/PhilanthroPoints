@@ -1642,7 +1642,7 @@
     editMemberPoints = 0;
   }
 
-  void SaveMemberPoints(int memberId)
+  async Task SaveMemberPoints(int memberId)
   {
     var member = members.FirstOrDefault(x => x.Id == memberId);
     if (member != null)
@@ -1650,13 +1650,13 @@
       var diff = editMemberPoints - member.Points;
       if (diff > 0)
       {
-        PointsSvc.AddPoints(memberId, diff);
+        await PointsSvc.AddPointsAsync(memberId, diff);
       }
       else if (diff < 0)
       {
-        PointsSvc.RemovePoints(memberId, -diff);
+        await PointsSvc.RemovePointsAsync(memberId, -diff);
       }
-      members = PointsSvc.GetAllMembers();
+      members = await PointsSvc.GetAllMembersAsync();
       status = $"✅ Points updated for {member.Username}.";
     }
     editingMemberId = 0;
@@ -1670,14 +1670,14 @@
     editMemberAge = m.Age;
   }
 
-  void SaveMemberAge(int memberId)
+  async Task SaveMemberAge(int memberId)
   {
     var member = members.FirstOrDefault(x => x.Id == memberId);
     if (member != null)
     {
       member.Age = editMemberAge;
-      PointsSvc.UpdateMember(member); // Assumes PointsSvc has UpdateMember
-      members = PointsSvc.GetAllMembers();
+      await PointsSvc.UpdateMemberAsync(member); // Assumes PointsSvc has UpdateMember
+      members = await PointsSvc.GetAllMembersAsync();
       status = $"✅ Age updated for {member.Username}.";
     }
     editingMemberId = 0;
@@ -1689,11 +1689,11 @@
     {
       var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to remove this member? This cannot be undone.");
       if (!confirmed) return;
-      var result = PointsSvc.RemoveMember(memberId);
+      var result = await PointsSvc.RemoveMemberAsync(memberId);
       if (result)
       {
         status = "✅ Member removed successfully.";
-        members = PointsSvc.GetAllMembers();
+        members = await PointsSvc.GetAllMembersAsync();
         StateHasChanged();
       }
       else
@@ -1752,7 +1752,7 @@
   {
     categories = await Catalog.CategoriesAsync();
     items = await Catalog.AllAsync();
-    members = PointsSvc.GetAllMembers();
+    members = await PointsSvc.GetAllMembersAsync();
     users = await UserSvc.GetAllUsersAsync();
     adminUsers = await AdminSvc.GetAllAdminUsersAsync();
     recentOrders = Db.Orders
@@ -1805,7 +1805,7 @@
       // Refresh from database
       categories = await Catalog.CategoriesAsync();
       items = await Catalog.AllAsync();
-      members = PointsSvc.GetAllMembers();
+      members = await PointsSvc.GetAllMembersAsync();
       
       // Reinitialize points inputs
       pointsInputs.Clear();
@@ -2079,7 +2079,7 @@
     StateHasChanged();
   }
 
-  void AddPointsToMember(int memberId)
+  async Task AddPointsToMember(int memberId)
   {
     var amount = pointsInputs.GetValueOrDefault(memberId, 0);
     if (amount <= 0)
@@ -2087,10 +2087,10 @@
       status = "⚠️ Please enter a positive amount.";
       return;
     }
-    
-    if (PointsSvc.AddPoints(memberId, amount))
+
+    if (await PointsSvc.AddPointsAsync(memberId, amount))
     {
-      members = PointsSvc.GetAllMembers();
+      members = await PointsSvc.GetAllMembersAsync();
       status = $"? Added {amount} points.";
     }
     else
@@ -2099,7 +2099,7 @@
     }
   }
 
-  void RemovePointsFromMember(int memberId)
+  async Task RemovePointsFromMember(int memberId)
   {
     var amount = pointsInputs.GetValueOrDefault(memberId, 0);
     if (amount <= 0)
@@ -2107,10 +2107,10 @@
       status = "⚠️ Please enter a positive amount.";
       return;
     }
-    
-    if (PointsSvc.RemovePoints(memberId, amount))
+
+    if (await PointsSvc.RemovePointsAsync(memberId, amount))
     {
-      members = PointsSvc.GetAllMembers();
+      members = await PointsSvc.GetAllMembersAsync();
       status = $"? Removed {amount} points.";
     }
     else

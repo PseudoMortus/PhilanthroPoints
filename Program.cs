@@ -47,22 +47,22 @@ var app = builder.Build();
 using(var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureCreated();
-    Seed.SeedIfEmpty(db);
+    await db.Database.EnsureCreatedAsync();
+    await Seed.SeedIfEmptyAsync(db);
     // Log member count for debugging
-    var memberCount = db.Members.Count();
+    var memberCount = await db.Members.CountAsync();
     Console.WriteLine($"[SEED] Total members in database: {memberCount}");
     if (memberCount > 0) {
-        foreach (var m in db.Members) {
+        foreach (var m in await db.Members.ToListAsync()) {
             Console.WriteLine($"[SEED] Member: {m.Username} (ID: {m.Id})");
         }
     }
-    
-    // Log admin users for debugging  
-    var adminCount = db.AdminUsers.Count();
+
+    // Log admin users for debugging
+    var adminCount = await db.AdminUsers.CountAsync();
     Console.WriteLine($"[SEED] Total admin users in database: {adminCount}");
     if (adminCount > 0) {
-        foreach (var a in db.AdminUsers) {
+        foreach (var a in await db.AdminUsers.ToListAsync()) {
             Console.WriteLine($"[SEED] Admin: {a.Username} (ID: {a.Id}, IsActive: {a.IsActive})");
         }
     }

@@ -248,11 +248,11 @@
       }
       
       await DbContext.SaveChangesAsync();
-      
+
       // Award points for completing demographics (only once)
       if (!pointsAwarded)
       {
-        Points.Add(25);
+        await Points.AddAsync(25);
         pointsAwarded = true;
       }
       
