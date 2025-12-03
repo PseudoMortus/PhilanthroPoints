@@ -126,7 +126,7 @@
         if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
         {
           Console.WriteLine($"[MainLayout] User ID: {userId}");
-          var member = PointsSvc.GetMember(userId);
+          var member = await PointsSvc.GetMemberAsync(userId);
           if (member != null)
           {
             // Use PointsState if already initialized, otherwise load from database
@@ -140,7 +140,7 @@
               currentPoints = member.Points;
               Console.WriteLine($"[MainLayout] Points loaded from database: {currentPoints}");
               // Sync with PointsState
-              Points.SetUser(member);
+              await Points.SetUserAsync(member);
             }
           }
           else

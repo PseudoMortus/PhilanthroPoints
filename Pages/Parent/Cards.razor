@@ -76,13 +76,13 @@
   bool CanBuy(Item i) => Points.Points >= i.Cost && i.Stock > 0;
   async Task Buy(Item i)
   {
-    if (Points.Spend(i.Cost))
+    if (await Points.SpendAsync(i.Cost))
     {
       var success = await Cart.AddAsync(i);
       if (!success)
       {
         // Refund points if cart add failed
-        Points.Add(i.Cost);
+        await Points.AddAsync(i.Cost);
       }
       StateHasChanged();
     }

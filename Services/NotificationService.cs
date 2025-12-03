@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PhilanthroPoints.Models;
 using PhilanthroPoints.Data;
 using System.Net.Mail;
@@ -137,14 +138,14 @@ public class NotificationService : INotificationService
 
     private async Task<List<Item>> GetOrderItemsAsync(int orderId)
     {
-        return await Task.FromResult(_dbContext.OrderItems
+        return await _dbContext.OrderItems
             .Where(oi => oi.OrderId == orderId)
-            .Select(oi => new Item 
-            { 
-                Name = oi.ItemName, 
-                Cost = oi.ItemCost 
+            .Select(oi => new Item
+            {
+                Name = oi.ItemName,
+                Cost = oi.ItemCost
             })
-            .ToList());
+            .ToListAsync();
     }
 
     public async Task<bool> TestEmailConnectionAsync()

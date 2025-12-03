@@ -78,7 +78,7 @@
                 return;
             }
             newMember.PasswordHash = PhilanthroPoints.Services.PasswordHasher.Hash(tempMemberPassword);
-            var result = PointsSvc.AddMember(newMember);
+            var result = await PointsSvc.AddMemberAsync(newMember);
             if (result)
             {
                 status = $"Member '{newMember.Username}' created successfully!";

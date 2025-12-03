@@ -101,7 +101,7 @@ else
     var success = await CartService.RemoveAsync(item);
     if (success)
     {
-      Points.Add(item.Cost); // Refund points
+      await Points.AddAsync(item.Cost); // Refund points
     }
     StateHasChanged();
   }
@@ -111,7 +111,7 @@ else
     // Refund all points
     foreach(var item in CartService.Items.ToList())
     {
-      Points.Add(item.Cost);
+      await Points.AddAsync(item.Cost);
     }
     await CartService.ClearAsync(restoreStock: true);
     StateHasChanged();
@@ -171,7 +171,7 @@ else
         // Save order to database using checkedOutItems
         var order = await SaveOrderAsync(checkedOutItems, totalCost);
         // Deduct points
-        Points.Spend(totalCost);
+        await Points.SpendAsync(totalCost);
         // Send notifications
         await SendNotificationsAsync(order);
         // Build email from checkedOutItems
