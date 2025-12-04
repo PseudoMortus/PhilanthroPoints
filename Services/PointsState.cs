@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using PhilanthroPoints.Data;
 using PhilanthroPoints.Models;
@@ -34,7 +35,7 @@ public class PointsState
             var saved = await _js.InvokeAsync<LocalState>("pointsStore.load");
             Points = saved.value;
             if (!string.IsNullOrWhiteSpace(saved.name))
-                CurrentUser = _db.Members.FirstOrDefault(m => (m.FirstName + " " + m.LastName) == saved.name);
+                CurrentUser = await _db.Members.FirstOrDefaultAsync(m => (m.FirstName + " " + m.LastName) == saved.name);
             OnPointsChanged?.Invoke();
         }
         catch (Exception ex)
@@ -46,39 +47,39 @@ public class PointsState
         }
     }
 
-    public void SetUser(Member member) { CurrentUser = member; Points = member.Points; Persist(); OnPointsChanged?.Invoke(); }
-    public bool Spend(int amount) { if (Points < amount) return false; Points -= amount; Persist(); OnPointsChanged?.Invoke(); return true; }
-    public void Add(int amount) { Points += amount; Persist(); OnPointsChanged?.Invoke(); }
-    public void Reset() { Points = 0; CurrentUser = null; Persist(); OnPointsChanged?.Invoke(); }
+    public async Task SetUserAsync(Member member) { CurrentUser = member; Points = member.Points; await PersistAsync(); OnPointsChanged?.Invoke(); }
+    public async Task<bool> SpendAsync(int amount) { if (Points < amount) return false; Points -= amount; await PersistAsync(); OnPointsChanged?.Invoke(); return true; }
+    public async Task AddAsync(int amount) { Points += amount; await PersistAsync(); OnPointsChanged?.Invoke(); }
+    public async Task ResetAsync() { Points = 0; CurrentUser = null; await PersistAsync(); OnPointsChanged?.Invoke(); }
     
-    public void RefreshFromDatabase()
+    public async Task RefreshFromDatabaseAsync()
     {
         if (CurrentUser == null) return;
-        
+
         // Reload the user from the database to get the latest points value
-        var refreshedUser = _db.Members.FirstOrDefault(m => m.Id == CurrentUser.Id);
+        var refreshedUser = await _db.Members.FirstOrDefaultAsync(m => m.Id == CurrentUser.Id);
         if (refreshedUser != null)
         {
             CurrentUser = refreshedUser;
             Points = refreshedUser.Points;
-            Persist();
+            await PersistAsync();
             OnPointsChanged?.Invoke();
         }
     }
 
-    private void Persist()
+    private async Task PersistAsync()
     {
         try
         {
             var name = CurrentUser is null ? null : ($"{CurrentUser.FirstName} {CurrentUser.LastName}");
-            _js.InvokeVoidAsync("pointsStore.save", new LocalState{ value = Points, name = name });
-            if(CurrentUser != null) { CurrentUser.Points = Points; _db.SaveChanges(); }
+            await _js.InvokeVoidAsync("pointsStore.save", new LocalState{ value = Points, name = name });
+            if(CurrentUser != null) { CurrentUser.Points = Points; await _db.SaveChangesAsync(); }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Persist failed: {ex.Message}");
             // Still update database even if JS fails
-            if(CurrentUser != null) { CurrentUser.Points = Points; _db.SaveChanges(); }
+            if(CurrentUser != null) { CurrentUser.Points = Points; await _db.SaveChangesAsync(); }
         }
     }
 

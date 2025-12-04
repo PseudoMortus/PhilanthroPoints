@@ -43,10 +43,10 @@ public class ApplicationDbContext : DbContext
 
 public static class Seed
 {
-    public static void SeedIfEmpty(ApplicationDbContext db)
+    public static async Task SeedIfEmptyAsync(ApplicationDbContext db)
     {
          Console.WriteLine("[SEED] Starting SeedIfEmpty check...");
-        var categoriesExist = db.Categories.Any();
+        var categoriesExist = await db.Categories.AnyAsync();
         Console.WriteLine($"[SEED] Categories exist: {categoriesExist}");
 
         if(!categoriesExist)
@@ -143,20 +143,20 @@ public static class Seed
             );
 
             Console.WriteLine("[SEED] Calling SaveChanges for items and members...");
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             Console.WriteLine("[SEED] Seed complete!");
         }
         else
         {
             Console.WriteLine("[SEED] Database already seeded, skipping.");
         }
-        
+
         // Always check and seed AdminUsers separately
-        var adminUsersExist = db.AdminUsers.Any();
+        var adminUsersExist = await db.AdminUsers.AnyAsync();
         Console.WriteLine($"[SEED] AdminUsers exist: {adminUsersExist}");
-        
+
         // Check if Mike's admin account exists specifically
-        var mikeExists = db.AdminUsers.Any(a => a.Username == "mike");
+        var mikeExists = await db.AdminUsers.AnyAsync(a => a.Username == "mike");
         Console.WriteLine($"[SEED] Mike admin exists: {mikeExists}");
         
         if (!mikeExists)
@@ -178,9 +178,9 @@ public static class Seed
                 CreatedDate = DateTime.Now,
                 LastLoginDate = DateTime.Now
             });
-            
+
             Console.WriteLine("[SEED] Calling SaveChanges for Mike admin...");
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             Console.WriteLine("[SEED] Mike admin added successfully!");
         }
         else
@@ -225,20 +225,20 @@ public static class Seed
                     LastLoginDate = DateTime.Now
                 }
             );
-            
+
             Console.WriteLine("[SEED] Calling SaveChanges for other AdminUsers...");
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             Console.WriteLine("[SEED] Other AdminUsers seeded successfully!");
         }
         else
         {
             Console.WriteLine("[SEED] Other AdminUsers already exist, skipping seeding.");
         }
-        
+
         // Always check and seed Users separately
-        var usersExist = db.Users.Any();
+        var usersExist = await db.Users.AnyAsync();
         Console.WriteLine($"[SEED] Users exist: {usersExist}");
-        
+
         if (!usersExist)
         {
             Console.WriteLine("[SEED] Seeding sample users (separate check)...");
@@ -257,9 +257,9 @@ public static class Seed
                     ChildEthnicity = "Mixed"
                 }
             );
-            
+
             Console.WriteLine("[SEED] Calling SaveChanges for Users...");
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             Console.WriteLine("[SEED] Users seeded successfully!");
         }
         else
