@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets/app.performance.css"
     },
     {
+      "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/appsettings.json",
+      "PackagePath": "staticwebassets/appsettings.json"
+    },
+    {
       "Id": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",
       "PackagePath": "staticwebassets/birthday-buddy.css"
     },

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SAb9cTiNX8rZwT7WSZNxStaDTfNzHLytOoichdK7a00=",
+  "Hash": "fDwimqHX1wX6k9TO9oK1BqfnA6BxRd1LWz5U79qioz0=",
   "Source": "PhilanthroPoints",
   "BasePath": "_content/PhilanthroPoints",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/app.performance.css"
+    },
+    {
+      "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/appsettings.json",
+      "SourceId": "PhilanthroPoints",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/",
+      "BasePath": "_content/PhilanthroPoints",
+      "RelativePath": "appsettings.json",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/appsettings.json"
     },
     {
       "Identity": "/home/pseudomortus/Documents/repos/PhilanthroPoints/wwwroot/birthday-buddy.css",

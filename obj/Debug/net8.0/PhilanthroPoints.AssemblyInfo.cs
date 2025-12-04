@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PhilanthroPoints")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a817c00b5c54cd8ace4407dc52f96b617512a8d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5fb2a002b92ba08c0b79708de6e626e1ad15b1aa")]
 [assembly: System.Reflection.AssemblyProductAttribute("PhilanthroPoints")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PhilanthroPoints")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
